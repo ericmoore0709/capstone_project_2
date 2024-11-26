@@ -1,0 +1,87 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`RecipesContainer > takes a snapshot 1`] = `
+<DocumentFragment>
+  <div>
+    <h1
+      class="text-center"
+    >
+      Recipes
+    </h1>
+    <div>
+      <h2
+        class="text-center mt-2"
+      >
+        Create a Recipe
+      </h2>
+      <form
+        class="w-50 mx-auto p-2 border"
+      >
+        <div
+          class="mb-3"
+        >
+          <label
+            class="form-label"
+            for="title"
+          >
+            Title
+          </label>
+          <input
+            class="form-control"
+            id="title"
+            name="title"
+            type="text"
+            value=""
+          />
+          <small
+            class="form-text text-muted"
+          >
+            Give your recipe a name!
+          </small>
+        </div>
+        <div
+          class="mb-3"
+        >
+          <label
+            class="form-label"
+            for="description"
+          >
+            Description
+          </label>
+          <input
+            class="form-control"
+            id="description"
+            name="description"
+            type="text"
+            value=""
+          />
+          <small
+            class="form-text text-muted"
+          >
+            Give a light description of your delicious masterpiece!
+          </small>
+        </div>
+        <div
+          class="text-center mb-3"
+        >
+          <button
+            class="w-25 btn btn-primary"
+          >
+            Add
+          </button>
+        </div>
+      </form>
+    </div>
+    <div>
+      <h2
+        class="text-center mt-2"
+      >
+        Browse Recipes
+      </h2>
+      <div
+        class="d-flex flex-row flex-wrap m-1"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;

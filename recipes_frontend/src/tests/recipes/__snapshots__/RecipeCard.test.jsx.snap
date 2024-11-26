@@ -1,0 +1,44 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`RecipeCard > takes a snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="p-2 d-flex"
+  >
+    <div
+      class="card"
+      style="min-width: 200px; min-height: 250px; width: 23vw;"
+    >
+      <a
+        href="/recipes/1"
+      >
+        <img
+          alt="Recipe 1"
+          class="card-img"
+          src="/src/assets/defaultImage.jpg"
+          style="max-height: 150px; object-fit: cover;"
+        />
+      </a>
+      <div
+        class="d-flex flex-column card-body"
+      >
+        <h5
+          class="text-center card-title"
+        >
+          <a
+            href="/recipes/1"
+          >
+            Recipe 1
+          </a>
+        </h5>
+        <p
+          class="text-truncate card-text"
+          style="max-height: 3em; overflow: hidden;"
+        >
+          Tasty!
+        </p>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

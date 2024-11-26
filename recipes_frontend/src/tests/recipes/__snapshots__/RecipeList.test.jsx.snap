@@ -1,0 +1,19 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`RecipeList > takes a snapshot 1`] = `
+<DocumentFragment>
+  <div>
+    <h2
+      class="text-center mt-2"
+    />
+    <p
+      class="text-center my-3"
+    >
+      No recipes to display.
+    </p>
+    <div
+      class="d-flex flex-wrap m-1 w-100 justify-content-center card-group"
+    />
+  </div>
+</DocumentFragment>
+`;

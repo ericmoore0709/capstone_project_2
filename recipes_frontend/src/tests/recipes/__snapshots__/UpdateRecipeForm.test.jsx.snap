@@ -1,0 +1,128 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`UpdateRecipeForm > takes a snapshot 1`] = `
+<DocumentFragment>
+  <div>
+    <h2
+      class="text-center mt-2"
+    >
+      Edit Recipe
+    </h2>
+    <form
+      class="w-50 mx-auto p-2 border"
+    >
+      <div
+        class="mb-3"
+      >
+        <label
+          class="form-label"
+          for="title"
+        >
+          Title
+        </label>
+        <input
+          class="form-control"
+          id="title"
+          name="title"
+          type="text"
+          value="Test Recipe"
+        />
+        <small
+          class="form-text text-muted"
+        >
+          Give your recipe a name!
+        </small>
+      </div>
+      <div
+        class="mb-3"
+      >
+        <label
+          class="form-label"
+          for="description"
+        >
+          Description
+        </label>
+        <input
+          class="form-control"
+          id="description"
+          name="description"
+          type="text"
+          value="A tasty test recipe"
+        />
+        <small
+          class="form-text text-muted"
+        >
+          Give a light description of your delicious masterpiece!
+        </small>
+      </div>
+      <div
+        class="mb-3"
+      >
+        <label
+          class="form-label"
+          for="image"
+        >
+          Image URL
+        </label>
+        <input
+          class="form-control"
+          id="image"
+          name="image"
+          type="text"
+          value="https://via.placeholder.com/150"
+        />
+        <small
+          class="form-text text-muted"
+        >
+          Show us an image of your finished meal.
+        </small>
+      </div>
+      <div
+        class="mb-3"
+      >
+        <label
+          class="form-label"
+          for="visibility_id"
+        >
+          Visibility
+        </label>
+        <select
+          class="form-select"
+          id="visibility_id"
+          name="visibility_id"
+        >
+          <option
+            value="1"
+          >
+            Public
+          </option>
+          <option
+            value="2"
+          >
+            Community
+          </option>
+          <option
+            value="3"
+          >
+            Private
+          </option>
+        </select>
+        <small
+          class="form-text text-muted"
+        >
+          Select who can view your recipe.
+        </small>
+      </div>
+      <div
+        class="text-center mb-3"
+      >
+        <button
+          class="w-25 btn btn-primary"
+        >
+          Update
+        </button>
+      </div>
+    </form>
+  </div>
+</DocumentFragment>
+`;
