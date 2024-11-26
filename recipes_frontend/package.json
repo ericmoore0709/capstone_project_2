@@ -21,6 +21,7 @@
     "react-router-dom": "^6.27.0",
     "reactstrap": "^9.2.3",
     "recipes_frontend": "file:",
+    "serve": "^14.2.4",
     "vite": "^5.4.9"
   },
   "devDependencies": {
