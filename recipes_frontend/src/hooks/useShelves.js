@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import RecipesApi from "../../api";
 
 const useShelves = (signedInUser, token, setClientMessage, navigate) => {
@@ -6,22 +6,22 @@ const useShelves = (signedInUser, token, setClientMessage, navigate) => {
     const [shelfFormErrors, setShelfFormErrors] = useState([]);
 
     useEffect(() => {
-        /**
+        fetchUserShelves();
+    }, [fetchUserShelves]);
+
+    /**
          * Fetch user shelves, set user shelves state
          */
-        const fetchUserShelves = async () => {
-            if (signedInUser?.id && token) {
-                try {
-                    const apiShelves = await RecipesApi.getUserShelves(signedInUser.id, token);
-                    setUserShelves(apiShelves);
-                } catch (err) {
-                    console.error('Error fetching user shelves:', err);
-                }
+    const fetchUserShelves = useCallback(async () => {
+        if (signedInUser?.id && token) {
+            try {
+                const apiShelves = await RecipesApi.getUserShelves(signedInUser.id, token);
+                setUserShelves(apiShelves);
+            } catch (err) {
+                console.error('Error fetching user shelves:', err);
             }
         }
-        fetchUserShelves();
-    }, [signedInUser?.id, token]);
-
+    }, [signedInUser.id, token]);
 
     // shelf functions
 
@@ -155,6 +155,7 @@ const useShelves = (signedInUser, token, setClientMessage, navigate) => {
 
     return {
         userShelves,
+        fetchUserShelves,
         shelfFormErrors,
         addShelf,
         updateShelf,

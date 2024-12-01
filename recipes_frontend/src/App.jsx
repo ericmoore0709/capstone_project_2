@@ -3,8 +3,7 @@ import './App.css';
 import SiteNavbar from './components/nav/SiteNavbar';
 import RecipeList from './components/recipes/RecipeList';
 import NewRecipeForm from './components/recipes/NewRecipeForm';
-import { useEffect, useState } from 'react';
-import RecipesApi from '../api';
+import { useState } from 'react';
 import RecipeDetails from './components/recipes/RecipeDetails';
 import PropTypes from 'prop-types';
 import { Alert } from 'reactstrap';
@@ -15,12 +14,13 @@ import UpdateShelfForm from './components/shelves/UpdateShelfForm';
 import Profile from './components/profiles/Profile';
 import useRecipes from './hooks/useRecipes';
 import useShelves from './hooks/useShelves';
+import useAuth from './hooks/useAuth';
 
 function App() {
-  const [signedInUser, setSignedInUser] = useState(null);
-  const [token, setToken] = useState((localStorage.getItem('token') || null));
   const [clientMessage, setClientMessage] = useState({ color: 'info', message: '' });
   const navigate = useNavigate();
+
+  const { signedInUser, token, logoutUser } = useAuth(navigate);
 
   const {
     publicRecipes,
@@ -41,35 +41,6 @@ function App() {
     removeRecipeFromShelf
   } = useShelves(signedInUser, token, setClientMessage, navigate);
 
-  // get token from request useEffect
-  useEffect(() => {
-    // Check for token in URL or localStorage, then set it
-    const getTokenFromRequest = async () => {
-      try {
-        const urlParams = new URLSearchParams(window.location.search);
-        const newToken = urlParams.get('token');
-
-        if (newToken) {
-          const decoded = JSON.parse(atob(newToken.split('.')[1]));
-          setSignedInUser(decoded);
-          setToken(newToken);
-          localStorage.setItem('token', newToken);
-
-          // create user profile
-          await RecipesApi.createProfile(decoded.id);
-
-          return navigate('/');
-        } else if (token) {
-          const decoded = JSON.parse(atob(token.split('.')[1]));
-          setSignedInUser(decoded);
-        }
-      } catch (err) {
-        console.log("Error processing token:", err);
-      }
-    };
-    getTokenFromRequest();
-  }, [token, navigate]);
-
   /**
    * Returns a list of (shelfId, shelfLabel) KV pairs
    * @returns a list of (shelfId, shelfLabel) KV pairs
@@ -80,16 +51,6 @@ function App() {
     });
     return shelfOptions;
   }
-
-  /**
-   * Logs out the user
-   */
-  const logoutUser = () => {
-    setSignedInUser(null);
-    setToken(null);
-    localStorage.removeItem('token');
-    navigate('/');
-  };
 
   /**
    * Closes the client message alert

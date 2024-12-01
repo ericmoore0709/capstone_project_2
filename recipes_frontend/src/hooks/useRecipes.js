@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import RecipesApi from "../../api";
+import useShelves from "./useShelves";
 
 const useRecipes = (signedInUser, token, setClientMessage, navigate) => {
 
     const [publicRecipes, setPublicRecipes] = useState([]);
     const [userRecipes, setUserRecipes] = useState([]);
     const [recipeFormErrors, setRecipeFormErrors] = useState([]);
+
+    const { fetchUserShelves } = useShelves(signedInUser, token, setClientMessage, navigate);
 
     useEffect(() => {
         /** Fetch public recipes and update publicRecipes state. */
@@ -123,8 +126,8 @@ const useRecipes = (signedInUser, token, setClientMessage, navigate) => {
                     setPublicRecipes(publicRecipes.filter((recipe) => recipe.id !== deletedRecipe.id));
                 }
 
-                // // update shelves to reflect lack of this recipe (if applicable)
-                // await fetchUserShelves();
+                // update shelves to reflect lack of this recipe (if applicable)
+                await fetchUserShelves();
 
                 // clear errors and set success message
                 setRecipeFormErrors([]);
