@@ -5,7 +5,6 @@ import RecipeList from './components/recipes/RecipeList';
 import NewRecipeForm from './components/recipes/NewRecipeForm';
 import { useState } from 'react';
 import RecipeDetails from './components/recipes/RecipeDetails';
-import PropTypes from 'prop-types';
 import { Alert } from 'reactstrap';
 import UpdateRecipeForm from './components/recipes/UpdateRecipeForm';
 import ShelfList from './components/shelves/ShelfList';
@@ -15,6 +14,7 @@ import Profile from './components/profiles/Profile';
 import useRecipes from './hooks/useRecipes';
 import useShelves from './hooks/useShelves';
 import useAuth from './hooks/useAuth';
+import ProtectedRoute from './components/nav/ProtectedRoute';
 
 function App() {
   const [clientMessage, setClientMessage] = useState({ color: 'info', message: '' });
@@ -58,19 +58,6 @@ function App() {
   const clientMessageXClicked = () => {
     setClientMessage({ color: 'info', message: '' });
   }
-
-  /**
-   * Encapsulates route and redirects unauthed user to landing page
-   * @param {*} param0 
-   * @returns 
-   */
-  const ProtectedRoute = ({ element }) => {
-    return signedInUser ? element : <h1>Landing Page</h1>
-  };
-
-  ProtectedRoute.propTypes = {
-    element: PropTypes.object.isRequired
-  };
 
   return (
     <>
