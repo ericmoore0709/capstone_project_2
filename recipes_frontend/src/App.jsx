@@ -3,7 +3,7 @@ import './App.css';
 import SiteNavbar from './components/nav/SiteNavbar';
 import RecipeList from './components/recipes/RecipeList';
 import NewRecipeForm from './components/recipes/NewRecipeForm';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import RecipesApi from '../api';
 import RecipeDetails from './components/recipes/RecipeDetails';
 import PropTypes from 'prop-types';
@@ -13,66 +13,33 @@ import ShelfList from './components/shelves/ShelfList';
 import NewShelfForm from './components/shelves/NewShelfForm';
 import UpdateShelfForm from './components/shelves/UpdateShelfForm';
 import Profile from './components/profiles/Profile';
+import useRecipes from './hooks/useRecipes';
+import useShelves from './hooks/useShelves';
 
 function App() {
-  const [publicRecipes, setPublicRecipes] = useState([]);
-  const [userRecipes, setUserRecipes] = useState([]);
-  const [recipeFormErrors, setRecipeFormErrors] = useState([]);
-
-  const [userShelves, setUserShelves] = useState([]);
-  const [shelfFormErrors, setShelfFormErrors] = useState([]);
-
   const [signedInUser, setSignedInUser] = useState(null);
   const [token, setToken] = useState((localStorage.getItem('token') || null));
   const [clientMessage, setClientMessage] = useState({ color: 'info', message: '' });
   const navigate = useNavigate();
 
-  /**
-   * Fetch public recipes, set publicRecipes state
-   */
-  const fetchPublicRecipes = async () => {
-    try {
-      const apiRecipes = await RecipesApi.getAllPublicRecipes();
-      setPublicRecipes(apiRecipes);
-    } catch (error) {
-      console.error("Error fetching public recipes:", error);
-    }
-  };
+  const {
+    publicRecipes,
+    userRecipes,
+    recipeFormErrors,
+    addRecipe,
+    updateRecipe,
+    deleteRecipe
+  } = useRecipes(signedInUser, token, setClientMessage, navigate);
 
-  /**
-   * Fetch user recipes, set userRecipes state
-   */
-  const fetchUserRecipes = useCallback(async () => {
-    try {
-      const apiRecipes = await RecipesApi.getUserRecipes(signedInUser.id, token);
-      setUserRecipes(apiRecipes);
-    } catch (error) {
-      console.error("Error fetching user recipes:", error);
-    }
-  }, [signedInUser?.id, token]);
-
-  /**
-   * Fetch user shelves, set user shelves state
-   */
-  const fetchUserShelves = useCallback(async () => {
-    try {
-      const apiShelves = await RecipesApi.getUserShelves(signedInUser.id, token);
-      setUserShelves(apiShelves);
-    } catch (err) {
-      console.error('Error fetching user shelves:', err);
-    }
-  }, [signedInUser?.id, token]);
-
-  /**
-   * Get recipes and shelves upon login
-   */
-  useEffect(() => {
-    fetchPublicRecipes();
-    if (signedInUser?.id && token) {
-      fetchUserRecipes();
-      fetchUserShelves();
-    }
-  }, [fetchUserShelves, fetchUserRecipes, signedInUser?.id, token]);
+  const {
+    userShelves,
+    shelfFormErrors,
+    addShelf,
+    updateShelf,
+    deleteShelf,
+    addRecipeToShelf,
+    removeRecipeFromShelf
+  } = useShelves(signedInUser, token, setClientMessage, navigate);
 
   // get token from request useEffect
   useEffect(() => {
@@ -103,184 +70,6 @@ function App() {
     getTokenFromRequest();
   }, [token, navigate]);
 
-  // recipe functions
-
-  /**
-   * Add recipe to user's recipes
-   * @param {*} recipe the recipe to add
-   * @returns navigates to previous page
-   */
-  const addRecipe = async (recipe) => {
-    try {
-      const result = await RecipesApi.createNewRecipe(recipe, token);
-      if (result.error) {
-        setRecipeFormErrors(result.error);
-      } else if (result.recipe) {
-        const createdRecipe = result.recipe;
-        // update recipe list states
-        setUserRecipes([createdRecipe, ...userRecipes]);
-        if (createdRecipe.visibility_id === 1) {
-          setPublicRecipes([createdRecipe, ...publicRecipes]);
-        }
-
-        // clear errors and provide success message
-        setRecipeFormErrors([]);
-        setClientMessage({ color: 'success', message: "Recipe added successfully." });
-        return navigate(-1);
-      } else {
-        throw new Error('Something went wrong adding a recipe.');
-      }
-    } catch (err) {
-      console.log("Error adding recipe:", err);
-    }
-  };
-
-  /**
-   * Updates a user's recipe
-   * @param {*} recipe the recipe to update
-   * @returns navigates to previous page
-   */
-  const updateRecipe = async (recipe) => {
-    try {
-      delete recipe.author_id;
-      delete recipe.uploaded_at;
-      delete recipe.last_updated_at;
-
-      const result = await RecipesApi.updateRecipe(recipe, token);
-
-      if (result.error) {
-        setRecipeFormErrors(result.error);
-      } else if (result.recipe) {
-        const updatedRecipe = result.recipe;
-        // update recipe list states
-        const remainingUserRecipes = userRecipes.filter((recipe) => recipe.id !== updatedRecipe.id);
-        setUserRecipes([updatedRecipe, ...remainingUserRecipes]);
-        if (updatedRecipe.visibility_id === 1) {
-          const remainingPublicRecipes = publicRecipes.filter((recipe) => recipe.id !== updatedRecipe.id);
-          setPublicRecipes([updatedRecipe, ...remainingPublicRecipes]);
-        }
-
-        // clear errors and set success message
-        setRecipeFormErrors([]);
-        setClientMessage({ color: 'success', message: "Recipe updated successfully." });
-        return navigate(-1);
-      } else {
-        throw new Error('Something went wrong updating a recipe.');
-      }
-    } catch (err) {
-      console.log("Error adding recipe:", err);
-    }
-  };
-
-  /**
-   * Deletes a user's recipe
-   * @param {*} id the recipe ID
-   */
-  const deleteRecipe = async (id) => {
-    try {
-      const result = await RecipesApi.deleteRecipe(id, token);
-      if (result.recipe) {
-        const deletedRecipe = result.recipe;
-        // update recipe list states
-        setUserRecipes(userRecipes.filter((recipe) => recipe.id !== deletedRecipe.id));
-        if (deletedRecipe.visibility_id === 1) {
-          setPublicRecipes(publicRecipes.filter((recipe) => recipe.id !== deletedRecipe.id));
-        }
-
-        // update shelves to reflect lack of this recipe (if applicable)
-        await fetchUserShelves();
-
-        // clear errors and set success message
-        setRecipeFormErrors([]);
-        setClientMessage({ color: 'success', message: "Recipe deleted successfully." });
-      } else {
-        throw new Error('Something went wrong deleting a recipe');
-      }
-    } catch (err) {
-      console.log('Error deleting recipe: ', err);
-    }
-  }
-
-  // shelf functions
-
-  /**
-   * Adds a shelf to the user's shelves
-   * @param {*} shelf the shelf to add
-   * @returns navigates to previous page
-   */
-  const addShelf = async (shelf) => {
-    try {
-      const result = await RecipesApi.createNewShelf(shelf, token);
-      if (result.error) {
-        setShelfFormErrors([result.error]);
-      } else if (result.shelf) {
-        const createdShelf = result.shelf;
-        // update shelf list states
-        setUserShelves([createdShelf, ...userShelves]);
-
-        // clear errors and provide success message
-        setShelfFormErrors([]);
-        setClientMessage({ color: 'success', message: "Shelf added successfully." });
-        return navigate(-1);
-      } else {
-        throw new Error('Something went wrong adding a shelf.');
-      }
-    } catch (err) {
-      console.log("Error adding shelf:", err);
-    }
-  };
-
-  /**
-   * Updates user's shelf
-   * @param {*} shelf the shelf to update 
-   * @returns navigates to previous page
-   */
-  const updateShelf = async (shelf) => {
-    try {
-      const result = await RecipesApi.updateShelf(shelf, token);
-      if (result.error) {
-        setShelfFormErrors(result.error);
-      } else if (result.shelf) {
-        const updatedShelf = result.shelf;
-        // update shelf list states
-        const remainingUserShelves = userShelves.filter((shelf) => shelf.id !== updatedShelf.id);
-        setUserShelves([updatedShelf, ...remainingUserShelves]);
-
-        // clear errors and provide success message
-        setShelfFormErrors([]);
-        setClientMessage({ color: 'success', message: "Shelf updated successfully." });
-        return navigate(-1);
-      } else {
-        throw new Error('Something went wrong updating a shelf.');
-      }
-    } catch (err) {
-      console.log("Error updating shelf:", err);
-    }
-  };
-
-  /**
-   * Delete's user's shelf
-   * @param {*} id the shelf ID
-   */
-  const deleteShelf = async (id) => {
-    try {
-      const result = await RecipesApi.deleteShelf(id, token);
-      if (result.shelf) {
-        const deletedShelf = result.shelf;
-        // update shelf list states
-        setUserShelves(userShelves.filter((shelf) => shelf.id !== deletedShelf.id));
-
-        // clear errors and set success message
-        setShelfFormErrors([]);
-        setClientMessage({ color: 'success', message: "Shelf deleted successfully." });
-      } else {
-        throw new Error('Something went wrong deleting a shelf');
-      }
-    } catch (err) {
-      console.log('Error deleting shelf: ', err);
-    }
-  }
-
   /**
    * Returns a list of (shelfId, shelfLabel) KV pairs
    * @returns a list of (shelfId, shelfLabel) KV pairs
@@ -290,56 +79,6 @@ function App() {
       return { id: shelf.id, label: shelf.label };
     });
     return shelfOptions;
-  }
-
-  /**
-   * Adds recipe to shelf
-   * @param {*} shelfId the shelf ID
-   * @param {*} recipeId the recipe ID
-   */
-  const addRecipeToShelf = async (shelfId, recipeId) => {
-    try {
-      const result = await RecipesApi.addShelfRecipe(shelfId, recipeId, token);
-      if (result.error) {
-        // handle error
-        setClientMessage({ color: 'danger', message: 'Cannot add recipe to shelf.' });
-      } else if (result.shelf) {
-        // add shelf to userShelves state
-        const updatedShelf = result.shelf;
-        // update shelf list states
-        const remainingUserShelves = userShelves.filter((shelf) => shelf.id !== updatedShelf.id);
-        setUserShelves([updatedShelf, ...remainingUserShelves]);
-        setClientMessage({ color: 'success', message: 'Recipe added to shelf.' });
-      }
-    } catch (err) {
-      console.log('Error adding recipe to shelf:', err);
-      setClientMessage({ color: 'danger', message: 'Failed to add recipe to shelf.' });
-    }
-  }
-
-  /**
-   * Removes recipe from shelf
-   * @param {*} shelfId the shelf ID
-   * @param {*} recipeId the recipe ID
-   */
-  const removeRecipeFromShelf = async (shelfId, recipeId) => {
-    try {
-      const result = await RecipesApi.removeShelfRecipe(shelfId, recipeId, token);
-      if (result.error) {
-        // handle error
-        setClientMessage({ color: 'danger', message: 'Cannot remove recipe from shelf.' });
-      } else if (result.shelf) {
-        // add shelf to userShelves state
-        const updatedShelf = result.shelf;
-        // update shelf list states
-        const remainingUserShelves = userShelves.filter((shelf) => shelf.id !== updatedShelf.id);
-        setUserShelves([updatedShelf, ...remainingUserShelves]);
-        setClientMessage({ color: 'success', message: 'Recipe removed from shelf.' });
-      }
-    } catch (err) {
-      console.log('Error removing recipe from shelf:', err);
-      setClientMessage({ color: 'danger', message: 'Failed to remove recipe from shelf.' });
-    }
   }
 
   /**
