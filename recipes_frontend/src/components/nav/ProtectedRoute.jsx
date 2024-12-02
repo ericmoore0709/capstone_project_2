@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 
 /**
@@ -8,10 +7,9 @@ import useAuth from '../../hooks/useAuth';
  * @returns 
  */
 const ProtectedRoute = ({ element }) => {
-    const navigate = useNavigate();
     const { signedInUser } = useAuth();
 
-    return signedInUser ? element : navigate('/');
+    return signedInUser ? element : <h1>Landing Page</h1>;
 };
 
 ProtectedRoute.propTypes = {

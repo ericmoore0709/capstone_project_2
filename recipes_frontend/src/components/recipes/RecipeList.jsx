@@ -32,7 +32,7 @@ const RecipeList = ({ title, recipes, signedInUser, deleteRecipe, shelfOptions, 
 RecipeList.propTypes = {
     title: PropTypes.string.isRequired,
     recipes: PropTypes.array.isRequired,
-    signedInUser: PropTypes.object.isRequired,
+    signedInUser: PropTypes.object,
     deleteRecipe: PropTypes.func,
     shelfOptions: PropTypes.array,
     addRecipeToShelf: PropTypes.func

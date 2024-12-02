@@ -10,10 +10,6 @@ const useShelves = (setClientMessage) => {
     const { signedInUser, token } = useAuth();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        fetchUserShelves();
-    }, [fetchUserShelves]);
-
     /**
          * Fetch user shelves, set user shelves state
          */
@@ -26,7 +22,11 @@ const useShelves = (setClientMessage) => {
                 console.error('Error fetching user shelves:', err);
             }
         }
-    }, [signedInUser.id, token]);
+    }, [signedInUser?.id, token]);
+
+    useEffect(() => {
+        fetchUserShelves();
+    }, [fetchUserShelves]);
 
     // shelf functions
 

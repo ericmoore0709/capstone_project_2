@@ -30,7 +30,7 @@ const ShelfList = ({ shelves, deleteShelf, signedInUser, removeRecipeFromShelf }
 
 ShelfList.propTypes = {
     shelves: PropTypes.array.isRequired,
-    signedInUser: PropTypes.object.isRequired,
+    signedInUser: PropTypes.object,
     deleteShelf: PropTypes.func,
     removeRecipeFromShelf: PropTypes.func.isRequired
 };
