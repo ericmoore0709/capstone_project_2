@@ -1,9 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import RecipesApi from "../../api";
+import { useNavigate } from "react-router-dom";
+import useAuth from "./useAuth";
 
-const useShelves = (signedInUser, token, setClientMessage, navigate) => {
+const useShelves = (setClientMessage) => {
     const [userShelves, setUserShelves] = useState([]);
     const [shelfFormErrors, setShelfFormErrors] = useState([]);
+
+    const { signedInUser, token } = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchUserShelves();

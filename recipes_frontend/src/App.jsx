@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import SiteNavbar from './components/nav/SiteNavbar';
 import RecipeList from './components/recipes/RecipeList';
@@ -18,9 +18,8 @@ import ProtectedRoute from './components/nav/ProtectedRoute';
 
 function App() {
   const [clientMessage, setClientMessage] = useState({ color: 'info', message: '' });
-  const navigate = useNavigate();
 
-  const { signedInUser, token, logoutUser } = useAuth(navigate);
+  const { signedInUser, logoutUser } = useAuth();
 
   const {
     publicRecipes,
@@ -29,7 +28,7 @@ function App() {
     addRecipe,
     updateRecipe,
     deleteRecipe
-  } = useRecipes(signedInUser, token, setClientMessage, navigate);
+  } = useRecipes(setClientMessage);
 
   const {
     userShelves,
@@ -39,7 +38,7 @@ function App() {
     deleteShelf,
     addRecipeToShelf,
     removeRecipeFromShelf
-  } = useShelves(signedInUser, token, setClientMessage, navigate);
+  } = useShelves(setClientMessage);
 
   /**
    * Returns a list of (shelfId, shelfLabel) KV pairs

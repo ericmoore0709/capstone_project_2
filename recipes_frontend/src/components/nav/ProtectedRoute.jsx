@@ -9,7 +9,7 @@ import useAuth from '../../hooks/useAuth';
  */
 const ProtectedRoute = ({ element }) => {
     const navigate = useNavigate();
-    const { signedInUser } = useAuth(navigate);
+    const { signedInUser } = useAuth();
 
     return signedInUser ? element : navigate('/');
 };

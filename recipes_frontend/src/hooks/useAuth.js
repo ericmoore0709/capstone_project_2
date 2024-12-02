@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import RecipesApi from "../../api";
+import { useNavigate } from "react-router-dom";
 
-const useAuth = (navigate) => {
+const useAuth = () => {
     const [signedInUser, setSignedInUser] = useState(null);
     const [token, setToken] = useState((localStorage.getItem('token') || null));
+
+    const navigate = useNavigate();
 
     // get token from request useEffect
     useEffect(() => {

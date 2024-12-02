@@ -1,14 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
 import RecipesApi from "../../api";
 import useShelves from "./useShelves";
+import { useNavigate } from "react-router-dom";
+import useAuth from "./useAuth";
 
-const useRecipes = (signedInUser, token, setClientMessage, navigate) => {
+const useRecipes = (setClientMessage) => {
 
     const [publicRecipes, setPublicRecipes] = useState([]);
     const [userRecipes, setUserRecipes] = useState([]);
     const [recipeFormErrors, setRecipeFormErrors] = useState([]);
 
-    const { fetchUserShelves } = useShelves(signedInUser, token, setClientMessage, navigate);
+    const { signedInUser, token } = useAuth();
+    const { fetchUserShelves } = useShelves(setClientMessage);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         /** Fetch public recipes and update publicRecipes state. */
