@@ -6,6 +6,7 @@ import ShelfList from '../components/shelves/ShelfList';
 import NewShelfForm from '../components/shelves/NewShelfForm';
 import UpdateShelfForm from '../components/shelves/UpdateShelfForm';
 import Profile from '../components/profiles/Profile';
+import RecipeDetails from '../components/recipes/RecipeDetails';
 
 const routes = (signedInUser, handlers) => [
     {
@@ -28,6 +29,10 @@ const routes = (signedInUser, handlers) => [
                 }
             />
         ),
+    },
+    {
+        path: '/recipes/:id',
+        element: (<ProtectedRoute element={<RecipeDetails />} />),
     },
     {
         path: '/recipes/new',
