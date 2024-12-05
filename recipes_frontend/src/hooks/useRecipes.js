@@ -79,7 +79,7 @@ const useRecipes = (setClientMessage) => {
         }
     };
 
-    const getRecipeById = async (id) => {
+    const getRecipeById = useCallback(async (id) => {
         try {
             const result = await RecipesApi.getRecipeById(+id);
             return result;
@@ -87,7 +87,7 @@ const useRecipes = (setClientMessage) => {
             console.log('Error getting recipe:', err);
             throw err;
         }
-    }
+    }, []);
 
     /**
      * Gets all public recipes authored by the user
