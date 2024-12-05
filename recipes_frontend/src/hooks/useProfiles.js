@@ -57,6 +57,7 @@ const useProfiles = (token, userId) => {
         profile,
         publicShelf,
         isBioFormVisible,
+        setIsBioFormVisible,
         updateProfile
     };
 }
