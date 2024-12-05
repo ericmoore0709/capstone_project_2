@@ -79,6 +79,31 @@ const useRecipes = (setClientMessage) => {
         }
     };
 
+    const getRecipeById = async (id) => {
+        try {
+            const result = await RecipesApi.getRecipeById(+id);
+            return result;
+        } catch (err) {
+            console.log('Error getting recipe:', err);
+            throw err;
+        }
+    }
+
+    /**
+     * Gets all public recipes authored by the user
+     * @param {*} userId the ID of the user
+     * @returns a list of public recipes
+     */
+    const getPublicRecipesByUserId = useCallback(async (userId) => {
+        try {
+            const response = await RecipesApi.getUserPublicRecipes(userId);
+            return response;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+    }, []);
+
     /**
     * Updates a user's recipe
     * @param {*} recipe the recipe to update
@@ -153,6 +178,8 @@ const useRecipes = (setClientMessage) => {
         setPublicRecipes,
         setUserRecipes,
         addRecipe,
+        getRecipeById,
+        getPublicRecipesByUserId,
         updateRecipe,
         deleteRecipe
     };

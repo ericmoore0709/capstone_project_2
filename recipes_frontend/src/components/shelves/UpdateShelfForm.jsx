@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import DOMPurify from 'dompurify';
 import { useParams } from 'react-router-dom';
-import RecipesApi from '../../../api';
 
-const UpdateShelfForm = ({ updateShelf, errors = [] }) => {
+const UpdateShelfForm = ({ getShelf, updateShelf, errors = [] }) => {
 
     const { id } = useParams();
     const [formData, setFormData] = useState(
@@ -15,12 +14,12 @@ const UpdateShelfForm = ({ updateShelf, errors = [] }) => {
     );
 
     useEffect(() => {
-        const getShelf = async (id) => {
-            const result = await RecipesApi.getShelfById(id);
-            setFormData(result.shelf);
+        const fetchShelf = async (id) => {
+            const shelf = await getShelf(id);
+            setFormData(shelf);
         }
-        getShelf(+id);
-    }, [id]);
+        fetchShelf(+id);
+    }, [getShelf, id]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -67,6 +66,7 @@ const UpdateShelfForm = ({ updateShelf, errors = [] }) => {
 };
 
 UpdateShelfForm.propTypes = {
+    getShelf: PropTypes.func.isRequired,
     updateShelf: PropTypes.func.isRequired,
     errors: PropTypes.array,
     signedInUser: PropTypes.object

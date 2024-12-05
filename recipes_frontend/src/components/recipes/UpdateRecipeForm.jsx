@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import DOMPurify from 'dompurify';
 import { useParams } from 'react-router-dom';
-import RecipesApi from '../../../api';
+import useRecipes from '../../hooks/useRecipes';
 
 const UpdateRecipeForm = ({ updateRecipe, errors = [], signedInUser = null }) => {
 
@@ -17,13 +17,15 @@ const UpdateRecipeForm = ({ updateRecipe, errors = [], signedInUser = null }) =>
         }
     );
 
+    const { getRecipeById } = useRecipes();
+
     useEffect(() => {
         const getRecipe = async (id) => {
-            const result = await RecipesApi.getRecipeById(id);
+            const result = await getRecipeById(id);
             setFormData(result);
         }
         getRecipe(+id);
-    }, [id]);
+    }, [id, getRecipeById]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;

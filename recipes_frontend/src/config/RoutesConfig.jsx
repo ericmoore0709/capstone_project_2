@@ -35,6 +35,7 @@ const routes = (signedInUser, handlers) => [
             <ProtectedRoute
                 element={
                     <NewRecipeForm
+                        getRecipeById={handlers.getRecipeById}
                         addRecipe={handlers.addRecipe}
                         signedInUser={signedInUser}
                         errors={handlers.recipeFormErrors}
@@ -109,6 +110,7 @@ const routes = (signedInUser, handlers) => [
             <ProtectedRoute
                 element={
                     <UpdateShelfForm
+                        getShelf={handlers.getShelf}
                         updateShelf={handlers.updateShelf}
                         signedInUser={signedInUser}
                         errors={handlers.shelfFormErrors}

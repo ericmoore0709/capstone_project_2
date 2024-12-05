@@ -57,6 +57,16 @@ const useShelves = (setClientMessage) => {
         }
     };
 
+    const getShelf = async (id) => {
+        try {
+            const result = await RecipesApi.getShelfById(id);
+            return result.shelf;
+        } catch (err) {
+            console.log('Error fetching shelf:', err);
+            throw err;
+        }
+    }
+
     /**
      * Updates user's shelf
      * @param {*} shelf the shelf to update 
@@ -163,6 +173,7 @@ const useShelves = (setClientMessage) => {
         fetchUserShelves,
         shelfFormErrors,
         addShelf,
+        getShelf,
         updateShelf,
         deleteShelf,
         addRecipeToShelf,

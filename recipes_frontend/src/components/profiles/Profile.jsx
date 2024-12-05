@@ -1,52 +1,16 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
-import RecipesApi from '../../../api';
 import { useParams } from 'react-router-dom';
 import Shelf from '../shelves/Shelf';
 import { Button } from 'reactstrap';
 import UpdateBioForm from './UpdateBioForm';
+import useProfiles from '../../hooks/useProfiles';
+// import useProfiles from '../../hooks/useProfiles';
 
 const Profile = ({ signedInUser, token }) => {
-
-    const [profile, setProfile] = useState(null);
-    const [publicShelf, setPublicShelf] = useState(null);
-
-    const [isBioFormVisible, setIsBioFormVisible] = useState(false);
-
     const { id } = useParams();
-
     const userId = +id || +signedInUser?.id;
 
-    useEffect(() => {
-
-        const fetchProfile = async (userId) => {
-            const result = await RecipesApi.getProfile(+userId);
-            if (result.error) {
-                throw result.error;
-            } else if (result.profile) {
-                setProfile(result.profile);
-            }
-        }
-        fetchProfile(userId);
-    }, [userId]);
-
-    useEffect(() => {
-        const fetchPublicShelf = async (userId) => {
-            const response = await RecipesApi.getUserPublicRecipes(userId);
-            setPublicShelf({ user_id: userId, recipes: response.recipes });
-        }
-        fetchPublicShelf(userId);
-    }, [userId]);
-
-    const updateProfile = async (profileToUpdate) => {
-        const result = await RecipesApi.updateProfile(profileToUpdate, token);
-        if (result.error) {
-            throw new Error(result.error);
-        } else if (result.profile) {
-            setProfile(result.profile);
-            setIsBioFormVisible(false);
-        }
-    }
+    const { profile, publicShelf, isBioFormVisible, setIsBioFormVisible, updateProfile } = useProfiles(token, userId);
 
     return (
         <div>
@@ -79,8 +43,7 @@ const Profile = ({ signedInUser, token }) => {
                 :
                 <h1>404 - Not Found</h1>
             }
-        </div >
-
+        </div>
     )
 }
 
