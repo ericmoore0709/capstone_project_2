@@ -21,7 +21,12 @@ const Profile = ({ signedInUser, token }) => {
                 <>
                     <div className='mb-5 w-100 mx-auto'>
                         <StaticUserInfo user={profile.user} />
-                        <Bio profile={profile} toggleBioFormVis={toggleBioFormVis} isBioFormVisible={isBioFormVisible} updateProfile={updateProfile} />
+                        <Bio
+                            profile={profile}
+                            toggleBioFormVis={toggleBioFormVis}
+                            isBioFormVisible={isBioFormVisible}
+                            updateProfile={updateProfile}
+                        />
                     </div>
 
                     {publicShelf &&
