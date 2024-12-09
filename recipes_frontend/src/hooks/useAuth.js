@@ -1,41 +1,40 @@
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import RecipesApi from "../../api";
 import { useNavigate } from "react-router-dom";
 
 const useAuth = () => {
-    const [signedInUser, setSignedInUser] = useState(null);
+    const [signedInUser, setSignedInUser] = useState(JSON.parse(localStorage.getItem('signedInUser')) || null);
     const [token, setToken] = useState((localStorage.getItem('token') || null));
 
     const navigate = useNavigate();
 
     // get token from request useEffect
-    useEffect(() => {
-        // Check for token in URL or localStorage, then set it
-        const getTokenFromRequest = async () => {
-            try {
-                const urlParams = new URLSearchParams(window.location.search);
-                const newToken = urlParams.get('token');
+    // useEffect(() => {
+    // Check for token in URL or localStorage, then set it
+    const getTokenFromRequest = useCallback(async () => {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const newToken = urlParams.get('token');
 
-                if (newToken) {
-                    const decoded = JSON.parse(atob(newToken.split('.')[1]));
-                    setSignedInUser(decoded);
-                    setToken(newToken);
-                    localStorage.setItem('token', newToken);
+            if (newToken) {
+                const decoded = JSON.parse(atob(newToken.split('.')[1]));
+                setSignedInUser(decoded);
+                setToken(newToken);
+                localStorage.setItem('token', newToken);
+                localStorage.setItem('signedInUser', JSON.stringify(decoded));
 
-                    // create user profile
+                // create user profile
+                const existingProfile = await RecipesApi.getProfile(decoded.id);
+                if (!existingProfile.profile)
                     await RecipesApi.createProfile(decoded.id);
 
-                    return navigate('/');
-                } else if (token) {
-                    const decoded = JSON.parse(atob(token.split('.')[1]));
-                    setSignedInUser(decoded);
-                }
-            } catch (err) {
-                console.log("Error processing token:", err);
             }
-        };
-        getTokenFromRequest();
-    }, [token, navigate]);
+        } catch (err) {
+            console.log("Error processing token:", err);
+        }
+    }, []);
+    // getTokenFromRequest();
+    // }, [token, navigate]);
 
     /**
   * Logs out the user
@@ -44,10 +43,11 @@ const useAuth = () => {
         setSignedInUser(null);
         setToken(null);
         localStorage.removeItem('token');
+        localStorage.removeItem('signedInUser');
         navigate('/');
     };
 
-    return { signedInUser, token, logoutUser };
+    return { signedInUser, token, getTokenFromRequest, logoutUser };
 }
 
 export default useAuth;

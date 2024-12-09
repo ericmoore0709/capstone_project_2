@@ -1,7 +1,7 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import './App.css';
 import SiteNavbar from './components/nav/SiteNavbar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert } from 'reactstrap';
 import useRecipes from './hooks/useRecipes';
 import useShelves from './hooks/useShelves';
@@ -11,7 +11,18 @@ import routes from './config/RoutesConfig';
 function App() {
   const [clientMessage, setClientMessage] = useState({ color: 'info', message: '' });
 
-  const { signedInUser, logoutUser } = useAuth();
+  const { signedInUser, getTokenFromRequest, logoutUser } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const setSessionToken = async () => {
+      if (!signedInUser) {
+        await getTokenFromRequest();
+        navigate('/');
+      }
+    }
+    setSessionToken();
+  }, [getTokenFromRequest, navigate, signedInUser]);
 
   const {
     publicRecipes,
