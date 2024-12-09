@@ -7,6 +7,7 @@ import useRecipes from './hooks/useRecipes';
 import useShelves from './hooks/useShelves';
 import useAuth from './hooks/useAuth';
 import routes from './config/RoutesConfig';
+import { AuthContext } from './contexts/AuthContext';
 
 function App() {
   const [clientMessage, setClientMessage] = useState({ color: 'info', message: '' });
@@ -17,7 +18,7 @@ function App() {
   useEffect(() => {
     const setSessionToken = async () => {
       if (!signedInUser) {
-        await getTokenFromRequest();
+        getTokenFromRequest();
         navigate('/');
       }
     }
@@ -85,23 +86,25 @@ function App() {
 
   return (
     <>
-      <SiteNavbar signedInUser={signedInUser} logoutUser={logoutUser} />
-      {clientMessage.message && (
-        <Alert
-          color={clientMessage.color}
-          isOpen={(clientMessage.message !== "")}
-          toggle={clientMessageXClicked}>
-          {clientMessage.message}
-        </Alert>
-      )}
+      <AuthContext.Provider value={signedInUser}>
+        <SiteNavbar logoutUser={logoutUser} />
+        {clientMessage.message && (
+          <Alert
+            color={clientMessage.color}
+            isOpen={(clientMessage.message !== "")}
+            toggle={clientMessageXClicked}>
+            {clientMessage.message}
+          </Alert>
+        )}
 
-      <Routes>
-        {routes(signedInUser, handlers).map((route, index) => (
-          <Route key={index} path={route.path} element={route.element} />
-        ))}
-      </Routes>
+        <Routes>
+          {routes(handlers).map((route, index) => (
+            <Route key={index} path={route.path} element={route.element} />
+          ))}
+        </Routes>
 
-      <div className='text-center' style={{ width: '100%', position: 'sticky', bottom: 5 }}><footer>&copy; Eric Moore 2024</footer></div>
+        <div className='text-center' style={{ width: '100%', position: 'sticky', bottom: 5 }}><footer>&copy; Eric Moore 2024</footer></div>
+      </AuthContext.Provider>
     </>
   );
 }

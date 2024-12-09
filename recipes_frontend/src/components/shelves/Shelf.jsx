@@ -3,7 +3,7 @@ import RecipeCard from '../recipes/RecipeCard';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 
-const Shelf = ({ shelf, deleteShelf, signedInUser, removeRecipeFromShelf }) => {
+const Shelf = ({ shelf, deleteShelf, removeRecipeFromShelf }) => {
     const handleRemoveRecipeFromShelf = (recipeId) => {
         removeRecipeFromShelf(shelf.id, recipeId);
     }
@@ -25,11 +25,11 @@ const Shelf = ({ shelf, deleteShelf, signedInUser, removeRecipeFromShelf }) => {
                 <CardBody className='d-flex overflow-auto'>
                     {removeRecipeFromShelf ? <>
                         {shelf.recipes?.map((recipe) =>
-                            <RecipeCard key={recipe.id} recipe={recipe} signedInUser={signedInUser} handleRemoveRecipeFromShelf={handleRemoveRecipeFromShelf} />
+                            <RecipeCard key={recipe.id} recipe={recipe} handleRemoveRecipeFromShelf={handleRemoveRecipeFromShelf} />
                         )}
                     </> : <>
                         {shelf.recipes?.map((recipe) =>
-                            <RecipeCard key={recipe.id} recipe={recipe} signedInUser={signedInUser} />
+                            <RecipeCard key={recipe.id} recipe={recipe} />
                         )}
                     </>
                     }
@@ -48,7 +48,6 @@ const Shelf = ({ shelf, deleteShelf, signedInUser, removeRecipeFromShelf }) => {
 Shelf.propTypes = {
     shelf: PropTypes.object,
     deleteShelf: PropTypes.func,
-    signedInUser: PropTypes.object,
     removeRecipeFromShelf: PropTypes.func
 };
 

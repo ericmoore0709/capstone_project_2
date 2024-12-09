@@ -8,7 +8,7 @@ import UpdateShelfForm from '../components/shelves/UpdateShelfForm';
 import Profile from '../components/profiles/Profile';
 import RecipeDetails from '../components/recipes/RecipeDetails';
 
-const routes = (signedInUser, handlers) => [
+const routes = (handlers) => [
     {
         path: '/',
         element: <h1>Home</h1>,
@@ -21,7 +21,6 @@ const routes = (signedInUser, handlers) => [
                     <RecipeList
                         title="Public Recipes"
                         recipes={handlers.publicRecipes}
-                        signedInUser={signedInUser}
                         deleteRecipe={handlers.deleteRecipe}
                         shelfOptions={handlers.getShelfOptions()}
                         addRecipeToShelf={handlers.addRecipeToShelf}
@@ -42,7 +41,6 @@ const routes = (signedInUser, handlers) => [
                     <NewRecipeForm
                         getRecipeById={handlers.getRecipeById}
                         addRecipe={handlers.addRecipe}
-                        signedInUser={signedInUser}
                         errors={handlers.recipeFormErrors}
                     />
                 }
@@ -57,7 +55,6 @@ const routes = (signedInUser, handlers) => [
                     <RecipeList
                         title="My Recipes"
                         recipes={handlers.userRecipes}
-                        signedInUser={signedInUser}
                         deleteRecipe={handlers.deleteRecipe}
                     />
                 }
@@ -71,7 +68,6 @@ const routes = (signedInUser, handlers) => [
                 element={
                     <UpdateRecipeForm
                         updateRecipe={handlers.updateRecipe}
-                        signedInUser={signedInUser}
                         errors={handlers.recipeFormErrors}
                     />
                 }
@@ -86,7 +82,6 @@ const routes = (signedInUser, handlers) => [
                     <ShelfList
                         shelves={handlers.userShelves}
                         updateShelf={handlers.updateShelf}
-                        signedInUser={signedInUser}
                         errors={handlers.shelfFormErrors}
                         deleteShelf={handlers.deleteShelf}
                         removeRecipeFromShelf={handlers.removeRecipeFromShelf}
@@ -102,7 +97,6 @@ const routes = (signedInUser, handlers) => [
                 element={
                     <NewShelfForm
                         addShelf={handlers.addShelf}
-                        signedInUser={signedInUser}
                         errors={handlers.shelfFormErrors}
                     />
                 }
@@ -117,7 +111,6 @@ const routes = (signedInUser, handlers) => [
                     <UpdateShelfForm
                         getShelf={handlers.getShelf}
                         updateShelf={handlers.updateShelf}
-                        signedInUser={signedInUser}
                         errors={handlers.shelfFormErrors}
                     />
                 }
@@ -128,7 +121,7 @@ const routes = (signedInUser, handlers) => [
         path: '/profiles/my',
         element: (
             <ProtectedRoute
-                element={<Profile signedInUser={signedInUser} />}
+                element={<Profile />}
             />
         ),
     },
@@ -136,7 +129,7 @@ const routes = (signedInUser, handlers) => [
         path: '/profiles/:id',
         element: (
             <ProtectedRoute
-                element={<Profile signedInUser={signedInUser} />}
+                element={<Profile />}
             />
         ),
     },

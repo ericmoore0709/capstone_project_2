@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-import useAuth from '../../hooks/useAuth';
+import { useContext } from 'react';
+import { AuthContext } from '../../contexts/AuthContext';
 
 /**
  * Encapsulates route and redirects unauthed user to landing page
@@ -7,13 +8,12 @@ import useAuth from '../../hooks/useAuth';
  * @returns 
  */
 const ProtectedRoute = ({ element }) => {
-    const { signedInUser } = useAuth();
+    const signedInUser = useContext(AuthContext);
 
     return signedInUser ? element : <h1>Landing Page</h1>;
 };
 
 ProtectedRoute.propTypes = {
-    signedInUser: PropTypes.object,
     element: PropTypes.object.isRequired
 };
 

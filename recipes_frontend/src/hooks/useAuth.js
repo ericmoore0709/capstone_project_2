@@ -8,9 +8,7 @@ const useAuth = () => {
 
     const navigate = useNavigate();
 
-    // get token from request useEffect
-    // useEffect(() => {
-    // Check for token in URL or localStorage, then set it
+    // get token from request
     const getTokenFromRequest = useCallback(async () => {
         try {
             const urlParams = new URLSearchParams(window.location.search);
@@ -27,14 +25,11 @@ const useAuth = () => {
                 const existingProfile = await RecipesApi.getProfile(decoded.id);
                 if (!existingProfile.profile)
                     await RecipesApi.createProfile(decoded.id);
-
             }
         } catch (err) {
             console.log("Error processing token:", err);
         }
     }, []);
-    // getTokenFromRequest();
-    // }, [token, navigate]);
 
     /**
   * Logs out the user

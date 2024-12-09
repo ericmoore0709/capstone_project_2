@@ -1,13 +1,15 @@
 import { Button, Form, FormGroup, FormText, Input, Label, ListGroup, ListGroupItem } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import DOMPurify from 'dompurify';
 import { useParams } from 'react-router-dom';
 import useRecipes from '../../hooks/useRecipes';
+import { AuthContext } from '../../contexts/AuthContext';
 
-const UpdateRecipeForm = ({ updateRecipe, errors = [], signedInUser = null }) => {
+const UpdateRecipeForm = ({ updateRecipe, errors = [] }) => {
 
     const { id } = useParams();
+    const signedInUser = useContext(AuthContext);
     const [formData, setFormData] = useState(
         {
             title: '',
@@ -96,8 +98,7 @@ const UpdateRecipeForm = ({ updateRecipe, errors = [], signedInUser = null }) =>
 
 UpdateRecipeForm.propTypes = {
     updateRecipe: PropTypes.func.isRequired,
-    errors: PropTypes.array,
-    signedInUser: PropTypes.object
+    errors: PropTypes.array
 };
 
 export default UpdateRecipeForm;

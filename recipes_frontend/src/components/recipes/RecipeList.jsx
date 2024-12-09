@@ -2,7 +2,7 @@ import { CardGroup } from 'reactstrap';
 import RecipeCard from './RecipeCard';
 import PropTypes from 'prop-types';
 
-const RecipeList = ({ title, recipes, signedInUser, deleteRecipe, shelfOptions, addRecipeToShelf }) => {
+const RecipeList = ({ title, recipes, deleteRecipe, shelfOptions, addRecipeToShelf }) => {
     return (
         <div>
             <h2 className='text-center mt-2'>{title}</h2>
@@ -18,7 +18,6 @@ const RecipeList = ({ title, recipes, signedInUser, deleteRecipe, shelfOptions, 
                     <RecipeCard
                         key={recipe.id}
                         recipe={recipe}
-                        signedInUser={signedInUser}
                         deleteRecipe={deleteRecipe}
                         shelfOptions={shelfOptions}
                         addRecipeToShelf={addRecipeToShelf}
@@ -32,7 +31,6 @@ const RecipeList = ({ title, recipes, signedInUser, deleteRecipe, shelfOptions, 
 RecipeList.propTypes = {
     title: PropTypes.string.isRequired,
     recipes: PropTypes.array.isRequired,
-    signedInUser: PropTypes.object,
     deleteRecipe: PropTypes.func,
     shelfOptions: PropTypes.array,
     addRecipeToShelf: PropTypes.func

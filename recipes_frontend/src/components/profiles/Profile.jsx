@@ -4,9 +4,12 @@ import Shelf from '../shelves/Shelf';
 import useProfiles from '../../hooks/useProfiles';
 import StaticUserInfo from './StaticUserInfo';
 import Bio from './Bio';
+import { useContext } from 'react';
+import { AuthContext } from '../../contexts/AuthContext';
 
-const Profile = ({ signedInUser, token }) => {
+const Profile = ({ token }) => {
     const { id } = useParams();
+    const signedInUser = useContext(AuthContext);
     const userId = +id || +signedInUser?.id;
 
     const { profile, publicShelf, isBioFormVisible, setIsBioFormVisible, updateProfile } = useProfiles(token, userId);
@@ -44,7 +47,6 @@ const Profile = ({ signedInUser, token }) => {
 }
 
 Profile.propTypes = {
-    signedInUser: PropTypes.object,
     token: PropTypes.string
 }
 

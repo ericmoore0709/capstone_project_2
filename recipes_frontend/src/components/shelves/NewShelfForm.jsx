@@ -1,9 +1,12 @@
 import { Button, Form, FormGroup, FormText, Input, Label, ListGroup, ListGroupItem } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
-import DOMPurify from 'dompurify';  // import dompurify for sanitizing inputs
+import { useContext, useState } from 'react';
+import DOMPurify from 'dompurify';
+import { AuthContext } from '../../contexts/AuthContext';
 
-const NewShelfForm = ({ addShelf, errors = [], signedInUser = null }) => {
+const NewShelfForm = ({ addShelf, errors = [] }) => {
+
+    const signedInUser = useContext(AuthContext);
 
     const INITIAL_FORM_DATA = {
         label: '',
@@ -59,7 +62,6 @@ const NewShelfForm = ({ addShelf, errors = [], signedInUser = null }) => {
 NewShelfForm.propTypes = {
     addShelf: PropTypes.func.isRequired,
     errors: PropTypes.array,
-    signedInUser: PropTypes.object
 };
 
 export default NewShelfForm;

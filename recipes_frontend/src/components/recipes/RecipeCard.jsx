@@ -2,8 +2,12 @@ import { Button, Card, CardBody, CardImg, CardText, CardTitle, DropdownItem, Dro
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import defaultImage from '../../assets/defaultImage.jpg';
+import { AuthContext } from '../../contexts/AuthContext';
+import { useContext } from 'react';
 
-const RecipeCard = ({ recipe, signedInUser, deleteRecipe, shelfOptions, addRecipeToShelf, handleRemoveRecipeFromShelf }) => {
+const RecipeCard = ({ recipe, deleteRecipe, shelfOptions, addRecipeToShelf, handleRemoveRecipeFromShelf }) => {
+
+    const signedInUser = useContext(AuthContext);
 
     const handleAddRecipeToShelf = async (shelfId) => {
         addRecipeToShelf(shelfId, recipe.id);

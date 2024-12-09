@@ -68,8 +68,7 @@ const UpdateShelfForm = ({ getShelf, updateShelf, errors = [] }) => {
 UpdateShelfForm.propTypes = {
     getShelf: PropTypes.func.isRequired,
     updateShelf: PropTypes.func.isRequired,
-    errors: PropTypes.array,
-    signedInUser: PropTypes.object
+    errors: PropTypes.array
 };
 
 export default UpdateShelfForm;

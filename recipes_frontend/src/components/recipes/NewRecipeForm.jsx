@@ -1,9 +1,10 @@
 import { Button, Form, FormGroup, FormText, Input, Label, ListGroup, ListGroupItem } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
-import DOMPurify from 'dompurify';  // import dompurify for sanitizing inputs
+import { useContext, useState } from 'react';
+import DOMPurify from 'dompurify';
+import { AuthContext } from '../../contexts/AuthContext';
 
-const NewRecipeForm = ({ addRecipe, errors = [], signedInUser = null }) => {
+const NewRecipeForm = ({ addRecipe, errors = [] }) => {
 
     const INITIAL_FORM_DATA = {
         title: '',
@@ -11,6 +12,8 @@ const NewRecipeForm = ({ addRecipe, errors = [], signedInUser = null }) => {
         image: '',
         visibility_id: 1, // default to 'Public'
     };
+
+    const signedInUser = useContext(AuthContext);
 
     const [formData, setFormData] = useState(INITIAL_FORM_DATA);
 

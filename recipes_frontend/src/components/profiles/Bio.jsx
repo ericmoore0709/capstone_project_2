@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types'
 import { Button } from 'reactstrap'
 import UpdateBioForm from './UpdateBioForm'
-import useAuth from '../../hooks/useAuth'
+import { useContext } from 'react'
+import { AuthContext } from '../../contexts/AuthContext'
 
 const Bio = ({ profile, toggleBioFormVis, isBioFormVisible, updateProfile }) => {
 
-    const { signedInUser } = useAuth();
+    const signedInUser = useContext(AuthContext);
 
     const handleOnBioFormButtonClick = () => {
         toggleBioFormVis();

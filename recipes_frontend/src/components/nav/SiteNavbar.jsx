@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Collapse, DropdownItem, DropdownMenu, DropdownToggle, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, UncontrolledDropdown } from "reactstrap";
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { AuthContext } from "../../contexts/AuthContext";
 
-const SiteNavbar = ({ signedInUser, logoutUser }) => {
+const SiteNavbar = ({ logoutUser }) => {
 
     const [isOpen, setIsOpen] = useState(false);
 
     const toggle = () => setIsOpen(!isOpen);
+
+    const signedInUser = useContext(AuthContext);
 
     return (
         <div>
@@ -80,7 +83,6 @@ const SiteNavbar = ({ signedInUser, logoutUser }) => {
 }
 
 SiteNavbar.propTypes = {
-    signedInUser: PropTypes.object,
     logoutUser: PropTypes.func.isRequired
 }
 
