@@ -3,9 +3,8 @@ import { Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem } from "reac
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { AuthContext } from "../../contexts/AuthContext";
-import RecipesDropdown from "./dropdowns/RecipesDropdown";
-import ShelvesDropdown from "./dropdowns/ShelvesDropdown";
 import ProfilesDropdown from "./dropdowns/ProfilesDropdown";
+import ModelDropdown from "./dropdowns/ModelDropdown";
 
 const SiteNavbar = ({ logoutUser }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -20,8 +19,15 @@ const SiteNavbar = ({ logoutUser }) => {
                 <Collapse isOpen={isOpen} navbar>
                     <Nav className="me-auto" navbar>
                         {signedInUser ? <>
-                            <RecipesDropdown />
-                            <ShelvesDropdown />
+                            <ModelDropdown title="Recipes" routes={[
+                                { path: '/recipes', label: 'Browse Recipes' },
+                                { path: '/recipes/new', label: 'Create Recipe' },
+                                { path: '/recipes/my', label: 'My Recipes' }
+                            ]} />
+                            <ModelDropdown title="Shelves" routes={[
+                                { path: '/shelves', label: 'My Shelves' },
+                                { path: '/shelves/new', label: 'Create shelf' }
+                            ]} />
                         </> : <>
                             <NavItem>
                                 <NavLink className='nav-link' to={`${import.meta.env.VITE_BACKEND_URI}/auth/google`}>Sign in</NavLink>
@@ -29,9 +35,7 @@ const SiteNavbar = ({ logoutUser }) => {
                         </>}
                     </Nav>
                     <Nav className="ms-auto" navbar>
-                        {signedInUser && <>
-                            <ProfilesDropdown logoutUser={logoutUser} />
-                        </>}
+                        {signedInUser && <ProfilesDropdown logoutUser={logoutUser} />}
                     </Nav>
                 </Collapse>
             </Navbar>
