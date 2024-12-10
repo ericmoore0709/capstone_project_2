@@ -15,17 +15,14 @@ const useRecipes = (setClientMessage) => {
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        /** Fetch public recipes and update publicRecipes state. */
-        const fetchPublicRecipes = async () => {
-            try {
-                const apiRecipes = await RecipesApi.getAllPublicRecipes();
-                setPublicRecipes(apiRecipes);
-            } catch (error) {
-                console.error("Error fetching public recipes:", error);
-            }
-        };
-        fetchPublicRecipes();
+    /** Fetch public recipes and update publicRecipes state. */
+    const fetchPublicRecipes = useCallback(async () => {
+        try {
+            const apiRecipes = await RecipesApi.getAllPublicRecipes();
+            setPublicRecipes(apiRecipes);
+        } catch (error) {
+            console.error("Error fetching public recipes:", error);
+        }
     }, []);
 
     /**
@@ -44,8 +41,9 @@ const useRecipes = (setClientMessage) => {
 
     /** Update user recipes state upon sign-in. */
     useEffect(() => {
+        fetchPublicRecipes();
         fetchUserRecipes();
-    }, [fetchUserRecipes]);
+    }, [fetchPublicRecipes, fetchUserRecipes]);
 
     // recipe functions
 
