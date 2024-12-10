@@ -5,6 +5,7 @@ import DOMPurify from 'dompurify';
 import { useParams } from 'react-router-dom';
 import useRecipes from '../../hooks/useRecipes';
 import { AuthContext } from '../../contexts/AuthContext';
+import Loading from '../util/Loading';
 
 const UpdateRecipeForm = ({ updateRecipe, errors = [] }) => {
 
@@ -18,13 +19,16 @@ const UpdateRecipeForm = ({ updateRecipe, errors = [] }) => {
             visibility_id: '1'
         }
     );
+    const [isLoading, setIsLoading] = useState(true);
 
     const { getRecipeById } = useRecipes();
 
     useEffect(() => {
         const getRecipe = async (id) => {
+            setIsLoading(true);
             const result = await getRecipeById(id);
             setFormData(result);
+            setIsLoading(false);
         }
         getRecipe(+id);
     }, [id, getRecipeById]);
@@ -49,6 +53,8 @@ const UpdateRecipeForm = ({ updateRecipe, errors = [] }) => {
 
         updateRecipe(sanitizedData);
     };
+
+    if (isLoading) return <Loading />
 
     return (
         <div>
