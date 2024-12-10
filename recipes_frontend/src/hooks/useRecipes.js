@@ -124,9 +124,12 @@ const useRecipes = (setClientMessage) => {
                 // update recipe list states
                 const remainingUserRecipes = userRecipes.filter((recipe) => recipe.id !== updatedRecipe.id);
                 setUserRecipes([updatedRecipe, ...remainingUserRecipes]);
+
+                const remainingPublicRecipes = publicRecipes.filter((recipe) => recipe.id !== updatedRecipe.id);
                 if (updatedRecipe.visibility_id === 1) {
-                    const remainingPublicRecipes = publicRecipes.filter((recipe) => recipe.id !== updatedRecipe.id);
                     setPublicRecipes([updatedRecipe, ...remainingPublicRecipes]);
+                } else {
+                    setPublicRecipes(remainingPublicRecipes);
                 }
 
                 // clear errors and set success message
