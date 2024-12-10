@@ -1,4 +1,5 @@
-import { DropdownItem, DropdownMenu, DropdownToggle, NavItem, NavLink, UncontrolledDropdown } from "reactstrap";
+import { NavLink } from "react-router-dom";
+import { DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from "reactstrap";
 
 const ShelvesDropdown = () => {
     return (
@@ -7,12 +8,12 @@ const ShelvesDropdown = () => {
                 Shelves
             </DropdownToggle>
             <DropdownMenu>
-                <DropdownItem><NavItem>
+                <DropdownItem>
                     <NavLink className='nav-link' to={'/shelves'}>My Shelves</NavLink>
-                </NavItem></DropdownItem>
-                <DropdownItem><NavItem>
+                </DropdownItem>
+                <DropdownItem>
                     <NavLink className='nav-link' to={'/shelves/new'}>Create Shelf</NavLink>
-                </NavItem></DropdownItem>
+                </DropdownItem>
             </DropdownMenu>
         </UncontrolledDropdown>
     )

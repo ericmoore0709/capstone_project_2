@@ -1,5 +1,6 @@
-import { DropdownItem, DropdownMenu, DropdownToggle, NavItem, NavLink, UncontrolledDropdown } from "reactstrap";
+import { DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from "reactstrap";
 import PropTypes from 'prop-types';
+import { NavLink } from "react-router-dom";
 
 const ProfilesDropdown = ({ logoutUser }) => {
     return (
@@ -8,13 +9,13 @@ const ProfilesDropdown = ({ logoutUser }) => {
                 Profiles
             </DropdownToggle>
             <DropdownMenu end>
-                <DropdownItem><NavItem>
+                <DropdownItem>
                     <NavLink className='nav-link' to={'/profiles/my'}>My Profile</NavLink>
-                </NavItem></DropdownItem>
+                </DropdownItem>
                 <DropdownItem divider />
-                <DropdownItem><NavItem>
+                <DropdownItem>
                     <NavLink className='nav-link text-danger' onClick={logoutUser}>Logout</NavLink>
-                </NavItem></DropdownItem>
+                </DropdownItem>
             </DropdownMenu>
         </UncontrolledDropdown>
     )
