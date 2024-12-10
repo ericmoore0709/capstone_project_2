@@ -7,6 +7,7 @@ const useProfiles = (token, userId) => {
     const [profile, setProfile] = useState(null);
     const [publicShelf, setPublicShelf] = useState(null);
     const [isBioFormVisible, setIsBioFormVisible] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const { getPublicRecipesByUserId } = useRecipes();
 
@@ -14,13 +15,20 @@ const useProfiles = (token, userId) => {
          * Gets and sets the profile at the given userId
          */
     const fetchProfile = useCallback(async () => {
+        setIsLoading(true);
         // get the profile
-        const result = await RecipesApi.getProfile(userId, token);
-        if (result.error) {
-            throw result.error;
-        } else if (result.profile) {
-            // set the profile
-            setProfile(result.profile);
+        try {
+            const result = await RecipesApi.getProfile(userId, token);
+            if (result.error) {
+                throw result.error;
+            } else if (result.profile) {
+                // set the profile
+                setProfile(result.profile);
+            }
+        } catch (err) {
+            console.error('Error fetching profile:', err);
+        } finally {
+            setIsLoading(false);
         }
     }, [token, userId]);
 
@@ -31,12 +39,19 @@ const useProfiles = (token, userId) => {
      * @returns the updated profile
      */
     const updateProfile = async (profile, token) => {
-        const result = await RecipesApi.updateProfile(profile, token);
-        if (result.error) {
-            throw new Error(result.error);
-        } else if (result.profile) {
-            setProfile(result.profile);
-            setIsBioFormVisible(false);
+        setIsLoading(true);
+        try {
+            const result = await RecipesApi.updateProfile(profile, token);
+            if (result.error) {
+                throw new Error(result.error);
+            } else if (result.profile) {
+                setProfile(result.profile);
+                setIsBioFormVisible(false);
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -58,7 +73,8 @@ const useProfiles = (token, userId) => {
         publicShelf,
         isBioFormVisible,
         setIsBioFormVisible,
-        updateProfile
+        updateProfile,
+        isLoading
     };
 }
 

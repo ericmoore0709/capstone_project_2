@@ -6,17 +6,20 @@ import StaticUserInfo from './StaticUserInfo';
 import Bio from './Bio';
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
+import Loading from '../util/Loading';
 
 const Profile = ({ token }) => {
     const { id } = useParams();
     const signedInUser = useContext(AuthContext);
     const userId = +id || +signedInUser?.id;
 
-    const { profile, publicShelf, isBioFormVisible, setIsBioFormVisible, updateProfile } = useProfiles(token, userId);
+    const { profile, publicShelf, isBioFormVisible, setIsBioFormVisible, updateProfile, isLoading } = useProfiles(token, userId);
 
     const toggleBioFormVis = () => {
         setIsBioFormVisible(!isBioFormVisible);
     }
+
+    if (isLoading) return <Loading />
 
     return (
         <div>
