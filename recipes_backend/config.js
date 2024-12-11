@@ -3,7 +3,7 @@
 require("dotenv").config();
 require("colors");
 
-const SECRET_KEY = process.env.SECRET_KEY || "secret-dev";
+const SECRET_KEY = process.env.JWT_SECRET || "secret-dev";
 
 const PORT = +process.env.PORT || 3001;
 
