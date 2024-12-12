@@ -28,7 +28,7 @@ const ShelfList = ({ shelves, deleteShelf, removeRecipeFromShelf }) => {
 }
 
 ShelfList.propTypes = {
-    shelves: PropTypes.array.isRequired,
+    shelves: PropTypes.array,
     deleteShelf: PropTypes.func,
     removeRecipeFromShelf: PropTypes.func.isRequired
 };

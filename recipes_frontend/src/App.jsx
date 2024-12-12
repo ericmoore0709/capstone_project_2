@@ -51,7 +51,7 @@ function App() {
    * @returns a list of (shelfId, shelfLabel) KV pairs
    */
   const getShelfOptions = () => {
-    const shelfOptions = userShelves.map((shelf) => {
+    const shelfOptions = userShelves?.map((shelf) => {
       return { id: shelf.id, label: shelf.label };
     });
     return shelfOptions;

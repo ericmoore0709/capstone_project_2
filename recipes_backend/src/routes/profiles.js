@@ -3,7 +3,7 @@ const Profile = require('../models/profile');
 const jsonschema = require('jsonschema');
 const newProfileSchema = require('../schemas/profileNew.json');
 const updateProfileSchema = require('../schemas/profileUpdate.json');
-const { BadRequestError, NotFoundError } = require('../../expressError');
+const { BadRequestError, NotFoundError, ForbiddenError } = require('../../expressError');
 const User = require('../models/user');
 const router = express.Router();
 const { ensureLoggedIn } = require('../middleware/auth');
@@ -65,6 +65,9 @@ router.patch('/:user_id', ensureLoggedIn, async (req, res, next) => {
     const user_id = +req.params.user_id;
     const { bio } = req.body;
 
+    if (user_id !== res.locals.user.id)
+        throw new ForbiddenError('You do not have permission to access this resource.');
+
     try {
         // pass new schema
         const validator = jsonschema.validate({ user_id, bio }, updateProfileSchema);
@@ -93,6 +96,9 @@ router.patch('/:user_id', ensureLoggedIn, async (req, res, next) => {
 router.delete('/:user_id', ensureLoggedIn, async (req, res, next) => {
     // get the user ID
     const { user_id } = req.body;
+
+    if (user_id !== res.locals.user.id)
+        throw new ForbiddenError('You do not have permission to access this resource.');
 
     try {
         // attempt to delete

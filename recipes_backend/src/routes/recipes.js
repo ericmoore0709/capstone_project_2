@@ -4,7 +4,7 @@ const User = require('../models/user');
 const jsonschema = require('jsonschema');
 const newRecipeSchema = require('../schemas/recipeNew.json');
 const updateRecipeSchema = require('../schemas/recipeUpdate.json');
-const { BadRequestError, NotFoundError } = require('../../expressError');
+const { BadRequestError, NotFoundError, ForbiddenError } = require('../../expressError');
 const { ensureLoggedIn } = require('../middleware/auth');
 
 const router = express.Router();
@@ -35,6 +35,9 @@ router.get('/', ensureLoggedIn, async (req, res, next) => {
 router.get('/user/:user_id', ensureLoggedIn, async (req, res, next) => {
     const userId = +req.params.user_id;
     try {
+        if (userId !== res.locals.user.id)
+            throw ForbiddenError('You do not have permission to access this resource.');
+
         const recipes = await Recipe.findRecipes({ userId });
 
         const authoredRecipes = await Promise.all(
@@ -125,6 +128,10 @@ router.patch('/:id', ensureLoggedIn, async (req, res, next) => {
             throw new BadRequestError(errs);
         }
 
+        const originalRecipe = await Recipe.get(id);
+        if (originalRecipe.author_id !== res.locals.user.id)
+            throw ForbiddenError('You do not have permission to access this resource.');
+
         const recipe = await Recipe.update(id, req.body);
 
         const author = await User.getById(recipe.author_id);
@@ -142,6 +149,10 @@ router.delete('/:id', ensureLoggedIn, async (req, res, next) => {
     const id = +req.params.id;
 
     try {
+
+        const originalRecipe = await Recipe.get(id);
+        if (originalRecipe.author_id !== res.locals.user.id)
+            throw ForbiddenError('You do not have permission to access this resource.');
 
         // delete all associations with shelves
         await Recipe.removeFromShelves(id);
@@ -164,6 +175,10 @@ router.post('/:id/tags/:tag_id', ensureLoggedIn, async (req, res, next) => {
     const tagId = +req.params.tag_id;
 
     try {
+        const originalRecipe = await Recipe.get(recipeId);
+        if (originalRecipe.author_id !== res.locals.user.id)
+            throw ForbiddenError('You do not have permission to access this resource.');
+
         await Recipe.addTag(recipeId, tagId);
         return res.status(201).json({ message: "Tag added" });
     } catch (err) {
@@ -178,6 +193,10 @@ router.delete('/:id/tags/:tag_id', ensureLoggedIn, async (req, res, next) => {
     const tagId = +req.params.tag_id;
 
     try {
+        const originalRecipe = await Recipe.get(recipeId);
+        if (originalRecipe.author_id !== res.locals.user.id)
+            throw ForbiddenError('You do not have permission to access this resource.');
+
         await Recipe.removeTag(recipeId, tagId);
         return res.status(200).json({ message: "Tag removed" });
     } catch (err) {

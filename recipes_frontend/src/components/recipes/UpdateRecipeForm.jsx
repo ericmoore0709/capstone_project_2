@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import useRecipes from '../../hooks/useRecipes';
 import { AuthContext } from '../../contexts/AuthContext';
 import Loading from '../util/Loading';
+import NotFound404 from '../util/NotFound404';
 
 const UpdateRecipeForm = ({ updateRecipe, errors = [] }) => {
 
@@ -27,11 +28,12 @@ const UpdateRecipeForm = ({ updateRecipe, errors = [] }) => {
         const getRecipe = async (id) => {
             setIsLoading(true);
             const result = await getRecipeById(id);
-            setFormData(result);
+            if (result && result?.author_id === signedInUser.id)
+                setFormData(result);
             setIsLoading(false);
         }
         getRecipe(+id);
-    }, [id, getRecipeById]);
+    }, [id, getRecipeById, signedInUser]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -55,6 +57,8 @@ const UpdateRecipeForm = ({ updateRecipe, errors = [] }) => {
     };
 
     if (isLoading) return <Loading />
+
+    if (!formData.title) return (<NotFound404 />);
 
     return (
         <div>
