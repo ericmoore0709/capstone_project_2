@@ -18,12 +18,12 @@ const useRecipes = (setClientMessage) => {
     /** Fetch public recipes and update publicRecipes state. */
     const fetchPublicRecipes = useCallback(async () => {
         try {
-            const apiRecipes = await RecipesApi.getAllPublicRecipes();
+            const apiRecipes = await RecipesApi.getAllPublicRecipes(token);
             setPublicRecipes(apiRecipes);
         } catch (error) {
             console.error("Error fetching public recipes:", error);
         }
-    }, []);
+    }, [token]);
 
     /**
      * Fetch user recipes, set userRecipes state
@@ -79,13 +79,13 @@ const useRecipes = (setClientMessage) => {
 
     const getRecipeById = useCallback(async (id) => {
         try {
-            const result = await RecipesApi.getRecipeById(+id);
+            const result = await RecipesApi.getRecipeById(+id, token);
             return result;
         } catch (err) {
             console.log('Error getting recipe:', err);
             throw err;
         }
-    }, []);
+    }, [token]);
 
     /**
      * Gets all public recipes authored by the user
@@ -94,13 +94,13 @@ const useRecipes = (setClientMessage) => {
      */
     const getPublicRecipesByUserId = useCallback(async (userId) => {
         try {
-            const response = await RecipesApi.getUserPublicRecipes(userId);
+            const response = await RecipesApi.getUserPublicRecipes(userId, token);
             return response;
         } catch (err) {
             console.log(err);
             throw err;
         }
-    }, []);
+    }, [token]);
 
     /**
     * Updates a user's recipe

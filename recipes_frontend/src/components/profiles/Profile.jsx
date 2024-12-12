@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 import Shelf from '../shelves/Shelf';
 import useProfiles from '../../hooks/useProfiles';
@@ -8,12 +7,12 @@ import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import Loading from '../util/Loading';
 
-const Profile = ({ token }) => {
+const Profile = () => {
     const { id } = useParams();
     const signedInUser = useContext(AuthContext);
     const userId = +id || +signedInUser?.id;
 
-    const { profile, publicShelf, isBioFormVisible, setIsBioFormVisible, updateProfile, isLoading } = useProfiles(token, userId);
+    const { profile, publicShelf, isBioFormVisible, setIsBioFormVisible, updateProfile, isLoading } = useProfiles(userId);
 
     const toggleBioFormVis = () => {
         setIsBioFormVisible(!isBioFormVisible);
@@ -47,10 +46,6 @@ const Profile = ({ token }) => {
             }
         </div>
     )
-}
-
-Profile.propTypes = {
-    token: PropTypes.string
 }
 
 export default Profile;

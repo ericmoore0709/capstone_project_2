@@ -10,7 +10,7 @@ const router = express.Router();
 /**
  * POST / - Create a new shelf
  */
-router.post('/', async (req, res, next) => {
+router.post('/', ensureLoggedIn, async (req, res, next) => {
     try {
         const validator = jsonschema.validate(req.body, newShelfSchema);
         if (!validator.valid) {
@@ -27,7 +27,7 @@ router.post('/', async (req, res, next) => {
 /**
  * GET / - Retrieve all shelves
  */
-router.get('/', async (req, res, next) => {
+router.get('/', ensureLoggedIn, async (req, res, next) => {
     try {
         const shelves = await Shelf.findAll();
         return res.status(200).json({ shelves });
@@ -39,7 +39,7 @@ router.get('/', async (req, res, next) => {
 /**
  * GET /:id - Retrieve a shelf by ID
  */
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', ensureLoggedIn, async (req, res, next) => {
     try {
         const shelf = await Shelf.findById(req.params.id);
         if (!shelf) throw new NotFoundError(`Shelf not found: ${req.params.id}`);
@@ -57,7 +57,7 @@ router.get('/:id', async (req, res, next) => {
 /**
  * GET /users/:user_id - Retrieve shelves by user ID
  */
-router.get('/users/:user_id', async (req, res, next) => {
+router.get('/users/:user_id', ensureLoggedIn, async (req, res, next) => {
     try {
         const shelves = await Shelf.findByUserId(req.params.user_id);
 
@@ -78,7 +78,7 @@ router.get('/users/:user_id', async (req, res, next) => {
 /**
  * PATCH /:id - Update a shelf by ID
  */
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id', ensureLoggedIn, async (req, res, next) => {
     try {
         const validator = jsonschema.validate(req.body, updateShelfSchema);
         if (!validator.valid) {
@@ -97,7 +97,7 @@ router.patch('/:id', async (req, res, next) => {
 /**
  * DELETE /:id - Delete a shelf by ID
  */
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', ensureLoggedIn, async (req, res, next) => {
     try {
 
         const shelfToDelete = await Shelf.findById(req.params.id);
@@ -118,7 +118,7 @@ router.delete('/:id', async (req, res, next) => {
 /**
  * POST /:shelf_id/recipes - adds recipe to shelf
  */
-router.post('/:shelf_id/recipes/', async (req, res, next) => {
+router.post('/:shelf_id/recipes/', ensureLoggedIn, async (req, res, next) => {
     const { shelf_id } = req.params;
     const { recipe_id } = req.body;
 
@@ -139,7 +139,7 @@ router.post('/:shelf_id/recipes/', async (req, res, next) => {
 /**
  * POST /:shelf_id/recipes/:recipe_id - removes recipe from shelf
  */
-router.delete('/:shelf_id/recipes/:recipe_id', async (req, res, next) => {
+router.delete('/:shelf_id/recipes/:recipe_id', ensureLoggedIn, async (req, res, next) => {
     const { shelf_id, recipe_id } = req.params;
 
     try {

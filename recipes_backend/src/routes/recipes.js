@@ -5,13 +5,14 @@ const jsonschema = require('jsonschema');
 const newRecipeSchema = require('../schemas/recipeNew.json');
 const updateRecipeSchema = require('../schemas/recipeUpdate.json');
 const { BadRequestError, NotFoundError } = require('../../expressError');
+const { ensureLoggedIn } = require('../middleware/auth');
 
 const router = express.Router();
 
 
 // GET /recipes => [{ recipe }, ...]
 // Retrieves all public recipes
-router.get('/', async (req, res, next) => {
+router.get('/', ensureLoggedIn, async (req, res, next) => {
     try {
         const recipes = await Recipe.findRecipes({ publicOnly: true });
 
@@ -31,7 +32,7 @@ router.get('/', async (req, res, next) => {
 
 // GET /recipes/user/:user_id => [{ recipe }, ...]
 // Retrieves all recipes by a specific user
-router.get('/user/:user_id', async (req, res, next) => {
+router.get('/user/:user_id', ensureLoggedIn, async (req, res, next) => {
     const userId = +req.params.user_id;
     try {
         const recipes = await Recipe.findRecipes({ userId });
@@ -52,7 +53,7 @@ router.get('/user/:user_id', async (req, res, next) => {
 
 // GET /recipes/user/:user_id/public => [{ recipe }, ...] 
 // Retrieves all public recipes by a specific user
-router.get('/user/:user_id/public', async (req, res, next) => {
+router.get('/user/:user_id/public', ensureLoggedIn, async (req, res, next) => {
     const userId = +req.params.user_id;
     try {
         const recipes = await Recipe.findRecipes({ userId, publicOnly: true });
@@ -73,7 +74,7 @@ router.get('/user/:user_id/public', async (req, res, next) => {
 
 // GET /:id => { recipe }
 // Retrieve a specific recipe by ID, including tags if they exist
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', ensureLoggedIn, async (req, res, next) => {
     const id = +req.params.id;
 
     try {
@@ -93,7 +94,7 @@ router.get('/:id', async (req, res, next) => {
 
 // POST / => { recipe }
 // Create a new recipe
-router.post('/', async (req, res, next) => {
+router.post('/', ensureLoggedIn, async (req, res, next) => {
     try {
         const validator = jsonschema.validate(req.body, newRecipeSchema);
         if (!validator.valid) {
@@ -114,7 +115,7 @@ router.post('/', async (req, res, next) => {
 
 // PATCH /:id => { recipe }
 // Update a recipe by ID
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id', ensureLoggedIn, async (req, res, next) => {
     const id = +req.params.id;
 
     try {
@@ -137,7 +138,7 @@ router.patch('/:id', async (req, res, next) => {
 
 // DELETE /:id => { message: "Recipe deleted" }
 // Soft delete a recipe by ID
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', ensureLoggedIn, async (req, res, next) => {
     const id = +req.params.id;
 
     try {
@@ -158,7 +159,7 @@ router.delete('/:id', async (req, res, next) => {
 
 // POST /:id/tags/:tag_id => { message: "Tag added" }
 // Add a tag to a recipe
-router.post('/:id/tags/:tag_id', async (req, res, next) => {
+router.post('/:id/tags/:tag_id', ensureLoggedIn, async (req, res, next) => {
     const recipeId = +req.params.id;
     const tagId = +req.params.tag_id;
 
@@ -172,7 +173,7 @@ router.post('/:id/tags/:tag_id', async (req, res, next) => {
 
 // DELETE /:id/tags/:tag_id => { message: "Tag removed" }
 // Remove a tag from a recipe
-router.delete('/:id/tags/:tag_id', async (req, res, next) => {
+router.delete('/:id/tags/:tag_id', ensureLoggedIn, async (req, res, next) => {
     const recipeId = +req.params.id;
     const tagId = +req.params.tag_id;
 

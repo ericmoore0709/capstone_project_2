@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import RecipesApi from "../../api";
 import useRecipes from "./useRecipes";
+import useAuth from "./useAuth";
 
-const useProfiles = (token, userId) => {
+const useProfiles = (userId) => {
 
     const [profile, setProfile] = useState(null);
     const [publicShelf, setPublicShelf] = useState(null);
@@ -10,6 +11,8 @@ const useProfiles = (token, userId) => {
     const [isLoading, setIsLoading] = useState(true);
 
     const { getPublicRecipesByUserId } = useRecipes();
+
+    const { token } = useAuth();
 
     /**
          * Gets and sets the profile at the given userId
@@ -35,10 +38,9 @@ const useProfiles = (token, userId) => {
     /**
      * Updates a profile
      * @param {*} profile the profile to update
-     * @param {*} token the session token
      * @returns the updated profile
      */
-    const updateProfile = async (profile, token) => {
+    const updateProfile = async (profile) => {
         setIsLoading(true);
         try {
             const result = await RecipesApi.updateProfile(profile, token);

@@ -23,7 +23,6 @@ router.get('/google/callback',
             );
 
             return res.redirect(`${process.env.CLIENT_BASE_URL}?token=${token}`);
-
         } catch (err) {
             console.error("Error during Google OAuth callback:", err);
             return res.redirect(`${CLIENT_BASE_URL}?error=authentication_failed`);

@@ -6,10 +6,11 @@ const updateProfileSchema = require('../schemas/profileUpdate.json');
 const { BadRequestError, NotFoundError } = require('../../expressError');
 const User = require('../models/user');
 const router = express.Router();
+const { ensureLoggedIn } = require('../middleware/auth');
 
 
 /** POST / - Create a new profile */
-router.post('/', async (req, res, next) => {
+router.post('/', ensureLoggedIn, async (req, res, next) => {
     // get the user ID
     const user_id = +req.body.user_id;
 
@@ -38,7 +39,7 @@ router.post('/', async (req, res, next) => {
 });
 
 /** GET /:user_id - Get profile by user ID */
-router.get('/:user_id', async (req, res, next) => {
+router.get('/:user_id', ensureLoggedIn, async (req, res, next) => {
     // get the user ID
     const { user_id } = req.params;
 
@@ -59,7 +60,7 @@ router.get('/:user_id', async (req, res, next) => {
 });
 
 /** PATCH /:user_id - Update profile bio by user ID */
-router.patch('/:user_id', async (req, res, next) => {
+router.patch('/:user_id', ensureLoggedIn, async (req, res, next) => {
     // get the user ID
     const user_id = +req.params.user_id;
     const { bio } = req.body;
@@ -89,7 +90,7 @@ router.patch('/:user_id', async (req, res, next) => {
 });
 
 /** DELETE /:user_id - Remove profile from user ID */
-router.delete('/:user_id', async (req, res, next) => {
+router.delete('/:user_id', ensureLoggedIn, async (req, res, next) => {
     // get the user ID
     const { user_id } = req.body;
 

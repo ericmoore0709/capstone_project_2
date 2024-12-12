@@ -59,7 +59,7 @@ const useShelves = (setClientMessage) => {
 
     const getShelf = async (id) => {
         try {
-            const result = await RecipesApi.getShelfById(id);
+            const result = await RecipesApi.getShelfById(id, token);
             return result.shelf;
         } catch (err) {
             console.log('Error fetching shelf:', err);

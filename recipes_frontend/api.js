@@ -27,14 +27,14 @@ class RecipesApi {
     }
 
     /** Get all public recipes */
-    static getAllPublicRecipes = async () => {
-        const response = await this._create_request('/recipes');
+    static getAllPublicRecipes = async (token) => {
+        const response = await this._create_request('/recipes', 'get', null, token);
         return response.recipes;
     }
 
     /** Get a specific recipe by its ID */
-    static getRecipeById = async (id) => {
-        const response = await this._create_request(`/recipes/${id}`);
+    static getRecipeById = async (id, token) => {
+        const response = await this._create_request(`/recipes/${id}`, 'get', null, token);
         return response.recipe;
     }
 
@@ -51,8 +51,8 @@ class RecipesApi {
     }
 
     /** Get all public recipes by a specific user */
-    static getUserPublicRecipes = async (userId) => {
-        const response = await this._create_request(`/recipes/user/${userId}/public`);
+    static getUserPublicRecipes = async (userId, token) => {
+        const response = await this._create_request(`/recipes/user/${userId}/public`, 'get', null, token);
         return response;
     }
 

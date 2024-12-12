@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Spinner, Alert } from 'reactstrap';
-import RecipesApi from '../../../api';
+import useRecipes from '../../hooks/useRecipes';
 
 const RecipeDetails = () => {
     const { id } = useParams();
     const [recipe, setRecipe] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { getRecipeById } = useRecipes();
 
     useEffect(() => {
         const fetchRecipe = async (id) => {
@@ -15,7 +16,7 @@ const RecipeDetails = () => {
             setError(null);
 
             try {
-                const fetchedRecipe = await RecipesApi.getRecipeById(id);
+                const fetchedRecipe = await getRecipeById(id);
                 setRecipe(fetchedRecipe || null);
             } catch (err) {
                 console.error("Error fetching recipe:", err);
@@ -26,7 +27,7 @@ const RecipeDetails = () => {
         };
 
         fetchRecipe(id);
-    }, [id]);
+    }, [id, getRecipeById]);
 
     return (
         <div className="recipe-details container mt-4">
