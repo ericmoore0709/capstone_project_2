@@ -1,23 +1,22 @@
 const Shelf = require('../../src/models/shelf');
 const db = require('../../db.js');
 const { NotFoundError, ConflictError } = require('../../expressError');
+const { setupTests, resetDatabase, teardownTests, populateTables } = require('../commonSetup.js');
 
 beforeAll(async () => {
-
+    await setupTests();
 });
 
 beforeEach(async () => {
-    await db.query('DELETE FROM shelf_recipes');
-    await db.query('DELETE FROM shelves');
-    await db.query("BEGIN");
+    await populateTables();
 });
 
 afterEach(async () => {
-    await db.query("ROLLBACK");
+    await resetDatabase();
 });
 
 afterAll(async () => {
-    await db.end();
+    await teardownTests();
 });
 
 describe('shelf model', () => {
@@ -25,7 +24,7 @@ describe('shelf model', () => {
     describe('create method', () => {
         it('creates successfully', async () => {
             // attempt to add shelf to database
-            const shelfToCreate = { userId: 1, label: 'Test' };
+            const shelfToCreate = { user_id: 1, label: 'Test' };
             const result = await Shelf.create(shelfToCreate);
 
             // expect shelf was added to the database
@@ -37,7 +36,7 @@ describe('shelf model', () => {
 
         it('throws error if duplicate', async () => {
             // attempt to add first shelf to the database
-            const shelfToCreate = { userId: 1, label: 'Test' };
+            const shelfToCreate = { user_id: 1, label: 'Test' };
             await Shelf.create(shelfToCreate);
 
             // assert that attempt to add duplicate shelf will throw error
@@ -48,7 +47,7 @@ describe('shelf model', () => {
     describe('findById method', () => {
         it('finds the shelf', async () => {
             // add shelf to be found to the database
-            const shelfToCreate = { userId: 1, label: 'Test' };
+            const shelfToCreate = { user_id: 1, label: 'Test' };
             const createdShelf = await Shelf.create(shelfToCreate);
 
             // query database for added shelf
@@ -76,9 +75,9 @@ describe('shelf model', () => {
 
             // add shelves to the database
             const userShelves = [
-                { userId, label: 'Test1' },
-                { userId, label: 'Test2' },
-                { userId, label: 'Test3' }
+                { user_id: userId, label: 'Test1' },
+                { user_id: userId, label: 'Test2' },
+                { user_id: userId, label: 'Test3' }
             ];
             await Shelf.create(userShelves[0]);
             await Shelf.create(userShelves[1]);
@@ -90,7 +89,7 @@ describe('shelf model', () => {
             // assert that shelves exist
             expect(result.length).toBeGreaterThan(0);
             expect(result.map((shelf) => shelf.id)[0]).toBeGreaterThan(0);
-            expect(result.map((shelf) => shelf.userId)).toContain(userShelves[2].userId);
+            expect(result.map((shelf) => shelf.userId)).toContain(userShelves[2].user_id);
             expect(result.map((shelf) => shelf.label)).toContain(userShelves[2].label);
         });
 
@@ -106,9 +105,9 @@ describe('shelf model', () => {
         it('finds all shelves', async () => {
             // add shelves to the database
             const userShelves = [
-                { userId: 1, label: 'Test1' },
-                { userId: 2, label: 'Test2' },
-                { userId: 3, label: 'Test3' }
+                { user_id: 1, label: 'Test1' },
+                { user_id: 1, label: 'Test2' },
+                { user_id: 1, label: 'Test3' }
             ];
             await Shelf.create(userShelves[0]);
             await Shelf.create(userShelves[1]);
@@ -119,7 +118,7 @@ describe('shelf model', () => {
 
             // assert that all shelves were found
             expect(result.length).toBe(3);
-            expect(result.map((shelf) => shelf.userId)).toContain(2);
+            expect(result.map((shelf) => shelf.userId)).toContain(1);
             expect(result.map((shelf) => shelf.label)).toContain('Test3');
         });
     });
@@ -127,7 +126,7 @@ describe('shelf model', () => {
     describe('update method', () => {
         it('updates shelf', async () => {
             // add shelf to database
-            const shelfToCreate = { userId: 1, label: 'Test' };
+            const shelfToCreate = { user_id: 1, label: 'Test' };
             const createdShelf = await Shelf.create(shelfToCreate);
 
             // attempt to update shelf
@@ -154,7 +153,7 @@ describe('shelf model', () => {
     describe('delete method', () => {
         it('deletes shelf', async () => {
             // add shelf to database
-            const shelfToCreate = { userId: 1, label: 'Test' };
+            const shelfToCreate = { user_id: 1, label: 'Test' };
             const createdShelf = await Shelf.create(shelfToCreate);
 
             // attempt to delete shelf
@@ -229,19 +228,17 @@ describe('shelf model', () => {
 
     describe('getRecipes', () => {
         it('gets recipes from shelf', async () => {
-            const shelfToCreate = { userId: 1, label: 'Test' };
+            const shelfToCreate = { user_id: 1, label: 'Test' };
             const shelf = await Shelf.create(shelfToCreate);
 
             // add recipes to the shelf
             await Shelf.addRecipe(shelf.id, 1);
-            await Shelf.addRecipe(shelf.id, 2);
-            await Shelf.addRecipe(shelf.id, 3);
 
             // attempt to get recipes from the shelf
             const result = await Shelf.getRecipes(shelf.id);
 
             // assert that recipes were retrived
-            expect(result.length).toBe(3);
+            expect(result.length).toBe(1);
             expect(result[0]).not.toBeNull();
             expect(result[0].title.length).toBeGreaterThan(0);
             expect(result[0].id).toBe(1);

@@ -1,23 +1,22 @@
 const Tag = require('../../src/models/tag');
 const db = require('../../db.js');
 const { NotFoundError } = require('../../expressError');
+const { setupTests, resetDatabase, teardownTests, populateTables } = require('../commonSetup.js');
 
 beforeAll(async () => {
-    await db.query('DELETE FROM recipe_tags')
-    await db.query('DELETE FROM tags');
+    await setupTests();
 });
 
 beforeEach(async () => {
-    await db.query("BEGIN");
-    await db.query('DELETE FROM tags');
+    await populateTables();
 });
 
 afterEach(async () => {
-    await db.query("ROLLBACK");
+    await resetDatabase();
 });
 
 afterAll(async () => {
-    await db.end();
+    await teardownTests();
 });
 
 describe('tag model', () => {

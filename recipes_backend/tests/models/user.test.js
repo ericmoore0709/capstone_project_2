@@ -3,20 +3,23 @@ const db = require('../../db');
 const { BadRequestError, NotFoundError } = require('../../expressError');
 const fs = require('fs');
 const path = require('path');
+const { setupTests, resetDatabase, teardownTests, populateTables } = require('../commonSetup');
 
 beforeAll(async () => {
-    await db.query('DELETE FROM users');
+    await setupTests();
 });
 
 beforeEach(async () => {
-    await db.query("BEGIN");
+    await populateTables();
 });
 
 afterEach(async () => {
-    await db.query("ROLLBACK");
+    await resetDatabase();
 });
 
-afterAll(async () => await db.end());
+afterAll(async () => {
+    await teardownTests();
+});
 
 describe("User model", () => {
 
@@ -60,7 +63,7 @@ describe("User model", () => {
             await User.register({ firstName: "John", lastName: "Doe", email: "john@example.com", googleId: "google123" });
             await User.register({ firstName: "Jane", lastName: "Doe", email: "jane@example.com", googleId: "google456" });
             const users = await User.findAll();
-            expect(users.length).toBe(2);
+            expect(users.length).toBe(3); // these two plus the one common insertion
             expect(users[0]).toHaveProperty("id");
             expect(users[0]).toHaveProperty("firstName");
         });

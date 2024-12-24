@@ -10,7 +10,7 @@ class Shelf {
      * @throws {Error} if (userId, label) relationship already exists 
      */
     static async create(shelf) {
-        const { user_id, label } = shelf;
+        const { user_id: userId, label } = shelf;
 
         const duplicateCheck = await db.query(
             `
@@ -19,7 +19,7 @@ class Shelf {
             AND label = $2 
             AND deleted_at IS NULL
             `,
-            [user_id, label]
+            [userId, label]
         );
 
         if (duplicateCheck.rows[0])
@@ -31,7 +31,7 @@ class Shelf {
             VALUES ($1, $2)
             RETURNING id, user_id AS "userId", label
             `,
-            [user_id, label]
+            [userId, label]
         );
 
         return result.rows[0];

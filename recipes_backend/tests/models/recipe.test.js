@@ -1,31 +1,26 @@
 const Recipe = require('../../src/models/recipe');
 const db = require('../../db.js');
 const { NotFoundError } = require('../../expressError');
+const { setupTests, resetDatabase, teardownTests, populateTables } = require('../commonSetup.js');
 
 // Helper to reset test data
 beforeAll(async () => {
-    await db.query('DELETE FROM shelf_recipes');
-    await db.query('DELETE FROM shelves');
-    await db.query('DELETE FROM recipe_tags');
-    await db.query('DELETE FROM recipes');
-
-    await db.query(`INSERT INTO tags (value) VALUES ('Test')`);
+    await setupTests();
 });
 
 beforeEach(async () => {
-    await db.query("BEGIN");
+    await populateTables();
 });
 
 afterEach(async () => {
-    await db.query("ROLLBACK");
+    await resetDatabase();
 });
 
 afterAll(async () => {
-    await db.end();
+    await teardownTests();
 });
 
 describe("Recipe model", () => {
-
     describe("create", () => {
         test("successfully creates a recipe", async () => {
             const newRecipe = {

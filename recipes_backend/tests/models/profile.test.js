@@ -1,22 +1,25 @@
 const Profile = require('../../src/models/profile');
 const db = require('../../db.js');
 const { NotFoundError, ConflictError } = require('../../expressError');
+const { setupTests, resetDatabase, teardownTests, populateTables } = require('../commonSetup.js');
+
+beforeAll(async () => {
+    await setupTests();
+});
 
 beforeEach(async () => {
-    await db.query("DELETE FROM profiles");
-    await db.query("BEGIN");
+    await populateTables();
 });
 
 afterEach(async () => {
-    await db.query("ROLLBACK");
+    await resetDatabase();
 });
 
 afterAll(async () => {
-    await db.end();
+    await teardownTests();
 });
 
 describe('profile model', () => {
-
     describe('create', () => {
         it('successfully creates profile', async () => {
             const userId = 1;
@@ -90,7 +93,7 @@ describe('profile model', () => {
             await Profile.create(userId);
 
             // update the profile
-            const result = await Profile.update({ userId, bio });            
+            const result = await Profile.update({ userId, bio });
 
             // assert profile has been updated
             expect(result.id).toEqual(expect.any(Number));
