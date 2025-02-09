@@ -22,9 +22,9 @@ const useAuth = () => {
                 localStorage.setItem('signedInUser', JSON.stringify(decoded));
 
                 // create user profile
-                const existingProfile = await RecipesApi.getProfile(decoded.id, token);
+                const existingProfile = await RecipesApi.getProfile(decoded.id, newToken);
                 if (!existingProfile.profile)
-                    await RecipesApi.createProfile(decoded.id, token);
+                    await RecipesApi.createProfile(decoded.id, newToken);
             }
         } catch (err) {
             console.log("Error processing token:", err);
