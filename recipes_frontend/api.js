@@ -7,7 +7,7 @@ class RecipesApi {
 
     /** Helper function to create a request with consistent error handling and optional token. */
     static _create_request = async (endpoint = '', method = 'get', data = null, token = null) => {
-        const headers = token ? { authorization: `Bearer ${token}` } : {};
+        const headers = token ? { "Authorization": `Bearer ${token}` } : {};
         try {
             const response = await api.request({
                 url: endpoint,
@@ -116,7 +116,7 @@ class RecipesApi {
 
     /** Create the user profile */
     static createProfile = async (userId, token) => {
-        const response = await this._create_request('profiles', 'post', { user_id: userId }, token);
+        const response = await this._create_request('/profiles/', 'post', { user_id: userId }, token);
         return response;
     }
 
