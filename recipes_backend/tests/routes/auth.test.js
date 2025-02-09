@@ -2,6 +2,8 @@ const request = require('supertest');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const app = require('../../app');
+const sinon = require('sinon');
+const User = require('../../src/models/user');
 
 describe('OAuth Routes', () => {
     let jwtSignStub;
@@ -37,6 +39,9 @@ describe('OAuth Routes', () => {
         });
 
         it('should redirect to client URL with JWT on success', async () => {
+            sinon.stub(User, 'getByEmail').returns({ id: 1, googleId: 'google123', email: 'user@example.com', firstName: 'John', lastName: 'Doe' });
+            sinon.stub(User, 'getById').returns({ id: 1, googleId: 'google123', email: 'user@example.com', firstName: 'John', lastName: 'Doe' });
+
             const res = await request(app).get('/auth/google/callback');
             expect(res.status).toBe(302);
             expect(res.headers.location).toContain(`${process.env.CLIENT_BASE_URL}?token=mocked-token`);
