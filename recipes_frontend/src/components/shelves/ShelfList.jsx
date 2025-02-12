@@ -1,8 +1,12 @@
 import { CardGroup } from 'reactstrap';
 import PropTypes from 'prop-types';
 import Shelf from './Shelf';
+import Loading from '../util/Loading';
 
-const ShelfList = ({ shelves, deleteShelf, removeRecipeFromShelf }) => {
+const ShelfList = ({ shelves, loading, deleteShelf, removeRecipeFromShelf }) => {
+
+    if (loading) return <Loading />
+
     return (
         <div>
             <h2 className='text-center mt-2'>My Shelves</h2>

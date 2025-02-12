@@ -21,6 +21,7 @@ const routes = (handlers) => [
                     <RecipeList
                         title="Public Recipes"
                         recipes={handlers.publicRecipes}
+                        loading={handlers.publicLoading}
                         deleteRecipe={handlers.deleteRecipe}
                         shelfOptions={handlers.getShelfOptions()}
                         addRecipeToShelf={handlers.addRecipeToShelf}
@@ -55,6 +56,7 @@ const routes = (handlers) => [
                     <RecipeList
                         title="My Recipes"
                         recipes={handlers.userRecipes}
+                        loading={handlers.userLoading}
                         deleteRecipe={handlers.deleteRecipe}
                     />
                 }
@@ -81,6 +83,7 @@ const routes = (handlers) => [
                 element={
                     <ShelfList
                         shelves={handlers.userShelves}
+                        loading={handlers.shelvesLoading}
                         updateShelf={handlers.updateShelf}
                         errors={handlers.shelfFormErrors}
                         deleteShelf={handlers.deleteShelf}

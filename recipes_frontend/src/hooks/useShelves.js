@@ -6,6 +6,7 @@ import { AuthContext } from "../contexts/AuthContext";
 
 const useShelves = (setClientMessage) => {
     const [userShelves, setUserShelves] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [shelfFormErrors, setShelfFormErrors] = useState([]);
 
     const { signedInUser, token } = useContext(AuthContext);
@@ -15,14 +16,18 @@ const useShelves = (setClientMessage) => {
          * Fetch user shelves, set user shelves state
          */
     const fetchUserShelves = useCallback(async () => {
-        if (signedInUser?.id && token) {
-            try {
+        setLoading(true);
+        try {
+            if (signedInUser?.id && token) {
                 const apiShelves = await RecipesApi.getUserShelves(signedInUser.id, token);
                 setUserShelves(apiShelves);
-            } catch (err) {
-                console.error('Error fetching user shelves:', err);
             }
+        } catch (err) {
+            console.error('Error fetching user shelves:', err);
+        } finally {
+            setLoading(false);
         }
+
     }, [signedInUser?.id, token]);
 
     useEffect(() => {
@@ -171,6 +176,7 @@ const useShelves = (setClientMessage) => {
 
     return {
         userShelves,
+        loading,
         fetchUserShelves,
         shelfFormErrors,
         addShelf,

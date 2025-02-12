@@ -27,6 +27,8 @@ function App() {
   const {
     publicRecipes,
     userRecipes,
+    publicLoading,
+    userLoading,
     recipeFormErrors,
     addRecipe,
     getRecipeById,
@@ -36,6 +38,7 @@ function App() {
 
   const {
     userShelves,
+    loading: shelvesLoading,
     shelfFormErrors,
     addShelf,
     getShelf,
@@ -67,12 +70,15 @@ function App() {
     signedInUser,
     publicRecipes,
     userRecipes,
+    publicLoading,
+    userLoading,
     recipeFormErrors,
     addRecipe,
     getRecipeById,
     updateRecipe,
     deleteRecipe,
     userShelves,
+    shelvesLoading,
     shelfFormErrors,
     addShelf,
     getShelf,
