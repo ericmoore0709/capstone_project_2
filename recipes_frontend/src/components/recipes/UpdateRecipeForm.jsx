@@ -11,7 +11,7 @@ import NotFound404 from '../util/NotFound404';
 const UpdateRecipeForm = ({ updateRecipe, errors = [] }) => {
 
     const { id } = useParams();
-    const signedInUser = useContext(AuthContext);
+    const { signedInUser } = useContext(AuthContext);
     const [formData, setFormData] = useState(
         {
             title: '',

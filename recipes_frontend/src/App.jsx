@@ -11,8 +11,7 @@ import { AuthContext } from './contexts/AuthContext';
 
 function App() {
   const [clientMessage, setClientMessage] = useState({ color: 'info', message: '' });
-
-  const { signedInUser, getTokenFromRequest, logoutUser } = useAuth();
+  const { signedInUser, getTokenFromRequest, token, logoutUser } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -86,7 +85,7 @@ function App() {
 
   return (
     <>
-      <AuthContext.Provider value={signedInUser}>
+      <AuthContext.Provider value={{ signedInUser, token }}>
         <SiteNavbar logoutUser={logoutUser} />
         {clientMessage.message && (
           <Alert

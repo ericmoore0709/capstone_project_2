@@ -6,7 +6,7 @@ import { AuthContext } from '../../contexts/AuthContext';
 
 const NewShelfForm = ({ addShelf, errors = [] }) => {
 
-    const signedInUser = useContext(AuthContext);
+    const { signedInUser } = useContext(AuthContext);
 
     const INITIAL_FORM_DATA = {
         label: '',

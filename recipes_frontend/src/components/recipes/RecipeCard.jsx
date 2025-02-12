@@ -7,7 +7,7 @@ import { useContext } from 'react';
 
 const RecipeCard = ({ recipe, deleteRecipe, shelfOptions, addRecipeToShelf, handleRemoveRecipeFromShelf }) => {
 
-    const signedInUser = useContext(AuthContext);
+    const { signedInUser } = useContext(AuthContext);
 
     const handleAddRecipeToShelf = async (shelfId) => {
         addRecipeToShelf(shelfId, recipe.id);

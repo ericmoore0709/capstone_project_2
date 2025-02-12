@@ -8,7 +8,7 @@ import { AuthContext } from '../../contexts/AuthContext';
  * @returns 
  */
 const ProtectedRoute = ({ element }) => {
-    const signedInUser = useContext(AuthContext);
+    const { signedInUser } = useContext(AuthContext);
 
     return signedInUser ? element : <h1>Landing Page</h1>;
 };

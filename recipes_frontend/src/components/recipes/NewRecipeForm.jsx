@@ -13,7 +13,7 @@ const NewRecipeForm = ({ addRecipe, errors = [] }) => {
         visibility_id: 1, // default to 'Public'
     };
 
-    const signedInUser = useContext(AuthContext);
+    const { signedInUser } = useContext(AuthContext);
 
     const [formData, setFormData] = useState(INITIAL_FORM_DATA);
 
