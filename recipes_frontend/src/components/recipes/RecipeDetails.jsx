@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Spinner, Alert } from 'reactstrap';
+import { Alert } from 'reactstrap';
 import useRecipes from '../../hooks/useRecipes';
+import Loading from '../util/Loading';
+import defaultImage from '../../assets/defaultImage.jpg';
 
 const RecipeDetails = () => {
     const { id } = useParams();
@@ -30,24 +32,21 @@ const RecipeDetails = () => {
     }, [id, getRecipeById]);
 
     return (
-        <div className="recipe-details container mt-4">
-            {isLoading ? (
-                <Spinner style={{ width: '3rem', height: '3rem' }} color="primary" className="d-block mx-auto my-4" />
-            ) : error ? (
-                <Alert color="danger" className="text-center">{error}</Alert>
-            ) : recipe ? (
-                <>
-                    <h1 className="text-center">{recipe.title}</h1>
-                    <p className="text-muted text-center">{recipe.description}</p>
-                    {recipe.image && (
-                        <div className="text-center my-3">
-                            <img src={recipe.image} alt={`${recipe.title} image`} className="img-fluid rounded" style={{ maxHeight: '400px', objectFit: 'cover' }} />
-                        </div>
-                    )}
-                </>
-            ) : (
-                <h2 className="text-center my-4">Recipe Not Found</h2>
-            )}
+        <div className="container mt-4">
+            {isLoading && <Loading />}
+            {error && <Alert color="danger" className="text-center">{error}</Alert>}
+
+            {(recipe && !error) && <>
+                <h1 className="text-center">{recipe.title}</h1>
+                <p className="text-muted text-center">{recipe.description}</p>
+
+                <div className="text-center my-3">
+                    <img src={recipe.image || defaultImage} alt={`${recipe.title} image`} className="img-fluid rounded w-25" />
+                </div>
+
+            </>}
+
+            {(!isLoading && !recipe) && <h2 className="text-center my-4">Recipe Not Found</h2>}
         </div>
     );
 };
