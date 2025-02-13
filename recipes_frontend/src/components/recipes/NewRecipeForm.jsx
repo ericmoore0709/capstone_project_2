@@ -86,8 +86,7 @@ const NewRecipeForm = ({ addRecipe, errors = [] }) => {
 
 NewRecipeForm.propTypes = {
     addRecipe: PropTypes.func.isRequired,
-    errors: PropTypes.array,
-    signedInUser: PropTypes.object
+    errors: PropTypes.array
 };
 
 export default NewRecipeForm;

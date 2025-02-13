@@ -33,6 +33,7 @@ const ShelfList = ({ shelves, loading, deleteShelf, removeRecipeFromShelf }) => 
 
 ShelfList.propTypes = {
     shelves: PropTypes.array,
+    loading: PropTypes.bool,
     deleteShelf: PropTypes.func,
     removeRecipeFromShelf: PropTypes.func.isRequired
 };
