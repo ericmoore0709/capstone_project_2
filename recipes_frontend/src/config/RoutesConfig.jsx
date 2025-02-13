@@ -11,7 +11,9 @@ import RecipeDetails from '../components/recipes/RecipeDetails';
 const routes = (handlers) => [
     {
         path: '/',
-        element: <h1>Home</h1>,
+        element: (
+            <ProtectedRoute element={<h1>Home</h1>} />
+        ),
     },
     {
         path: '/recipes',

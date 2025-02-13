@@ -9,7 +9,7 @@ import Loading from '../util/Loading';
 
 const Profile = () => {
     const { id } = useParams();
-    const signedInUser = useContext(AuthContext);
+    const { signedInUser } = useContext(AuthContext);
     const userId = +id || +signedInUser?.id;
 
     const { profile, publicShelf, isBioFormVisible, setIsBioFormVisible, updateProfile, isLoading } = useProfiles(userId);

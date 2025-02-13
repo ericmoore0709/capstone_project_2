@@ -10,7 +10,7 @@ import { AuthContext } from '../../contexts/AuthContext';
 const ProtectedRoute = ({ element }) => {
     const { signedInUser } = useContext(AuthContext);
 
-    return signedInUser ? element : <h1>Landing Page</h1>;
+    return signedInUser?.id ? element : <h1>Landing Page</h1>;
 };
 
 ProtectedRoute.propTypes = {
