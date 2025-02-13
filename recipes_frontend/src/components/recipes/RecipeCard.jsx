@@ -1,9 +1,12 @@
-import { Button, Card, CardBody, CardImg, CardText, CardTitle, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from 'reactstrap';
+import { Button, Card, CardBody, CardImg, CardText, CardTitle } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import defaultImage from '../../assets/defaultImage.jpg';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useContext } from 'react';
+import AuthorControls from './card/AuthorControls';
+import Metadata from './card/Metadata';
+import ShelfDropdown from './card/ShelfDropdown';
 
 const RecipeCard = ({ recipe, deleteRecipe, shelfOptions, addRecipeToShelf, handleRemoveRecipeFromShelf }) => {
 
@@ -26,23 +29,9 @@ const RecipeCard = ({ recipe, deleteRecipe, shelfOptions, addRecipeToShelf, hand
     return (
         <div className='p-2 d-flex'>
             <Card style={{ minWidth: '200px', minHeight: '250px', width: '23vw' }}>
-
                 {/* At-a-glance recipe info */}
                 <Link to={`/recipes/${recipe.id}`}><CardImg src={recipe.image || defaultImage} alt={recipe.title} style={{ maxHeight: '150px', objectFit: 'cover' }} /></Link>
-                {shelfOptions &&
-                    <UncontrolledDropdown className='position-absolute top-0 end-0'>
-                        <DropdownToggle color='primary'>
-                            +
-                        </DropdownToggle>
-                        <DropdownMenu end>
-                            <div className='ms-2'>Add to shelf...</div>
-                            <DropdownItem divider />
-                            {shelfOptions.map((shelf) =>
-                                <DropdownItem key={shelf.id} className='text-center' onClick={() => handleAddRecipeToShelf(shelf.id)}>{shelf.label}</DropdownItem>
-                            )}
-                        </DropdownMenu>
-                    </UncontrolledDropdown>
-                }
+                {shelfOptions && <ShelfDropdown shelfOptions={shelfOptions} handleAddRecipeToShelf={handleAddRecipeToShelf} />}
 
                 {handleRemoveRecipeFromShelf &&
                     <Button onClick={() => handleRemoveRecipeFromShelf(recipe.id)} color='danger' className='position-absolute top-0 end-0'>-</Button>
@@ -53,30 +42,11 @@ const RecipeCard = ({ recipe, deleteRecipe, shelfOptions, addRecipeToShelf, hand
                     <CardText className='text-truncate' style={{ maxHeight: '3em', overflow: 'hidden' }}>{recipe.description}</CardText>
                 </CardBody>
 
-                {/* Meta Info*/}
                 {recipe.author && <>
-                    <small>
-                        <div className='d-flex'>
-                            <div className='w-25 text-start mx-1'>
-                                <div><strong>Uploaded</strong></div>
-                                <div>{new Date(recipe.uploaded_at).toLocaleDateString()}</div>
-                            </div>
-                            <div className='w-50 text-center mx-auto'>
-                                <div><strong>Author</strong></div>
-                                <div><Link to={`/profiles/${recipe.author.id}`}>{`${recipe.author.firstName} ${recipe.author.lastName}`}</Link></div>
-                            </div>
-                            <div className='w-25 text-end mx-1'>
-                                <div><strong>Last Updated</strong></div>
-                                <div>{new Date(recipe.last_updated_at).toLocaleDateString()}</div>
-                            </div>
-                        </div>
-                    </small>
-
+                    {/* Meta Info*/}
+                    <Metadata recipe={recipe} />
                     {/* Author controls */}
-                    {(recipe.author_id === signedInUser.id) && <div className='text-center'>
-                        <Link to={`/recipes/${recipe.id}/edit`} className='w-50 btn btn-secondary mb-1'>Edit</Link>
-                        <Button color='danger' className='w-50 mb-1' onClick={() => handleOnDelete(recipe.id)}>Delete</Button>
-                    </div>}
+                    {(recipe.author_id === signedInUser.id) && <AuthorControls recipe={recipe} handleOnDelete={handleOnDelete} />}
                 </>}
             </Card>
         </div>
@@ -85,7 +55,6 @@ const RecipeCard = ({ recipe, deleteRecipe, shelfOptions, addRecipeToShelf, hand
 
 RecipeCard.propTypes = {
     recipe: PropTypes.object.isRequired,
-    signedInUser: PropTypes.object,
     deleteRecipe: PropTypes.func,
     shelfOptions: PropTypes.array,
     addRecipeToShelf: PropTypes.func,
