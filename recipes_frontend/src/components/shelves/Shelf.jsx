@@ -23,16 +23,14 @@ const Shelf = ({ shelf, deleteShelf, removeRecipeFromShelf }) => {
             <Card style={{ minHeight: '250px' }}>
                 <CardTitle className='text-center'>{shelf.label} <small className='text-secondary'>Recipes: {shelf.recipes?.length || 0}</small></CardTitle>
                 <CardBody className='d-flex overflow-auto'>
-                    {removeRecipeFromShelf ? <>
+                    {<>
                         {shelf.recipes?.map((recipe) =>
-                            <RecipeCard key={recipe.id} recipe={recipe} handleRemoveRecipeFromShelf={handleRemoveRecipeFromShelf} />
+                            <RecipeCard
+                                key={recipe.id}
+                                recipe={recipe}
+                                handleRemoveRecipeFromShelf={removeRecipeFromShelf ? handleRemoveRecipeFromShelf : null} />
                         )}
-                    </> : <>
-                        {shelf.recipes?.map((recipe) =>
-                            <RecipeCard key={recipe.id} recipe={recipe} />
-                        )}
-                    </>
-                    }
+                    </>}
                 </CardBody>
                 {removeRecipeFromShelf &&
                     <div className='mx-auto mt-auto'>
