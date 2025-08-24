@@ -42,7 +42,7 @@ This project aims to highlight my ability to create scalable, maintainable solut
 
 ### Setting up Google Project
 Creating a google project is necessary to enable Google's authentication and erge the major features of the website.
-1. Go to the [Google Developer Cloud] website (https://console.cloud.google.com/).
+1. Go to the [Google Developer Cloud](https://console.cloud.google.com/) website.
 2. Create an account (if necessary)
 3. Click the projects dropdown and select "NEW PROJECT".
 4. Give the project a name and click "CREATE".
