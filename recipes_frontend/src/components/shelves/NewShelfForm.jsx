@@ -1,12 +1,13 @@
-import { Button, Form, FormGroup, FormText, Input, Label, ListGroup, ListGroupItem } from 'reactstrap';
+import { Button, Form, FormGroup, FormText, Input, Label } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { useContext, useState } from 'react';
 import DOMPurify from 'dompurify';
 import { AuthContext } from '../../contexts/AuthContext';
+import FormValidationErrorsDisplay from '../util/FormValidationErrorsDisplay';
 
 const NewShelfForm = ({ addShelf, errors = [] }) => {
 
-    const signedInUser = useContext(AuthContext);
+    const { signedInUser } = useContext(AuthContext);
 
     const INITIAL_FORM_DATA = {
         label: '',
@@ -46,15 +47,7 @@ const NewShelfForm = ({ addShelf, errors = [] }) => {
                 </FormGroup>
             </Form>
 
-            {(errors.length > 0) && (
-                <div>
-                    <ListGroup color='danger' className='w-50 mx-auto'>
-                        {errors.map((err, index) => (
-                            <ListGroupItem key={index} color='danger'>{err}</ListGroupItem>
-                        ))}
-                    </ListGroup>
-                </div>
-            )}
+            {(errors.length > 0) && <FormValidationErrorsDisplay errors={errors} />}
         </div>
     );
 };

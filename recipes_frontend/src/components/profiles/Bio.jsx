@@ -6,7 +6,7 @@ import { AuthContext } from '../../contexts/AuthContext'
 
 const Bio = ({ profile, toggleBioFormVis, isBioFormVisible, updateProfile }) => {
 
-    const signedInUser = useContext(AuthContext);
+    const { signedInUser } = useContext(AuthContext);
 
     const handleOnBioFormButtonClick = () => {
         toggleBioFormVis();

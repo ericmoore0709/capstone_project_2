@@ -9,7 +9,7 @@ import ModelDropdown from "./dropdowns/ModelDropdown";
 const SiteNavbar = ({ logoutUser }) => {
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
-    const signedInUser = useContext(AuthContext);
+    const { signedInUser } = useContext(AuthContext);
 
     return (
         <div>

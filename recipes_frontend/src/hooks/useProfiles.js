@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import RecipesApi from "../../api";
 import useRecipes from "./useRecipes";
 import useAuth from "./useAuth";
+import { AuthContext } from "../contexts/AuthContext";
 
 const useProfiles = (userId) => {
 
@@ -12,7 +13,7 @@ const useProfiles = (userId) => {
 
     const { getPublicRecipesByUserId } = useRecipes();
 
-    const { token } = useAuth();
+    const { token } = useContext(AuthContext);
 
     /**
          * Gets and sets the profile at the given userId

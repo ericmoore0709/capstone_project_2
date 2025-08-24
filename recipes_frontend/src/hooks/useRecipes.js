@@ -1,27 +1,32 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import RecipesApi from "../../api";
 import useShelves from "./useShelves";
 import { useNavigate } from "react-router-dom";
 import useAuth from "./useAuth";
+import { AuthContext } from "../contexts/AuthContext";
 
 const useRecipes = (setClientMessage) => {
-
     const [publicRecipes, setPublicRecipes] = useState([]);
     const [userRecipes, setUserRecipes] = useState([]);
+    const [publicLoading, setPublicLoading] = useState(false);
+    const [userLoading, setUserLoading] = useState(false);
     const [recipeFormErrors, setRecipeFormErrors] = useState([]);
 
-    const { signedInUser, token } = useAuth();
+    const { signedInUser, token } = useContext(AuthContext);
     const { fetchUserShelves } = useShelves(setClientMessage);
 
     const navigate = useNavigate();
 
     /** Fetch public recipes and update publicRecipes state. */
     const fetchPublicRecipes = useCallback(async () => {
+        setPublicLoading(true);
         try {
             const apiRecipes = await RecipesApi.getAllPublicRecipes(token);
             setPublicRecipes(apiRecipes);
         } catch (error) {
             console.error("Error fetching public recipes:", error);
+        } finally {
+            setPublicLoading(false);
         }
     }, [token]);
 
@@ -29,14 +34,18 @@ const useRecipes = (setClientMessage) => {
      * Fetch user recipes, set userRecipes state
      */
     const fetchUserRecipes = useCallback(async () => {
-        if (signedInUser?.id && token) {
-            try {
+        setUserLoading(true);
+        try {
+            if (signedInUser?.id && token) {
                 const apiRecipes = await RecipesApi.getUserRecipes(signedInUser.id, token);
                 setUserRecipes(apiRecipes);
-            } catch (error) {
-                console.error("Error fetching user recipes:", error);
             }
+        } catch (error) {
+            console.error("Error fetching user recipes:", error);
+        } finally {
+            setUserLoading(false);
         }
+
     }, [signedInUser?.id, token]);
 
     /** Update user recipes state upon sign-in. */
@@ -174,6 +183,8 @@ const useRecipes = (setClientMessage) => {
     return {
         publicRecipes,
         userRecipes,
+        publicLoading,
+        userLoading,
         recipeFormErrors,
         setRecipeFormErrors,
         setPublicRecipes,

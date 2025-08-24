@@ -1,27 +1,33 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import RecipesApi from "../../api";
 import { useNavigate } from "react-router-dom";
 import useAuth from "./useAuth";
+import { AuthContext } from "../contexts/AuthContext";
 
 const useShelves = (setClientMessage) => {
     const [userShelves, setUserShelves] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [shelfFormErrors, setShelfFormErrors] = useState([]);
 
-    const { signedInUser, token } = useAuth();
+    const { signedInUser, token } = useContext(AuthContext);
     const navigate = useNavigate();
 
     /**
          * Fetch user shelves, set user shelves state
          */
     const fetchUserShelves = useCallback(async () => {
-        if (signedInUser?.id && token) {
-            try {
+        setLoading(true);
+        try {
+            if (signedInUser?.id && token) {
                 const apiShelves = await RecipesApi.getUserShelves(signedInUser.id, token);
                 setUserShelves(apiShelves);
-            } catch (err) {
-                console.error('Error fetching user shelves:', err);
             }
+        } catch (err) {
+            console.error('Error fetching user shelves:', err);
+        } finally {
+            setLoading(false);
         }
+
     }, [signedInUser?.id, token]);
 
     useEffect(() => {
@@ -170,6 +176,7 @@ const useShelves = (setClientMessage) => {
 
     return {
         userShelves,
+        loading,
         fetchUserShelves,
         shelfFormErrors,
         addShelf,

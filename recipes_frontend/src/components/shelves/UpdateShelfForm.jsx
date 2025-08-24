@@ -1,8 +1,9 @@
-import { Button, Form, FormGroup, FormText, Input, Label, ListGroup, ListGroupItem } from 'reactstrap';
+import { Button, Form, FormGroup, FormText, Input, Label } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import DOMPurify from 'dompurify';
 import { useParams } from 'react-router-dom';
+import FormValidationErrorsDisplay from '../util/FormValidationErrorsDisplay';
 
 const UpdateShelfForm = ({ getShelf, updateShelf, errors = [] }) => {
 
@@ -52,15 +53,7 @@ const UpdateShelfForm = ({ getShelf, updateShelf, errors = [] }) => {
                 </FormGroup>
             </Form>
 
-            {(errors.length > 0) && (
-                <div>
-                    <ListGroup color='danger' className='w-50 mx-auto'>
-                        {errors.map((err, index) => (
-                            <ListGroupItem key={index} color='danger'>{err}</ListGroupItem>
-                        ))}
-                    </ListGroup>
-                </div>
-            )}
+            {(errors.length > 0) && <FormValidationErrorsDisplay errors={errors} />}
         </div>
     );
 };

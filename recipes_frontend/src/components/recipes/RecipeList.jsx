@@ -1,8 +1,12 @@
 import { CardGroup } from 'reactstrap';
 import RecipeCard from './RecipeCard';
 import PropTypes from 'prop-types';
+import Loading from '../util/Loading';
 
-const RecipeList = ({ title, recipes, deleteRecipe, shelfOptions, addRecipeToShelf }) => {
+const RecipeList = ({ title, recipes, loading, deleteRecipe, shelfOptions, addRecipeToShelf }) => {
+
+    if (loading) return <Loading />;
+
     return (
         <div>
             <h2 className='text-center mt-2'>{title}</h2>
@@ -31,6 +35,7 @@ const RecipeList = ({ title, recipes, deleteRecipe, shelfOptions, addRecipeToShe
 RecipeList.propTypes = {
     title: PropTypes.string.isRequired,
     recipes: PropTypes.array.isRequired,
+    loading: PropTypes.bool.isRequired,
     deleteRecipe: PropTypes.func,
     shelfOptions: PropTypes.array,
     addRecipeToShelf: PropTypes.func

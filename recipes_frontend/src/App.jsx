@@ -11,8 +11,7 @@ import { AuthContext } from './contexts/AuthContext';
 
 function App() {
   const [clientMessage, setClientMessage] = useState({ color: 'info', message: '' });
-
-  const { signedInUser, getTokenFromRequest, logoutUser } = useAuth();
+  const { signedInUser, getTokenFromRequest, token, logoutUser } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,6 +27,8 @@ function App() {
   const {
     publicRecipes,
     userRecipes,
+    publicLoading,
+    userLoading,
     recipeFormErrors,
     addRecipe,
     getRecipeById,
@@ -37,6 +38,7 @@ function App() {
 
   const {
     userShelves,
+    loading: shelvesLoading,
     shelfFormErrors,
     addShelf,
     getShelf,
@@ -68,12 +70,15 @@ function App() {
     signedInUser,
     publicRecipes,
     userRecipes,
+    publicLoading,
+    userLoading,
     recipeFormErrors,
     addRecipe,
     getRecipeById,
     updateRecipe,
     deleteRecipe,
     userShelves,
+    shelvesLoading,
     shelfFormErrors,
     addShelf,
     getShelf,
@@ -86,7 +91,7 @@ function App() {
 
   return (
     <>
-      <AuthContext.Provider value={signedInUser}>
+      <AuthContext.Provider value={{ signedInUser, token }}>
         <SiteNavbar logoutUser={logoutUser} />
         {clientMessage.message && (
           <Alert
