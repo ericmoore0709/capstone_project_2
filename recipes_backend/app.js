@@ -22,8 +22,6 @@ const app = express();
 // allow localhost frontend to communicate with localhost backend
 app.use(cors({
   origin: `${process.env.CLIENT_BASE_URL}`,
-  methods: "GET,POST,PUT,DELETE",
-  allowedHeaders: "Content-Type,Authorization",
   credentials: true,
 }));
 
