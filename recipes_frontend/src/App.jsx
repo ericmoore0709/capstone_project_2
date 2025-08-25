@@ -7,7 +7,6 @@ import useRecipes from './hooks/useRecipes';
 import useShelves from './hooks/useShelves';
 import useAuth from './hooks/useAuth';
 import routes from './config/RoutesConfig';
-import { AuthContext } from './contexts/AuthContext';
 
 function App() {
   const [clientMessage, setClientMessage] = useState({ color: 'info', message: '' });
@@ -91,7 +90,6 @@ function App() {
 
   return (
     <>
-      <AuthContext.Provider value={{ signedInUser, token }}>
         <SiteNavbar logoutUser={logoutUser} />
         {clientMessage.message && (
           <Alert
@@ -109,7 +107,6 @@ function App() {
         </Routes>
 
         <div className='text-center' style={{ width: '100%', position: 'sticky', bottom: 5 }}><footer>&copy; Eric Moore 2024</footer></div>
-      </AuthContext.Provider>
     </>
   );
 }
