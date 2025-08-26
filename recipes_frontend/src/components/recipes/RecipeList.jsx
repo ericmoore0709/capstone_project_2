@@ -33,7 +33,7 @@ const RecipeList = ({ title, recipes, shelfOptions }) => {
 }
 
 RecipeList.propTypes = {
-    title: PropTypes.string.isRequired,
+    title: PropTypes.string,
     recipes: PropTypes.array.isRequired,
     shelfOptions: PropTypes.array
 };

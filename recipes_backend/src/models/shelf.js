@@ -216,7 +216,7 @@ class Shelf {
     static async getRecipes(shelfId) {
         const result = await db.query(
             `
-            SELECT r.id, r.title, r.description, r.visibility_id, r.uploaded_at, r.last_updated_at, r.image
+            SELECT r.id, r.title, r.description, r.visibility_id, r.uploaded_at, r.last_updated_at, r.image, r.author_id
             FROM shelf_recipes sr
             JOIN recipes r ON sr.recipe_id = r.id
             WHERE sr.shelf_id = $1

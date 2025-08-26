@@ -1,5 +1,4 @@
 import { CardGroup } from 'reactstrap';
-import PropTypes from 'prop-types';
 import UserRecipeCard from './UserRecipeCard';
 import useRecipes from '../../../hooks/useRecipes';
 import Loading from '../../util/Loading';
@@ -30,8 +29,6 @@ const UserRecipeList = () => {
     );
 }
 
-UserRecipeList.propTypes = {
-    title: PropTypes.string.isRequired
-};
+UserRecipeList.propTypes = {};
 
 export default UserRecipeList;
