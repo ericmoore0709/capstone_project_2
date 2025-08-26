@@ -9,10 +9,10 @@ import NotFound404 from '../util/NotFound404';
 import FormValidationErrorsDisplay from '../util/FormValidationErrorsDisplay';
 import useAuth from '../../hooks/useAuth';
 
-const UpdateRecipeForm = ({ errors = [] }) => {
+const UpdateRecipeForm = () => {
     const { id } = useParams();
     const { signedInUser } = useAuth();
-    const { getRecipeById, updateRecipe } = useRecipes();
+    const { getRecipeById, updateRecipe, recipeFormErrors: errors } = useRecipes();
     const [formData, setFormData] = useState(
         {
             title: '',
@@ -97,8 +97,6 @@ const UpdateRecipeForm = ({ errors = [] }) => {
     );
 };
 
-UpdateRecipeForm.propTypes = {
-    errors: PropTypes.array
-};
+UpdateRecipeForm.propTypes = {};
 
 export default UpdateRecipeForm;

@@ -6,14 +6,12 @@ import NewShelfForm from '../components/shelves/NewShelfForm';
 import UpdateShelfForm from '../components/shelves/UpdateShelfForm';
 import Profile from '../components/profiles/Profile';
 import RecipeDetails from '../components/recipes/RecipeDetails';
-import useRecipes from '../hooks/useRecipes';
 import useShelves from '../hooks/useShelves';
 import PublicRecipeList from "../components/recipes/public/PublicRecipeList";
 import UserRecipeList from "../components/recipes/user/UserRecipeList";
 
 const RoutesConfig = () => {
-    const { recipeFormErrors } = useRecipes();
-    const { shelfFormErrors, removeRecipeFromShelf } = useShelves();
+    const { removeRecipeFromShelf } = useShelves();
 
     return [
         {
@@ -25,11 +23,7 @@ const RoutesConfig = () => {
         {
             path: '/recipes',
             element: (
-                <ProtectedRoute
-                    element={
-                        <PublicRecipeList />
-                    }
-                />
+                <ProtectedRoute element={<PublicRecipeList />} />
             ),
         },
         {
@@ -39,35 +33,21 @@ const RoutesConfig = () => {
         {
             path: '/recipes/new',
             element: (
-                <ProtectedRoute
-                    element={
-                        <NewRecipeForm
-                            errors={recipeFormErrors}
-                        />
-                    }
-                />
+                <ProtectedRoute element={<NewRecipeForm />} />
             ),
         },
         {
             path: '/recipes/my',
             element: (
                 <ProtectedRoute
-                    element={
-                        <UserRecipeList />
-                    }
+                    element={<UserRecipeList />}
                 />
             ),
         },
         {
             path: '/recipes/:id/edit',
             element: (
-                <ProtectedRoute
-                    element={
-                        <UpdateRecipeForm
-                            errors={recipeFormErrors}
-                        />
-                    }
-                />
+                <ProtectedRoute element={<UpdateRecipeForm />} />
             ),
         },
         {
@@ -75,7 +55,9 @@ const RoutesConfig = () => {
             element: (
                 <ProtectedRoute
                     element={
-                        <ShelfList removeRecipeFromShelf={removeRecipeFromShelf} />
+                        <ShelfList
+                            removeRecipeFromShelf={removeRecipeFromShelf}
+                        />
                     }
                 />
             ),
@@ -83,41 +65,25 @@ const RoutesConfig = () => {
         {
             path: '/shelves/new',
             element: (
-                <ProtectedRoute
-                    element={
-                        <NewShelfForm
-                            errors={shelfFormErrors}
-                        />
-                    }
-                />
+                <ProtectedRoute element={<NewShelfForm />} />
             ),
         },
         {
             path: '/shelves/:id/edit',
             element: (
-                <ProtectedRoute
-                    element={
-                        <UpdateShelfForm
-                            errors={shelfFormErrors}
-                        />
-                    }
-                />
+                <ProtectedRoute element={<UpdateShelfForm />} />
             ),
         },
         {
             path: '/profiles/my',
             element: (
-                <ProtectedRoute
-                    element={<Profile />}
-                />
+                <ProtectedRoute element={<Profile />} />
             ),
         },
         {
             path: '/profiles/:id',
             element: (
-                <ProtectedRoute
-                    element={<Profile />}
-                />
+                <ProtectedRoute element={<Profile />} />
             ),
         },
     ];

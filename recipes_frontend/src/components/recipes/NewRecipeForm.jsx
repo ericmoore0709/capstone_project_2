@@ -6,8 +6,8 @@ import FormValidationErrorsDisplay from '../util/FormValidationErrorsDisplay';
 import useRecipes from '../../hooks/useRecipes';
 import useAuth from '../../hooks/useAuth';
 
-const NewRecipeForm = ({ errors = [] }) => {
-    const { addRecipe } = useRecipes();
+const NewRecipeForm = () => {
+    const { addRecipe, recipeFormErrors: errors } = useRecipes();
 
     const INITIAL_FORM_DATA = {
         title: '',
@@ -79,8 +79,6 @@ const NewRecipeForm = ({ errors = [] }) => {
     );
 };
 
-NewRecipeForm.propTypes = {
-    errors: PropTypes.array
-};
+NewRecipeForm.propTypes = {};
 
 export default NewRecipeForm;
