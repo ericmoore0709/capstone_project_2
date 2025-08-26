@@ -24,13 +24,11 @@ function App() {
     <>
       <SiteNavbar logoutUser={logoutUser} />
       <ClientNotification />
-
       <Routes>
         {routes().map((route, index) => (
           <Route key={index} path={route.path} element={route.element} />
         ))}
       </Routes>
-
       <div className='text-center' style={{ width: '100%', position: 'sticky', bottom: 5 }}><footer>&copy; Eric Moore 2024</footer></div>
     </>
   );
