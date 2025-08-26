@@ -27,7 +27,7 @@ const RecipeCard = ({ recipe, shelfOptions, handleRemoveRecipeFromShelf }) => {
             <Card style={{ minWidth: '200px', minHeight: '250px', width: '23vw' }}>
                 {/* At-a-glance recipe info */}
                 <Link to={`/recipes/${recipe.id}`}><CardImg src={recipe.image || defaultImage} alt={recipe.title} style={{ maxHeight: '150px', objectFit: 'cover' }} /></Link>
-                {shelfOptions && <ShelfDropdown />}
+                {shelfOptions && <ShelfDropdown recipeId={recipe.id} />}
 
                 {handleRemoveRecipeFromShelf &&
                     <Button onClick={() => handleRemoveRecipeFromShelf(recipe.id)} color='danger' className='position-absolute top-0 end-0'>-</Button>

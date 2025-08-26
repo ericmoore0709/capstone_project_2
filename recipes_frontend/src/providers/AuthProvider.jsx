@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import RecipesApi from "../../api";
 
 const AuthProvider = ({ children }) => {
     const [signedInUser, setSignedInUser] = useState(JSON.parse(localStorage.getItem('signedInUser')) || null);

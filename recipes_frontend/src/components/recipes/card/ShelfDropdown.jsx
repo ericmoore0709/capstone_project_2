@@ -1,11 +1,9 @@
 import { DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from 'reactstrap';
-import useRecipes from '../../../hooks/useRecipes';
 import useShelves from '../../../hooks/useShelves';
+import PropTypes from 'prop-types';
 
-const ShelfDropdown = () => {
-    const { addRecipeToShelf } = useRecipes();
-    const { getShelfOptions } = useShelves();
-
+const ShelfDropdown = ({ recipeId }) => {
+    const { addRecipeToShelf, getShelfOptions } = useShelves();
     const shelfOptions = getShelfOptions();
 
     return (
@@ -17,11 +15,15 @@ const ShelfDropdown = () => {
                 <div className='ms-2'>Add to shelf...</div>
                 <DropdownItem divider />
                 {shelfOptions.map((shelf) =>
-                    <DropdownItem key={shelf.id} className='text-center' onClick={() => addRecipeToShelf(shelf.id)}>{shelf.label}</DropdownItem>
+                    <DropdownItem key={shelf.id} className='text-center' onClick={() => addRecipeToShelf(shelf.id, recipeId)}>{shelf.label}</DropdownItem>
                 )}
             </DropdownMenu>
         </UncontrolledDropdown>
     )
 }
+
+ShelfDropdown.propTypes = {
+    recipeId: PropTypes.number.isRequired
+};
 
 export default ShelfDropdown;
