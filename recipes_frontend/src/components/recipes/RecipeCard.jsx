@@ -51,7 +51,6 @@ const RecipeCard = ({ recipe, shelfOptions, handleRemoveRecipeFromShelf }) => {
 
 RecipeCard.propTypes = {
     recipe: PropTypes.object.isRequired,
-    deleteRecipe: PropTypes.func,
     shelfOptions: PropTypes.array,
     handleRemoveRecipeFromShelf: PropTypes.func
 };

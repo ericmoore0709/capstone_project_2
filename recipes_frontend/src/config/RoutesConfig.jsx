@@ -9,6 +9,7 @@ import Profile from '../components/profiles/Profile';
 import RecipeDetails from '../components/recipes/RecipeDetails';
 import useRecipes from '../hooks/useRecipes';
 import useShelves from '../hooks/useShelves';
+import PublicRecipeList from "../components/recipes/public/PublicRecipeList";
 
 const RoutesConfig = () => {
     const { publicRecipes, userRecipes, recipeFormErrors } = useRecipes();
@@ -26,11 +27,7 @@ const RoutesConfig = () => {
             element: (
                 <ProtectedRoute
                     element={
-                        <RecipeList
-                            title="Public Recipes"
-                            recipes={publicRecipes}
-                            shelfOptions={getShelfOptions()}
-                        />
+                        <PublicRecipeList />
                     }
                 />
             ),
