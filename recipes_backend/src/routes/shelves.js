@@ -5,6 +5,7 @@ const newShelfSchema = require('../schemas/shelfNew.json');
 const updateShelfSchema = require('../schemas/shelfUpdate.json');
 const { BadRequestError, NotFoundError, ForbiddenError } = require('../../expressError');
 const { ensureLoggedIn } = require('../middleware/auth');
+const User = require('../models/user');
 const router = express.Router();
 
 /**
@@ -72,7 +73,20 @@ router.get('/users/:user_id', ensureLoggedIn, async (req, res, next) => {
 
         const populatedShelves = await Promise.all(
             shelves.map(async (shelf) => {
-                const recipes = await Shelf.getRecipes(shelf.id);
+                // get recipes for shelf
+                let recipes = [];
+                recipes = await Shelf.getRecipes(shelf.id);
+
+                // for each recipe, get author and add to recipe object
+                recipes = await Promise.all(
+                    recipes.map(async (recipe) => {
+                        const author = await User.getById(recipe.author_id);
+                        recipe.author = author;
+                        return { ...recipe, author };
+                    })
+                );
+
+                // add recipes to shelf
                 shelf.recipes = recipes;
                 return shelf;
             })

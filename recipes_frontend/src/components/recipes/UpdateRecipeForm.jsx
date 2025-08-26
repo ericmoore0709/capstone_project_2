@@ -1,18 +1,18 @@
 import { Button, Form, FormGroup, FormText, Input, Label } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import DOMPurify from 'dompurify';
 import { useParams } from 'react-router-dom';
 import useRecipes from '../../hooks/useRecipes';
-import { AuthContext } from '../../contexts/AuthContext';
 import Loading from '../util/Loading';
 import NotFound404 from '../util/NotFound404';
 import FormValidationErrorsDisplay from '../util/FormValidationErrorsDisplay';
+import useAuth from '../../hooks/useAuth';
 
-const UpdateRecipeForm = ({ updateRecipe, errors = [] }) => {
-
+const UpdateRecipeForm = () => {
     const { id } = useParams();
-    const { signedInUser } = useContext(AuthContext);
+    const { signedInUser } = useAuth();
+    const { getRecipeById, updateRecipe, recipeFormErrors: errors } = useRecipes();
     const [formData, setFormData] = useState(
         {
             title: '',
@@ -22,8 +22,6 @@ const UpdateRecipeForm = ({ updateRecipe, errors = [] }) => {
         }
     );
     const [isLoading, setIsLoading] = useState(true);
-
-    const { getRecipeById } = useRecipes();
 
     useEffect(() => {
         const getRecipe = async (id) => {
@@ -99,9 +97,6 @@ const UpdateRecipeForm = ({ updateRecipe, errors = [] }) => {
     );
 };
 
-UpdateRecipeForm.propTypes = {
-    updateRecipe: PropTypes.func.isRequired,
-    errors: PropTypes.array
-};
+UpdateRecipeForm.propTypes = {};
 
 export default UpdateRecipeForm;

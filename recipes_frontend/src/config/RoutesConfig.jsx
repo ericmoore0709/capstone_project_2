@@ -1,14 +1,15 @@
 import ProtectedRoute from "../components/nav/ProtectedRoute";
-import RecipeList from "../components/recipes/RecipeList";
 import NewRecipeForm from '../components/recipes/NewRecipeForm';
 import UpdateRecipeForm from '../components/recipes/UpdateRecipeForm';
-import ShelfList from '../components/shelves/ShelfList';
 import NewShelfForm from '../components/shelves/NewShelfForm';
 import UpdateShelfForm from '../components/shelves/UpdateShelfForm';
 import Profile from '../components/profiles/Profile';
 import RecipeDetails from '../components/recipes/RecipeDetails';
+import PublicRecipeList from "../components/recipes/public/PublicRecipeList";
+import UserRecipeList from "../components/recipes/user/UserRecipeList";
+import UserShelfList from "../components/shelves/user/UserShelfList";
 
-const routes = (handlers) => [
+export default [
     {
         path: '/',
         element: (
@@ -18,18 +19,7 @@ const routes = (handlers) => [
     {
         path: '/recipes',
         element: (
-            <ProtectedRoute
-                element={
-                    <RecipeList
-                        title="Public Recipes"
-                        recipes={handlers.publicRecipes}
-                        loading={handlers.publicLoading}
-                        deleteRecipe={handlers.deleteRecipe}
-                        shelfOptions={handlers.getShelfOptions()}
-                        addRecipeToShelf={handlers.addRecipeToShelf}
-                    />
-                }
-            />
+            <ProtectedRoute element={<PublicRecipeList />} />
         ),
     },
     {
@@ -39,105 +29,51 @@ const routes = (handlers) => [
     {
         path: '/recipes/new',
         element: (
-            <ProtectedRoute
-                element={
-                    <NewRecipeForm
-                        getRecipeById={handlers.getRecipeById}
-                        addRecipe={handlers.addRecipe}
-                        errors={handlers.recipeFormErrors}
-                    />
-                }
-            />
+            <ProtectedRoute element={<NewRecipeForm />} />
         ),
     },
     {
         path: '/recipes/my',
         element: (
             <ProtectedRoute
-                element={
-                    <RecipeList
-                        title="My Recipes"
-                        recipes={handlers.userRecipes}
-                        loading={handlers.userLoading}
-                        deleteRecipe={handlers.deleteRecipe}
-                    />
-                }
+                element={<UserRecipeList />}
             />
         ),
     },
     {
         path: '/recipes/:id/edit',
         element: (
-            <ProtectedRoute
-                element={
-                    <UpdateRecipeForm
-                        updateRecipe={handlers.updateRecipe}
-                        errors={handlers.recipeFormErrors}
-                    />
-                }
-            />
+            <ProtectedRoute element={<UpdateRecipeForm />} />
         ),
     },
     {
         path: '/shelves',
         element: (
-            <ProtectedRoute
-                element={
-                    <ShelfList
-                        shelves={handlers.userShelves}
-                        loading={handlers.shelvesLoading}
-                        updateShelf={handlers.updateShelf}
-                        errors={handlers.shelfFormErrors}
-                        deleteShelf={handlers.deleteShelf}
-                        removeRecipeFromShelf={handlers.removeRecipeFromShelf}
-                    />
-                }
-            />
+            <ProtectedRoute element={<UserShelfList />} />
         ),
     },
     {
         path: '/shelves/new',
         element: (
-            <ProtectedRoute
-                element={
-                    <NewShelfForm
-                        addShelf={handlers.addShelf}
-                        errors={handlers.shelfFormErrors}
-                    />
-                }
-            />
+            <ProtectedRoute element={<NewShelfForm />} />
         ),
     },
     {
         path: '/shelves/:id/edit',
         element: (
-            <ProtectedRoute
-                element={
-                    <UpdateShelfForm
-                        getShelf={handlers.getShelf}
-                        updateShelf={handlers.updateShelf}
-                        errors={handlers.shelfFormErrors}
-                    />
-                }
-            />
+            <ProtectedRoute element={<UpdateShelfForm />} />
         ),
     },
     {
         path: '/profiles/my',
         element: (
-            <ProtectedRoute
-                element={<Profile />}
-            />
+            <ProtectedRoute element={<Profile />} />
         ),
     },
     {
         path: '/profiles/:id',
         element: (
-            <ProtectedRoute
-                element={<Profile />}
-            />
+            <ProtectedRoute element={<Profile />} />
         ),
     },
 ];
-
-export default routes;

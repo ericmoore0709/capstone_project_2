@@ -2,8 +2,11 @@ import { Button, Card, CardBody, CardTitle } from 'reactstrap';
 import RecipeCard from '../recipes/RecipeCard';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
+import useShelves from '../../hooks/useShelves';
 
-const Shelf = ({ shelf, deleteShelf, removeRecipeFromShelf }) => {
+const Shelf = ({ shelf, removeRecipeFromShelf }) => {
+    const { deleteShelf } = useShelves();
+
     const handleRemoveRecipeFromShelf = (recipeId) => {
         removeRecipeFromShelf(shelf.id, recipeId);
     }
@@ -44,9 +47,7 @@ const Shelf = ({ shelf, deleteShelf, removeRecipeFromShelf }) => {
 }
 
 Shelf.propTypes = {
-    shelf: PropTypes.object,
-    deleteShelf: PropTypes.func,
-    removeRecipeFromShelf: PropTypes.func
+    shelf: PropTypes.object.isRequired
 };
 
 export default Shelf;

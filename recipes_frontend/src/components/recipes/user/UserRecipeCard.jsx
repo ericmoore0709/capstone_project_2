@@ -1,14 +1,13 @@
 import { Button, Card, CardBody, CardImg, CardText, CardTitle } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import defaultImage from '../../assets/defaultImage.jpg';
-import AuthorControls from './card/AuthorControls';
-import Metadata from './card/Metadata';
-import ShelfDropdown from './card/ShelfDropdown';
-import useAuth from '../../hooks/useAuth';
-import useRecipes from '../../hooks/useRecipes';
+import AuthorControls from '../card/AuthorControls';
+import Metadata from '../card/Metadata';
+import useAuth from '../../../hooks/useAuth';
+import useRecipes from '../../../hooks/useRecipes';
+import defaultImage from '../../../assets/defaultImage.jpg';
 
-const RecipeCard = ({ recipe, shelfOptions, handleRemoveRecipeFromShelf }) => {
+const UserRecipeCard = ({ recipe }) => {
     const { deleteRecipe } = useRecipes();
     const { signedInUser } = useAuth();
 
@@ -27,11 +26,6 @@ const RecipeCard = ({ recipe, shelfOptions, handleRemoveRecipeFromShelf }) => {
             <Card style={{ minWidth: '200px', minHeight: '250px', width: '23vw' }}>
                 {/* At-a-glance recipe info */}
                 <Link to={`/recipes/${recipe.id}`}><CardImg src={recipe.image || defaultImage} alt={recipe.title} style={{ maxHeight: '150px', objectFit: 'cover' }} /></Link>
-                {shelfOptions && <ShelfDropdown recipeId={recipe.id} />}
-
-                {handleRemoveRecipeFromShelf &&
-                    <Button onClick={() => handleRemoveRecipeFromShelf(recipe.id)} color='danger' className='position-absolute top-0 end-0'>-</Button>
-                }
 
                 <CardBody className='d-flex flex-column'>
                     <CardTitle tag='h5' className='text-center'><Link to={`/recipes/${recipe.id}`}>{recipe.title}</Link></CardTitle>
@@ -49,10 +43,8 @@ const RecipeCard = ({ recipe, shelfOptions, handleRemoveRecipeFromShelf }) => {
     );
 }
 
-RecipeCard.propTypes = {
-    recipe: PropTypes.object.isRequired,
-    shelfOptions: PropTypes.array,
-    handleRemoveRecipeFromShelf: PropTypes.func
+UserRecipeCard.propTypes = {
+    recipe: PropTypes.object.isRequired
 };
 
-export default RecipeCard;
+export default UserRecipeCard;

@@ -1,9 +1,9 @@
-import { CardGroup } from 'reactstrap';
-import Shelf from './Shelf';
-import Loading from '../util/Loading';
-import useShelves from '../../hooks/useShelves';
+import { CardGroup } from "reactstrap";
+import useShelves from "../../../hooks/useShelves";
+import Loading from "../../util/Loading";
+import UserShelf from "./UserShelf";
 
-const ShelfList = ({ removeRecipeFromShelf }) => {
+const UserShelfList = () => {
     const { userShelves: shelves, loading } = useShelves();
 
     if (loading) return <Loading />
@@ -20,10 +20,9 @@ const ShelfList = ({ removeRecipeFromShelf }) => {
             {/* Render shelves if available */}
             <CardGroup className='d-flex flex-wrap m-1'>
                 {shelves.map((shelf) => (
-                    <Shelf
+                    <UserShelf
                         key={shelf.id}
                         shelf={shelf}
-                        removeRecipeFromShelf={removeRecipeFromShelf}
                     />
                 ))}
             </CardGroup>
@@ -31,6 +30,6 @@ const ShelfList = ({ removeRecipeFromShelf }) => {
     );
 }
 
-ShelfList.propTypes = {};
+UserShelfList.propTypes = {};
 
-export default ShelfList;
+export default UserShelfList;

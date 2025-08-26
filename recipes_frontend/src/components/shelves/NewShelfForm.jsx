@@ -4,10 +4,11 @@ import { useContext, useState } from 'react';
 import DOMPurify from 'dompurify';
 import { AuthContext } from '../../contexts/AuthContext';
 import FormValidationErrorsDisplay from '../util/FormValidationErrorsDisplay';
+import useShelves from '../../hooks/useShelves';
 
-const NewShelfForm = ({ addShelf, errors = [] }) => {
-
+const NewShelfForm = () => {
     const { signedInUser } = useContext(AuthContext);
+    const { addShelf, shelfFormErrors: errors } = useShelves();
 
     const INITIAL_FORM_DATA = {
         label: '',
@@ -52,9 +53,6 @@ const NewShelfForm = ({ addShelf, errors = [] }) => {
     );
 };
 
-NewShelfForm.propTypes = {
-    addShelf: PropTypes.func.isRequired,
-    errors: PropTypes.array,
-};
+NewShelfForm.propTypes = {};
 
 export default NewShelfForm;

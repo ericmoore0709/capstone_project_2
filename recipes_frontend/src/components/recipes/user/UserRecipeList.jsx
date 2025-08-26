@@ -1,17 +1,15 @@
 import { CardGroup } from 'reactstrap';
-import RecipeCard from './RecipeCard';
-import PropTypes from 'prop-types';
-import Loading from '../util/Loading';
-import useRecipes from '../../hooks/useRecipes';
-import useShelves from '../../hooks/useShelves';
+import UserRecipeCard from './UserRecipeCard';
+import useRecipes from '../../../hooks/useRecipes';
+import Loading from '../../util/Loading';
 
-const RecipeList = ({ title, recipes, shelfOptions }) => {
-    const { publicLoading: loading } = useRecipes();
-    
+const UserRecipeList = () => {
+    const { userLoading: loading, userRecipes: recipes } = useRecipes();
+
     if (loading) return <Loading />;
     return (
         <div>
-            <h2 className='text-center mt-2'>{title}</h2>
+            <h2 className='text-center mt-2'>My Recipes</h2>
 
             {/* Show message if there are no recipes to display */}
             {recipes.length === 0 && (
@@ -21,10 +19,9 @@ const RecipeList = ({ title, recipes, shelfOptions }) => {
             {/* Render recipes if available */}
             <CardGroup className='d-flex flex-wrap m-1 w-100 justify-content-center'>
                 {recipes.map((recipe) => (
-                    <RecipeCard
+                    <UserRecipeCard
                         key={recipe.id}
                         recipe={recipe}
-                        shelfOptions={shelfOptions}
                     />
                 ))}
             </CardGroup>
@@ -32,10 +29,6 @@ const RecipeList = ({ title, recipes, shelfOptions }) => {
     );
 }
 
-RecipeList.propTypes = {
-    title: PropTypes.string,
-    recipes: PropTypes.array.isRequired,
-    shelfOptions: PropTypes.array
-};
+UserRecipeList.propTypes = {};
 
-export default RecipeList;
+export default UserRecipeList;

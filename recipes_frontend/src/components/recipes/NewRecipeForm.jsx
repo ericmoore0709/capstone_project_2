@@ -1,20 +1,22 @@
 import { Button, Form, FormGroup, FormText, Input, Label } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import DOMPurify from 'dompurify';
-import { AuthContext } from '../../contexts/AuthContext';
 import FormValidationErrorsDisplay from '../util/FormValidationErrorsDisplay';
+import useRecipes from '../../hooks/useRecipes';
+import useAuth from '../../hooks/useAuth';
 
-const NewRecipeForm = ({ addRecipe, errors = [] }) => {
+const NewRecipeForm = () => {
+    const { addRecipe, recipeFormErrors: errors } = useRecipes();
 
     const INITIAL_FORM_DATA = {
         title: '',
         description: '',
         image: '',
-        visibility_id: 1, // default to 'Public'
+        visibility_id: 1, // defaults to 'Public'
     };
 
-    const { signedInUser } = useContext(AuthContext);
+    const { signedInUser } = useAuth();
 
     const [formData, setFormData] = useState(INITIAL_FORM_DATA);
 
@@ -77,9 +79,6 @@ const NewRecipeForm = ({ addRecipe, errors = [] }) => {
     );
 };
 
-NewRecipeForm.propTypes = {
-    addRecipe: PropTypes.func.isRequired,
-    errors: PropTypes.array
-};
+NewRecipeForm.propTypes = {};
 
 export default NewRecipeForm;

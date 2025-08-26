@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react';
 import DOMPurify from 'dompurify';
 import { useParams } from 'react-router-dom';
 import FormValidationErrorsDisplay from '../util/FormValidationErrorsDisplay';
+import useShelves from '../../hooks/useShelves';
 
-const UpdateShelfForm = ({ getShelf, updateShelf, errors = [] }) => {
+const UpdateShelfForm = () => {
+    const { getShelf, updateShelf, shelfFormErrors: errors } = useShelves();
 
     const { id } = useParams();
     const [formData, setFormData] = useState(
@@ -58,10 +60,6 @@ const UpdateShelfForm = ({ getShelf, updateShelf, errors = [] }) => {
     );
 };
 
-UpdateShelfForm.propTypes = {
-    getShelf: PropTypes.func.isRequired,
-    updateShelf: PropTypes.func.isRequired,
-    errors: PropTypes.array
-};
+UpdateShelfForm.propTypes = {};
 
 export default UpdateShelfForm;
