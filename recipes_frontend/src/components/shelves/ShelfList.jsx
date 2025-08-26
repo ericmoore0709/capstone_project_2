@@ -1,5 +1,4 @@
 import { CardGroup } from 'reactstrap';
-import PropTypes from 'prop-types';
 import Shelf from './Shelf';
 import Loading from '../util/Loading';
 import useShelves from '../../hooks/useShelves';

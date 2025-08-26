@@ -7,9 +7,8 @@ import useShelves from '../../hooks/useShelves';
 
 const RecipeList = ({ title, recipes, shelfOptions }) => {
     const { publicLoading: loading } = useRecipes();
-
+    
     if (loading) return <Loading />;
-
     return (
         <div>
             <h2 className='text-center mt-2'>{title}</h2>

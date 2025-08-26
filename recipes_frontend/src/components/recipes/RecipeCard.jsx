@@ -42,7 +42,7 @@ const RecipeCard = ({ recipe, shelfOptions, handleRemoveRecipeFromShelf }) => {
                     {/* Meta Info*/}
                     <Metadata recipe={recipe} />
                     {/* Author controls */}
-                    {(recipe.author_id === signedInUser.id) && <AuthorControls recipe={recipe} handleOnDelete={handleOnDelete} />}
+                    {(recipe.author_id === signedInUser.id) && <AuthorControls recipeId={recipe.id} handleOnDelete={handleOnDelete} />}
                 </>}
             </Card>
         </div>

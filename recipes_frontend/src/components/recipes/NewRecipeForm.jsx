@@ -7,7 +7,6 @@ import useRecipes from '../../hooks/useRecipes';
 import useAuth from '../../hooks/useAuth';
 
 const NewRecipeForm = ({ errors = [] }) => {
-
     const { addRecipe } = useRecipes();
 
     const INITIAL_FORM_DATA = {
