@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 import AuthProvider from './providers/AuthProvider.jsx'
 import NotificationProvider from './providers/NotificationProvider.jsx'
 import ShelvesProvider from './providers/ShelvesProvider.jsx'
+import RecipesProvider from './providers/RecipesProvider.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -13,7 +14,9 @@ createRoot(document.getElementById('root')).render(
       <AuthProvider>
         <NotificationProvider>
           <ShelvesProvider>
-            <App />
+            <RecipesProvider>
+              <App />
+            </RecipesProvider>
           </ShelvesProvider>
         </NotificationProvider>
       </AuthProvider>
