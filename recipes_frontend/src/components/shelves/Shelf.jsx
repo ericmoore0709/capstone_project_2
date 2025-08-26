@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import useShelves from '../../hooks/useShelves';
 
-const Shelf = ({ shelf }) => {
-    const { deleteShelf, removeRecipeFromShelf } = useShelves();
+const Shelf = ({ shelf, removeRecipeFromShelf }) => {
+    const { deleteShelf } = useShelves();
 
     const handleRemoveRecipeFromShelf = (recipeId) => {
         removeRecipeFromShelf(shelf.id, recipeId);

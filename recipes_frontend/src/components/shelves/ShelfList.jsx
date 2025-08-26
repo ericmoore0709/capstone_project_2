@@ -3,8 +3,8 @@ import Shelf from './Shelf';
 import Loading from '../util/Loading';
 import useShelves from '../../hooks/useShelves';
 
-const ShelfList = () => {
-    const { userShelves: shelves, loading, deleteShelf, removeRecipeFromShelf } = useShelves();
+const ShelfList = ({ removeRecipeFromShelf }) => {
+    const { userShelves: shelves, loading, deleteShelf } = useShelves();
 
     if (loading) return <Loading />
 
@@ -23,7 +23,6 @@ const ShelfList = () => {
                     <Shelf
                         key={shelf.id}
                         shelf={shelf}
-                        deleteShelf={deleteShelf}
                         removeRecipeFromShelf={removeRecipeFromShelf}
                     />
                 ))}

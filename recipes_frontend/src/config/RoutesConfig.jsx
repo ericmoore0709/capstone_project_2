@@ -11,8 +11,8 @@ import useRecipes from '../hooks/useRecipes';
 import useShelves from '../hooks/useShelves';
 
 const RoutesConfig = () => {
-    const { publicRecipes, userRecipes, publicLoading, userLoading, recipeFormErrors, addRecipe, getRecipeById, updateRecipe, deleteRecipe } = useRecipes();
-    const { userShelves, loading: shelvesLoading, shelfFormErrors, addShelf, getShelf, updateShelf, deleteShelf, addRecipeToShelf, getShelfOptions, removeRecipeFromShelf } = useShelves();
+    const { publicRecipes, userRecipes, recipeFormErrors } = useRecipes();
+    const { shelfFormErrors, getShelfOptions, removeRecipeFromShelf } = useShelves();
 
     return [
         {
@@ -29,10 +29,7 @@ const RoutesConfig = () => {
                         <RecipeList
                             title="Public Recipes"
                             recipes={publicRecipes}
-                            loading={publicLoading}
-                            deleteRecipe={deleteRecipe}
                             shelfOptions={getShelfOptions()}
-                            addRecipeToShelf={addRecipeToShelf}
                         />
                     }
                 />
@@ -48,8 +45,6 @@ const RoutesConfig = () => {
                 <ProtectedRoute
                     element={
                         <NewRecipeForm
-                            getRecipeById={getRecipeById}
-                            addRecipe={addRecipe}
                             errors={recipeFormErrors}
                         />
                     }
@@ -64,8 +59,6 @@ const RoutesConfig = () => {
                         <RecipeList
                             title="My Recipes"
                             recipes={userRecipes}
-                            loading={userLoading}
-                            deleteRecipe={deleteRecipe}
                         />
                     }
                 />
@@ -77,7 +70,6 @@ const RoutesConfig = () => {
                 <ProtectedRoute
                     element={
                         <UpdateRecipeForm
-                            updateRecipe={updateRecipe}
                             errors={recipeFormErrors}
                         />
                     }
@@ -89,14 +81,7 @@ const RoutesConfig = () => {
             element: (
                 <ProtectedRoute
                     element={
-                        <ShelfList
-                            shelves={userShelves}
-                            loading={shelvesLoading}
-                            updateShelf={updateShelf}
-                            errors={shelfFormErrors}
-                            deleteShelf={deleteShelf}
-                            removeRecipeFromShelf={removeRecipeFromShelf}
-                        />
+                        <ShelfList removeRecipeFromShelf={removeRecipeFromShelf} />
                     }
                 />
             ),
@@ -107,7 +92,6 @@ const RoutesConfig = () => {
                 <ProtectedRoute
                     element={
                         <NewShelfForm
-                            addShelf={addShelf}
                             errors={shelfFormErrors}
                         />
                     }
@@ -120,8 +104,6 @@ const RoutesConfig = () => {
                 <ProtectedRoute
                     element={
                         <UpdateShelfForm
-                            getShelf={getShelf}
-                            updateShelf={updateShelf}
                             errors={shelfFormErrors}
                         />
                     }

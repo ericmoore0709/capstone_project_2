@@ -37,7 +37,7 @@ const Profile = () => {
                     {publicShelf &&
                         <div>
                             <h3 className='text-center mt-5'>{`${profile.user.firstName}'s`} Public Recipes</h3>
-                            <Shelf shelf={publicShelf} signedInUser={signedInUser} />
+                            <Shelf shelf={publicShelf} />
                         </div>
                     }
                 </>
