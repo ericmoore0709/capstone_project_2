@@ -2,8 +2,6 @@ import { Route, Routes, useNavigate } from 'react-router-dom';
 import './App.css';
 import SiteNavbar from './components/nav/SiteNavbar';
 import { useEffect } from 'react';
-import useRecipes from './hooks/useRecipes';
-import useShelves from './hooks/useShelves';
 import useAuth from './hooks/useAuth';
 import routes from './config/RoutesConfig';
 import ClientNotification from './components/util/ClientNotification';
@@ -22,61 +20,13 @@ function App() {
     setSessionToken();
   }, [getTokenFromRequest, navigate, signedInUser]);
 
-  const {
-    publicRecipes,
-    userRecipes,
-    publicLoading,
-    userLoading,
-    recipeFormErrors,
-    addRecipe,
-    getRecipeById,
-    updateRecipe,
-    deleteRecipe
-  } = useRecipes();
-  
-  const {
-    userShelves,
-    loading: shelvesLoading,
-    shelfFormErrors,
-    addShelf,
-    getShelf,
-    updateShelf,
-    deleteShelf,
-    addRecipeToShelf,
-    getShelfOptions,
-    removeRecipeFromShelf
-  } = useShelves();
-
-  const handlers = {
-    signedInUser,
-    publicRecipes,
-    userRecipes,
-    publicLoading,
-    userLoading,
-    recipeFormErrors,
-    addRecipe,
-    getRecipeById,
-    updateRecipe,
-    deleteRecipe,
-    userShelves,
-    shelvesLoading,
-    shelfFormErrors,
-    addShelf,
-    getShelf,
-    updateShelf,
-    deleteShelf,
-    getShelfOptions,
-    addRecipeToShelf,
-    removeRecipeFromShelf
-  };
-
   return (
     <>
       <SiteNavbar logoutUser={logoutUser} />
       <ClientNotification />
 
       <Routes>
-        {routes(handlers).map((route, index) => (
+        {routes().map((route, index) => (
           <Route key={index} path={route.path} element={route.element} />
         ))}
       </Routes>
