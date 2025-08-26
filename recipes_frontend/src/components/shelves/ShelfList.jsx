@@ -4,7 +4,7 @@ import Loading from '../util/Loading';
 import useShelves from '../../hooks/useShelves';
 
 const ShelfList = ({ removeRecipeFromShelf }) => {
-    const { userShelves: shelves, loading, deleteShelf } = useShelves();
+    const { userShelves: shelves, loading } = useShelves();
 
     if (loading) return <Loading />
 
