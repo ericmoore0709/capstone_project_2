@@ -1,16 +1,15 @@
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import './App.css';
 import SiteNavbar from './components/nav/SiteNavbar';
-import { useEffect, useState } from 'react';
-import { Alert } from 'reactstrap';
+import { useEffect } from 'react';
 import useRecipes from './hooks/useRecipes';
 import useShelves from './hooks/useShelves';
 import useAuth from './hooks/useAuth';
 import routes from './config/RoutesConfig';
+import ClientNotification from './components/util/ClientNotification';
 
 function App() {
-  const [clientMessage, setClientMessage] = useState({ color: 'info', message: '' });
-  const { signedInUser, getTokenFromRequest, token, logoutUser } = useAuth();
+  const { signedInUser, getTokenFromRequest, logoutUser } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,7 +32,7 @@ function App() {
     getRecipeById,
     updateRecipe,
     deleteRecipe
-  } = useRecipes(setClientMessage);
+  } = useRecipes();
 
   const {
     userShelves,
@@ -45,7 +44,7 @@ function App() {
     deleteShelf,
     addRecipeToShelf,
     removeRecipeFromShelf
-  } = useShelves(setClientMessage);
+  } = useShelves();
 
   /**
    * Returns a list of (shelfId, shelfLabel) KV pairs
@@ -56,13 +55,6 @@ function App() {
       return { id: shelf.id, label: shelf.label };
     });
     return shelfOptions;
-  }
-
-  /**
-   * Closes the client message alert
-   */
-  const clientMessageXClicked = () => {
-    setClientMessage({ color: 'info', message: '' });
   }
 
   const handlers = {
@@ -90,23 +82,16 @@ function App() {
 
   return (
     <>
-        <SiteNavbar logoutUser={logoutUser} />
-        {clientMessage.message && (
-          <Alert
-            color={clientMessage.color}
-            isOpen={(clientMessage.message !== "")}
-            toggle={clientMessageXClicked}>
-            {clientMessage.message}
-          </Alert>
-        )}
+      <SiteNavbar logoutUser={logoutUser} />
+      <ClientNotification />
 
-        <Routes>
-          {routes(handlers).map((route, index) => (
-            <Route key={index} path={route.path} element={route.element} />
-          ))}
-        </Routes>
+      <Routes>
+        {routes(handlers).map((route, index) => (
+          <Route key={index} path={route.path} element={route.element} />
+        ))}
+      </Routes>
 
-        <div className='text-center' style={{ width: '100%', position: 'sticky', bottom: 5 }}><footer>&copy; Eric Moore 2024</footer></div>
+      <div className='text-center' style={{ width: '100%', position: 'sticky', bottom: 5 }}><footer>&copy; Eric Moore 2024</footer></div>
     </>
   );
 }

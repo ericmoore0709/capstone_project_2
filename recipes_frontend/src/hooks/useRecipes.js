@@ -4,8 +4,10 @@ import useShelves from "./useShelves";
 import { useNavigate } from "react-router-dom";
 import useAuth from "./useAuth";
 import { AuthContext } from "../contexts/AuthContext";
+import useNotification from "./useNotification";
 
-const useRecipes = (setClientMessage) => {
+const useRecipes = () => {
+    const { setClientMessage } = useNotification();
     const [publicRecipes, setPublicRecipes] = useState([]);
     const [userRecipes, setUserRecipes] = useState([]);
     const [publicLoading, setPublicLoading] = useState(false);

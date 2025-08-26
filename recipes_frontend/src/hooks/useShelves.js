@@ -3,8 +3,11 @@ import RecipesApi from "../../api";
 import { useNavigate } from "react-router-dom";
 import useAuth from "./useAuth";
 import { AuthContext } from "../contexts/AuthContext";
+import useNotification from "./useNotification";
 
-const useShelves = (setClientMessage) => {
+const useShelves = () => {
+    const { setClientMessage } = useNotification();
+
     const [userShelves, setUserShelves] = useState([]);
     const [loading, setLoading] = useState(false);
     const [shelfFormErrors, setShelfFormErrors] = useState([]);
