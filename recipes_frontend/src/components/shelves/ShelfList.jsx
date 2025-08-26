@@ -2,8 +2,10 @@ import { CardGroup } from 'reactstrap';
 import PropTypes from 'prop-types';
 import Shelf from './Shelf';
 import Loading from '../util/Loading';
+import useShelves from '../../hooks/useShelves';
 
-const ShelfList = ({ shelves, loading, deleteShelf, removeRecipeFromShelf }) => {
+const ShelfList = () => {
+    const { userShelves: shelves, loading, deleteShelf, removeRecipeFromShelf } = useShelves();
 
     if (loading) return <Loading />
 
@@ -31,11 +33,6 @@ const ShelfList = ({ shelves, loading, deleteShelf, removeRecipeFromShelf }) => 
     );
 }
 
-ShelfList.propTypes = {
-    shelves: PropTypes.array,
-    loading: PropTypes.bool,
-    deleteShelf: PropTypes.func,
-    removeRecipeFromShelf: PropTypes.func.isRequired
-};
+ShelfList.propTypes = {};
 
 export default ShelfList;
