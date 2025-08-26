@@ -1,5 +1,4 @@
 import ProtectedRoute from "../components/nav/ProtectedRoute";
-import RecipeList from "../components/recipes/RecipeList";
 import NewRecipeForm from '../components/recipes/NewRecipeForm';
 import UpdateRecipeForm from '../components/recipes/UpdateRecipeForm';
 import ShelfList from '../components/shelves/ShelfList';
@@ -13,8 +12,8 @@ import PublicRecipeList from "../components/recipes/public/PublicRecipeList";
 import UserRecipeList from "../components/recipes/user/UserRecipeList";
 
 const RoutesConfig = () => {
-    const { publicRecipes, userRecipes, recipeFormErrors } = useRecipes();
-    const { shelfFormErrors, getShelfOptions, removeRecipeFromShelf } = useShelves();
+    const { recipeFormErrors } = useRecipes();
+    const { shelfFormErrors, removeRecipeFromShelf } = useShelves();
 
     return [
         {
