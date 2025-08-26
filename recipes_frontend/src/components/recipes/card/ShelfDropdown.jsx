@@ -1,7 +1,13 @@
-import PropTypes from 'prop-types';
 import { DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from 'reactstrap';
+import useRecipes from '../../../hooks/useRecipes';
+import useShelves from '../../../hooks/useShelves';
 
-const ShelfDropdown = ({ shelfOptions, handleAddRecipeToShelf }) => {
+const ShelfDropdown = () => {
+    const { addRecipeToShelf } = useRecipes();
+    const { getShelfOptions } = useShelves();
+
+    const shelfOptions = getShelfOptions();
+
     return (
         <UncontrolledDropdown className='position-absolute top-0 end-0'>
             <DropdownToggle color='primary'>
@@ -11,16 +17,11 @@ const ShelfDropdown = ({ shelfOptions, handleAddRecipeToShelf }) => {
                 <div className='ms-2'>Add to shelf...</div>
                 <DropdownItem divider />
                 {shelfOptions.map((shelf) =>
-                    <DropdownItem key={shelf.id} className='text-center' onClick={() => handleAddRecipeToShelf(shelf.id)}>{shelf.label}</DropdownItem>
+                    <DropdownItem key={shelf.id} className='text-center' onClick={() => addRecipeToShelf(shelf.id)}>{shelf.label}</DropdownItem>
                 )}
             </DropdownMenu>
         </UncontrolledDropdown>
     )
-}
-
-ShelfDropdown.propTypes = {
-    shelfOptions: PropTypes.array.isRequired,
-    handleAddRecipeToShelf: PropTypes.func.isRequired
 }
 
 export default ShelfDropdown;

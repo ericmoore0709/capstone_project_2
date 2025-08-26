@@ -2,8 +2,11 @@ import { CardGroup } from 'reactstrap';
 import RecipeCard from './RecipeCard';
 import PropTypes from 'prop-types';
 import Loading from '../util/Loading';
+import useRecipes from '../../hooks/useRecipes';
+import useShelves from '../../hooks/useShelves';
 
-const RecipeList = ({ title, recipes, loading, deleteRecipe, shelfOptions, addRecipeToShelf }) => {
+const RecipeList = ({ title, recipes, shelfOptions }) => {
+    const { publicLoading: loading } = useRecipes();
 
     if (loading) return <Loading />;
 
@@ -22,9 +25,7 @@ const RecipeList = ({ title, recipes, loading, deleteRecipe, shelfOptions, addRe
                     <RecipeCard
                         key={recipe.id}
                         recipe={recipe}
-                        deleteRecipe={deleteRecipe}
                         shelfOptions={shelfOptions}
-                        addRecipeToShelf={addRecipeToShelf}
                     />
                 ))}
             </CardGroup>
@@ -35,10 +36,7 @@ const RecipeList = ({ title, recipes, loading, deleteRecipe, shelfOptions, addRe
 RecipeList.propTypes = {
     title: PropTypes.string.isRequired,
     recipes: PropTypes.array.isRequired,
-    loading: PropTypes.bool.isRequired,
-    deleteRecipe: PropTypes.func,
-    shelfOptions: PropTypes.array,
-    addRecipeToShelf: PropTypes.func
+    shelfOptions: PropTypes.array
 };
 
 export default RecipeList;

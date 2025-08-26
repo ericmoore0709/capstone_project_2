@@ -153,6 +153,17 @@ const ShelvesProvider = ({ children }) => {
     }
 
     /**
+   * Returns a list of (shelfId, shelfLabel) KV pairs
+   * @returns a list of (shelfId, shelfLabel) KV pairs
+   */
+    const getShelfOptions = () => {
+        const shelfOptions = userShelves.map((shelf) => {
+            return { id: shelf.id, label: shelf.label };
+        });
+        return shelfOptions;
+    }
+
+    /**
      * Removes recipe from shelf
      * @param {*} shelfId the shelf ID
      * @param {*} recipeId the recipe ID
@@ -188,6 +199,7 @@ const ShelvesProvider = ({ children }) => {
             updateShelf,
             deleteShelf,
             addRecipeToShelf,
+            getShelfOptions,
             removeRecipeFromShelf
         }}>
             {children}

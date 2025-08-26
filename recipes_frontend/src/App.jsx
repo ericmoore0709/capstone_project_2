@@ -33,7 +33,7 @@ function App() {
     updateRecipe,
     deleteRecipe
   } = useRecipes();
-
+  
   const {
     userShelves,
     loading: shelvesLoading,
@@ -43,19 +43,9 @@ function App() {
     updateShelf,
     deleteShelf,
     addRecipeToShelf,
+    getShelfOptions,
     removeRecipeFromShelf
   } = useShelves();
-
-  /**
-   * Returns a list of (shelfId, shelfLabel) KV pairs
-   * @returns a list of (shelfId, shelfLabel) KV pairs
-   */
-  const getShelfOptions = () => {
-    const shelfOptions = userShelves?.map((shelf) => {
-      return { id: shelf.id, label: shelf.label };
-    });
-    return shelfOptions;
-  }
 
   const handlers = {
     signedInUser,

@@ -2,19 +2,15 @@ import { Button, Card, CardBody, CardImg, CardText, CardTitle } from 'reactstrap
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import defaultImage from '../../assets/defaultImage.jpg';
-import { AuthContext } from '../../contexts/AuthContext';
-import { useContext } from 'react';
 import AuthorControls from './card/AuthorControls';
 import Metadata from './card/Metadata';
 import ShelfDropdown from './card/ShelfDropdown';
+import useAuth from '../../hooks/useAuth';
+import useRecipes from '../../hooks/useRecipes';
 
-const RecipeCard = ({ recipe, deleteRecipe, shelfOptions, addRecipeToShelf, handleRemoveRecipeFromShelf }) => {
-
-    const { signedInUser } = useContext(AuthContext);
-
-    const handleAddRecipeToShelf = async (shelfId) => {
-        addRecipeToShelf(shelfId, recipe.id);
-    }
+const RecipeCard = ({ recipe, shelfOptions, handleRemoveRecipeFromShelf }) => {
+    const { deleteRecipe } = useRecipes();
+    const { signedInUser } = useAuth();
 
     const deletionConfirmed = (msg) => {
         return window.confirm(msg);
@@ -31,7 +27,7 @@ const RecipeCard = ({ recipe, deleteRecipe, shelfOptions, addRecipeToShelf, hand
             <Card style={{ minWidth: '200px', minHeight: '250px', width: '23vw' }}>
                 {/* At-a-glance recipe info */}
                 <Link to={`/recipes/${recipe.id}`}><CardImg src={recipe.image || defaultImage} alt={recipe.title} style={{ maxHeight: '150px', objectFit: 'cover' }} /></Link>
-                {shelfOptions && <ShelfDropdown shelfOptions={shelfOptions} handleAddRecipeToShelf={handleAddRecipeToShelf} />}
+                {shelfOptions && <ShelfDropdown />}
 
                 {handleRemoveRecipeFromShelf &&
                     <Button onClick={() => handleRemoveRecipeFromShelf(recipe.id)} color='danger' className='position-absolute top-0 end-0'>-</Button>
@@ -57,7 +53,6 @@ RecipeCard.propTypes = {
     recipe: PropTypes.object.isRequired,
     deleteRecipe: PropTypes.func,
     shelfOptions: PropTypes.array,
-    addRecipeToShelf: PropTypes.func,
     handleRemoveRecipeFromShelf: PropTypes.func
 };
 
