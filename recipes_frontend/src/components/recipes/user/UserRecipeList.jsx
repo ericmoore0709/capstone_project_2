@@ -1,7 +1,7 @@
 import { CardGroup } from 'reactstrap';
-import UserRecipeCard from './UserRecipeCard';
 import useRecipes from '../../../hooks/useRecipes';
 import Loading from '../../util/Loading';
+import RecipeCard from '../RecipeCard';
 
 const UserRecipeList = () => {
     const { userLoading: loading, userRecipes: recipes } = useRecipes();
@@ -19,7 +19,7 @@ const UserRecipeList = () => {
             {/* Render recipes if available */}
             <CardGroup className='d-flex flex-wrap m-1 w-100 justify-content-center'>
                 {recipes.map((recipe) => (
-                    <UserRecipeCard
+                    <RecipeCard
                         key={recipe.id}
                         recipe={recipe}
                     />
