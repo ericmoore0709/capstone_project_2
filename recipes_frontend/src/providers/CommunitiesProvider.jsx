@@ -6,32 +6,52 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 const CommunitiesProvider = ({ children }) => {
-    const { token } = useAuth();
+    const { signedInUser, token } = useAuth();
     const { setClientMessage } = useNotification();
     const navigate = useNavigate();
 
-    const [communities, setCommunities] = useState([]);
+    const [publicCommunities, setPublicCommunities] = useState([]);
+    const [userCommunities, setUserCommunities] = useState([]);
     const [loading, setLoading] = useState(false);
     const [formErrors, setFormErrors] = useState([]);
 
     /**
-     * Fetches a list of communities from the server.
+     * Fetches a list of public communities from the server.
      */
-    const fetchCommunities = useCallback(async () => {
+    const fetchPublicCommunities = useCallback(async () => {
         setLoading(true);
         try {
-            const communities = await RecipesApi.getCommunities(token);
-            setCommunities(communities);
+            const communities = await RecipesApi.getAllCommunities(token);
+            if (communities) setPublicCommunities(communities);
+            else setPublicCommunities([]);
         } catch (err) {
-            console.error('Error fetching communities:', err);
+            console.error('Error fetching public communities:', err);
+            setPublicCommunities([]);
         } finally {
             setLoading(false);
         }
-    });
+    }, [token]);
+
+    const fetchUserCommunities = useCallback(async (userId) => {
+        setLoading(true);
+        if (signedInUser?.id && token) {
+            try {
+                const communities = await RecipesApi.getCommunitiesByUserId(+userId, token);
+                if (communities) setUserCommunities(communities);
+                else setUserCommunities([]);
+            } catch (err) {
+                console.error('Error fetching user communities:', err);
+                setUserCommunities([]);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [signedInUser, token]);
 
     useEffect(() => {
-        fetchCommunities();
-    }, [fetchCommunities]);
+        fetchPublicCommunities();
+        fetchUserCommunities(signedInUser?.id);
+    }, [fetchPublicCommunities, fetchUserCommunities]);
 
     /**
      * Adds a community to the website.
@@ -42,10 +62,10 @@ const CommunitiesProvider = ({ children }) => {
         try {
             const result = await RecipesApi.createNewCommunity(community, token);
             if (result.error) {
-                setFormErrors(result.error);
+                setFormErrors([result.error]);
             } else if (result.community) {
                 const createdCommunity = result.community;
-                setCommunities((communities) => [createdCommunity, ...communities]);
+                setPublicCommunities((communities) => [createdCommunity, ...communities]);
 
                 // clear errors, provide success message, navigate back
                 setFormErrors([]);
@@ -79,15 +99,16 @@ const CommunitiesProvider = ({ children }) => {
      * @param {*} userId the ID of the user
      * @returns list of communities
      */
-    const getCommunitiesByUserId = useCallback(async (userId) => {
+    const getCommunitiesByUserId = async (userId) => {
         try {
             const result = await RecipesApi.getCommunitiesByUserId(+userId, token);
-            return result;
+            if (result) return result;
+            else return [];
         } catch (err) {
             console.log('Error getting communities by user ID:', err);
-            throw err;
+            return [];
         }
-    }, [token]);
+    };
 
     /**
      * Update a community
@@ -101,7 +122,7 @@ const CommunitiesProvider = ({ children }) => {
                 setFormErrors(result.error);
             } else if (result.community) {
                 const updatedCommunity = result.community;
-                setCommunities((communities) => communities.map(c => c.id === updatedCommunity.id ? updatedCommunity : c));
+                setPublicCommunities((communities) => communities.map(c => c.id === updatedCommunity.id ? updatedCommunity : c));
 
                 // clear errors, provide success message, navigate back
                 setFormErrors([]);
@@ -123,7 +144,7 @@ const CommunitiesProvider = ({ children }) => {
         try {
             const result = await RecipesApi.deleteCommunity(id, token);
             if (result.success) {
-                setCommunities((communities) => communities.filter(c => c.id !== id));
+                setPublicCommunities((communities) => communities.filter(c => c.id !== id));
                 setClientMessage({ color: 'success', message: 'Community deleted.' });
             } else {
                 throw new Error('Something went wrong while deleting the community.');
@@ -135,12 +156,12 @@ const CommunitiesProvider = ({ children }) => {
 
     return (
         <CommunitiesContext.Provider value={{
-            communities,
+            publicCommunities,
+            userCommunities,
             loading,
             formErrors,
             addCommunity,
             getCommunityById,
-            getCommunitiesByUserId,
             updateCommunity,
             deleteCommunity
         }}>

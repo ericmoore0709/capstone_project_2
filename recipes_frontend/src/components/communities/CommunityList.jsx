@@ -1,11 +1,8 @@
-import useCommunities from "../../hooks/useCommunities";
+import PropTypes from 'prop-types';
 
-const CommunityList = () => {
-    const { communities } = useCommunities();
-
+const CommunityList = ({ communities = [] }) => {
     return (
         <div>
-            <h1>Communities</h1>
             {communities.length === 0 ? (
                 <p className="text-center my-3">No communities to display.</p>
             ) : (
@@ -19,6 +16,8 @@ const CommunityList = () => {
     );
 }
 
-CommunityList.propTypes = {};
+CommunityList.propTypes = {
+    communities: PropTypes.array.isRequired
+};
 
 export default CommunityList;

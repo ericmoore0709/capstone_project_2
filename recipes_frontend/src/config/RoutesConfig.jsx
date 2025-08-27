@@ -12,6 +12,7 @@ import CommunityList from "../components/communities/CommunityList";
 import NewCommunityForm from "../components/communities/NewCommunityForm";
 import CommunityDetails from "../components/communities/CommunityDetails";
 import UserCommunityList from "../components/communities/user/UserCommunityList";
+import PublicCommunityList from "../components/communities/public/PublicCommunityList";
 
 export default [
     {
@@ -83,7 +84,7 @@ export default [
     {
         path: '/communities',
         element: (
-            <ProtectedRoute element={<CommunityList />} />
+            <ProtectedRoute element={<PublicCommunityList />} />
         ),
     },
     {

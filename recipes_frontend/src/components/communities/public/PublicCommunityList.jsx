@@ -1,17 +1,17 @@
 import useCommunities from "../../../hooks/useCommunities";
 import CommunityList from "../CommunityList";
 
-const UserCommunityList = () => {
-    const { userCommunities: communities } = useCommunities();
+const PublicCommunityList = () => {
+    const { publicCommunities: communities } = useCommunities();
 
     return (
         <div>
-            <h1>My Communities</h1>
+            <h1>Public Communities</h1>
             <CommunityList communities={communities} />
         </div>
     );
 }
 
-UserCommunityList.propTypes = {};
+PublicCommunityList.propTypes = {};
 
-export default UserCommunityList;
+export default PublicCommunityList;
