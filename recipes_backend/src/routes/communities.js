@@ -4,7 +4,8 @@ const { BadRequestError, NotFoundError, ForbiddenError } = require('../../expres
 const { ensureLoggedIn } = require('../middleware/auth');
 // const Community = require('../models/community');
 // const User = require('../models/user');
-// const newCommunitySchema = require('../schemas/newCommunity.json');
+const newCommunitySchema = require('../schemas/communityNew.json');
+const updateCommunitySchema = require('../schemas/communityUpdate.json');
 const router = express.Router();
 
 const communities = [
@@ -17,15 +18,15 @@ const communities = [
  */
 router.post('/', ensureLoggedIn, async (req, res, next) => {
     try {
-        // const validator = jsonschema.validate(req.body, newCommunitySchema);
-        // if (!validator.valid) {
-        //     const errors = validator.errors.map(e => e.message);
-        //     throw new BadRequestError(errors);
-        // }
+        const validator = jsonschema.validate(req.body, newCommunitySchema);
+        if (!validator.valid) {
+            const errors = validator.errors.map(e => e.stack);
+            throw new BadRequestError(errors);
+        }
         // const community = await Community.create({ ...req.body, adminId: res.locals.user
         const community = {
             ...req.body,
-            adminId: res.locals.user.id,
+            adminId: req.body.admin_id,
             id: communities.length + 1
         }
         communities.push(community);
@@ -63,6 +64,9 @@ router.get('/:id', ensureLoggedIn, async (req, res, next) => {
     }
 });
 
+/**
+ * GET /user/:user_id - Retrieve communities by user ID
+ */
 router.get('/user/:user_id', ensureLoggedIn, async (req, res, next) => {
     try {
         // const communities = await Community.findByUserId(req.params.user_id);
@@ -72,6 +76,53 @@ router.get('/user/:user_id', ensureLoggedIn, async (req, res, next) => {
             throw new ForbiddenError('You do not have permission to access this resource.');
 
         return res.status(200).json({ communities: userCommunities });
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/**
+ * PATCH /:id - Update a community
+ */
+router.patch('/:id', ensureLoggedIn, async (req, res, next) => {
+    try {
+        const validator = jsonschema.validate(req.body, updateCommunitySchema);
+        if (!validator.valid) {
+            const errors = validator.errors.map(e => e.stack);
+            throw new BadRequestError(errors);
+        }
+        // const community = await Community.findById(req.params.id);
+        const communityIndex = communities.findIndex(c => c.id === parseInt(req.params.id));
+        if (communityIndex === -1) throw new NotFoundError(`Community not found: ${req.params.id}`);
+        const community = communities[communityIndex];
+
+        if (community.adminId !== res.locals.user.id)
+            throw new ForbiddenError('You do not have permission to access this resource.');
+
+        // const updatedCommunity = await Community.update(req.params.id, req.body);
+        const updatedCommunity = { ...community, ...req.body };
+        communities[communityIndex] = updatedCommunity;
+
+        return res.status(200).json({ community: updatedCommunity });
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/**
+ * DELETE /:id - Delete a community
+ */
+router.delete('/:id', ensureLoggedIn, async (req, res, next) => {
+    try {
+        // const community = await Community.findById(req.params.id);
+        const communityIndex = communities.findIndex(c => c.id === parseInt(req.params.id));
+        if (communityIndex === -1) throw new NotFoundError(`Community not found: ${req.params.id}`);
+        const community = communities[communityIndex];
+        if (community.adminId !== res.locals.user.id)
+            throw new ForbiddenError('You do not have permission to access this resource.');
+        // await Community.remove(req.params.id);
+        communities.splice(communityIndex, 1);
+        return res.status(200).json({ success: true });
     } catch (err) {
         return next(err);
     }
