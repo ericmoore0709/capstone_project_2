@@ -16,6 +16,7 @@ const authRouter = require('./src/routes/auth');
 const recipesRouter = require('./src/routes/recipes');
 const shelvesRouter = require('./src/routes/shelves');
 const profilesRouter = require('./src/routes/profiles');
+const communitiesRouter = require('./src/routes/communities');
 
 const app = express();
 
@@ -52,6 +53,7 @@ app.use('/auth', authRouter);
 app.use('/recipes', recipesRouter);
 app.use('/shelves', shelvesRouter);
 app.use('/profiles', profilesRouter);
+app.use('/communities', communitiesRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

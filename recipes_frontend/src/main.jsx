@@ -7,17 +7,20 @@ import AuthProvider from './providers/AuthProvider.jsx'
 import NotificationProvider from './providers/NotificationProvider.jsx'
 import ShelvesProvider from './providers/ShelvesProvider.jsx'
 import RecipesProvider from './providers/RecipesProvider.jsx'
+import CommunitiesProvider from './providers/CommunitiesProvider.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
         <NotificationProvider>
-          <ShelvesProvider>
-            <RecipesProvider>
-              <App />
-            </RecipesProvider>
-          </ShelvesProvider>
+          <CommunitiesProvider>
+            <ShelvesProvider>
+              <RecipesProvider>
+                <App />
+              </RecipesProvider>
+            </ShelvesProvider>
+          </CommunitiesProvider>
         </NotificationProvider>
       </AuthProvider>
     </BrowserRouter>

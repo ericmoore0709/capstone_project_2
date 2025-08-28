@@ -130,6 +130,48 @@ class RecipesApi {
         const response = await this._create_request(`/profiles/${profile.userId}`, 'patch', { bio: profile.bio }, token);
         return response;
     }
+
+    /**  Community Routes  */
+    static getAllCommunities = async (token) => {
+        const response = await this._create_request('/communities', 'get', null, token);
+        return response.communities;
+    }
+
+    static getCommunityById = async (id, token) => {
+        const response = await this._create_request(`/communities/${id}`, 'get', null, token);
+        return response.community;
+    }
+
+    static createNewCommunity = async (community, token) => {
+        const response = await this._create_request('/communities', 'post', community, token);
+        return response;
+    }
+
+    static getCommunitiesByUserId = async (userId, token) => {
+        const response = await this._create_request(`/communities/user/${userId}`, 'get', null, token);
+        return response.communities;
+    }
+
+    static joinCommunity = async (communityId, token) => {
+        const response = await this._create_request(`/communities/${communityId}/join`, 'post', null, token);
+        return response;
+    }
+
+    static leaveCommunity = async (communityId, token) => {
+        const response = await this._create_request(`/communities/${communityId}/leave`, 'post', null, token);
+        return response;
+    }
+
+    static updateCommunity = async (community, token) => {
+        const { id, ...theRest } = community;
+        const response = await this._create_request(`/communities/${id}`, 'patch', theRest, token);
+        return response;
+    }
+
+    static deleteCommunity = async (communityId, token) => {
+        const response = await this._create_request(`/communities/${communityId}`, 'delete', null, token);
+        return response;
+    }
 }
 
 export default RecipesApi;
