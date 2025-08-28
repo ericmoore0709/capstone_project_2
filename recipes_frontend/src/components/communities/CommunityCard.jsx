@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Card, CardBody, CardImg, CardText, CardTitle } from 'reactstrap';
+import AdminControls from './card/AdminControls';
+import Metadata from './card/Metadata';
 
 const CommunityCard = ({ community }) => {
     const defaultImage = "https://www.dummyimage.com/640x4:3/";
@@ -14,7 +16,13 @@ const CommunityCard = ({ community }) => {
                     <CardTitle tag='h5' className='text-center'><Link to={`/communities/${community.id}`}>{community.name}</Link></CardTitle>
                     <CardText className='text-truncate' style={{ maxHeight: '3em', overflow: 'hidden' }}>{community.description}</CardText>
                 </CardBody>
-                <footer className='text-center mb-2'>Admin ID: {community.adminId}</footer>
+
+                {community.admin && <>
+                    {/* Meta Info*/}
+                    <Metadata community={community} />
+                    {/* Author controls */}
+                    {(community.admin_id === signedInUser.id) && <AdminControls communityId={community.id} handleOnDelete={handleOnDelete} />}
+                </>}
             </Card>
         </div>
     );
