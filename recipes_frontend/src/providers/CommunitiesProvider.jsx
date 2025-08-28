@@ -124,6 +124,7 @@ const CommunitiesProvider = ({ children }) => {
             } else if (result.community) {
                 const updatedCommunity = result.community;
                 setPublicCommunities((communities) => communities.map(c => c.id === updatedCommunity.id ? updatedCommunity : c));
+                setUserCommunities((communities) => communities.map(c => c.id === updatedCommunity.id ? updatedCommunity : c));
 
                 // clear errors, provide success message, navigate back
                 setFormErrors([]);
@@ -146,6 +147,7 @@ const CommunitiesProvider = ({ children }) => {
             const result = await RecipesApi.deleteCommunity(id, token);
             if (result.success) {
                 setPublicCommunities((communities) => communities.filter(c => c.id !== id));
+                setUserCommunities((communities) => communities.filter(c => c.id !== id));
                 setClientMessage({ color: 'success', message: 'Community deleted.' });
             } else {
                 throw new Error('Something went wrong while deleting the community.');

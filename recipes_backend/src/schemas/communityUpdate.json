@@ -16,6 +16,10 @@
         "image": {
             "type": "string",
             "maxLength": 255
+        },
+        "admin_id": {
+            "type": "integer",
+            "minimum": 1
         }
     },
     "additionalProperties": false,

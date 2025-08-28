@@ -44,7 +44,8 @@ const UpdateCommunityForm = () => {
             id: +formData.id,
             name: formData.name,
             description: formData.description,
-            image: formData.image
+            image: formData.image,
+            admin_id: formData.admin_id
         };
         updateCommunity(relevantData);
     };
