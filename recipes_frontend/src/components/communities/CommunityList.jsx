@@ -1,4 +1,6 @@
 import PropTypes from 'prop-types';
+import CommunityCard from './CommunityCard';
+import { CardGroup } from 'reactstrap';
 
 const CommunityList = ({ communities = [] }) => {
     return (
@@ -6,11 +8,14 @@ const CommunityList = ({ communities = [] }) => {
             {communities.length === 0 ? (
                 <p className="text-center my-3">No communities to display.</p>
             ) : (
-                <ul>
+                <CardGroup className='d-flex flex-wrap m-1 w-100 justify-content-center'>
                     {communities.map((community) => (
-                        <li key={community.id}>{community.name}</li>
+                        <CommunityCard
+                            key={community.id}
+                            community={community}
+                        />
                     ))}
-                </ul>
+                </CardGroup>
             )}
         </div>
     );

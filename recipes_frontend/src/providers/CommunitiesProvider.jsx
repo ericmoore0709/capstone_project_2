@@ -32,11 +32,11 @@ const CommunitiesProvider = ({ children }) => {
         }
     }, [token]);
 
-    const fetchUserCommunities = useCallback(async (userId) => {
+    const fetchUserCommunities = useCallback(async () => {
         setLoading(true);
         if (signedInUser?.id && token) {
             try {
-                const communities = await RecipesApi.getCommunitiesByUserId(+userId, token);
+                const communities = await RecipesApi.getCommunitiesByUserId(signedInUser?.id, token);
                 if (communities) setUserCommunities(communities);
                 else setUserCommunities([]);
             } catch (err) {
@@ -50,7 +50,7 @@ const CommunitiesProvider = ({ children }) => {
 
     useEffect(() => {
         fetchPublicCommunities();
-        fetchUserCommunities(signedInUser?.id);
+        fetchUserCommunities();
     }, [fetchPublicCommunities, fetchUserCommunities]);
 
     /**
@@ -66,6 +66,7 @@ const CommunitiesProvider = ({ children }) => {
             } else if (result.community) {
                 const createdCommunity = result.community;
                 setPublicCommunities((communities) => [createdCommunity, ...communities]);
+                setUserCommunities((communities) => [createdCommunity, ...communities]);
 
                 // clear errors, provide success message, navigate back
                 setFormErrors([]);

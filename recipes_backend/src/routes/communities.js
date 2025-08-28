@@ -7,6 +7,11 @@ const { ensureLoggedIn } = require('../middleware/auth');
 // const newCommunitySchema = require('../schemas/newCommunity.json');
 const router = express.Router();
 
+const communities = [
+    { id: 1, name: "Sample Community 1", description: "This is a sample community.", adminId: 1 },
+    { id: 2, name: "Sample Community 2", description: "This is another sample community.", adminId: 2 }
+];
+
 /**
  * POST / - Create a new community
  */
@@ -20,8 +25,10 @@ router.post('/', ensureLoggedIn, async (req, res, next) => {
         // const community = await Community.create({ ...req.body, adminId: res.locals.user
         const community = {
             ...req.body,
-            adminId: res.locals.user.id
+            adminId: res.locals.user.id,
+            id: communities.length + 1
         }
+        communities.push(community);
         return res.status(201).json({ community: community });
     } catch (err) {
         return next(err);
@@ -34,10 +41,6 @@ router.post('/', ensureLoggedIn, async (req, res, next) => {
 router.get('/', ensureLoggedIn, async (req, res, next) => {
     try {
         // const communities = await Community.findAll();
-        const communities = [
-            { id: 1, name: "Sample Community 1", description: "This is a sample community.", adminId: 1 },
-            { id: 2, name: "Sample Community 2", description: "This is another sample community.", adminId: 2 }
-        ];
         return res.status(200).json({ communities });
     } catch (err) {
         return next(err);
@@ -50,7 +53,7 @@ router.get('/', ensureLoggedIn, async (req, res, next) => {
 router.get('/:id', ensureLoggedIn, async (req, res, next) => {
     try {
         // const community = await Community.findById(req.params.id);
-        const community = { id: req.params.id, name: "Sample Community", adminId: 1 };
+        const community = communities.find(c => c.id === parseInt(req.params.id));
         if (!community) throw new NotFoundError(`Community not found: ${req.params.id}`);
         // if (community.adminId !== res.locals.user.id)
         //     throw new ForbiddenError('You do not have permission to access this resource.');
@@ -63,11 +66,12 @@ router.get('/:id', ensureLoggedIn, async (req, res, next) => {
 router.get('/user/:user_id', ensureLoggedIn, async (req, res, next) => {
     try {
         // const communities = await Community.findByUserId(req.params.user_id);
-        const communities = [
-            { id: 1, name: "Sample Community 1", description: "This is a sample community.", adminId: req.params.user_id },
-            { id: 2, name: "Sample Community 2", description: "This is another sample community.", adminId: req.params.user_id }
-        ];
-        return res.status(200).json({ communities });
+        const userId = parseInt(req.params.user_id);
+        const userCommunities = communities.filter(c => c.adminId === userId);
+        if (userId !== res.locals.user.id)
+            throw new ForbiddenError('You do not have permission to access this resource.');
+
+        return res.status(200).json({ communities: userCommunities });
     } catch (err) {
         return next(err);
     }
