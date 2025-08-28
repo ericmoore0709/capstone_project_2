@@ -120,7 +120,7 @@ const CommunitiesProvider = ({ children }) => {
         try {
             const result = await RecipesApi.updateCommunity(community, token);
             if (result.error) {
-                setFormErrors(result.error);
+                setFormErrors([...result.error]);
             } else if (result.community) {
                 const updatedCommunity = result.community;
                 setPublicCommunities((communities) => communities.map(c => c.id === updatedCommunity.id ? updatedCommunity : c));
