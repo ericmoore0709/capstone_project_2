@@ -7,38 +7,8 @@ const { ensureLoggedIn } = require('../middleware/auth');
 const newCommunitySchema = require('../schemas/communityNew.json');
 const updateCommunitySchema = require('../schemas/communityUpdate.json');
 const User = require('../models/user');
+const Community = require('../models/community');
 const router = express.Router();
-
-const communities = [
-    {
-        id: 1,
-        name: "Sample Community 1",
-        description: "This is a sample community.",
-        admin: {
-            id: 1,
-            firstName: "Sample",
-            lastName: "User",
-            email: "sample@user"
-        },
-        adminId: 1,
-        created_at: "2024-01-01T00:00:00.000Z",
-        last_updated_at: "2024-01-01T00:00:00.000Z"
-    },
-    {
-        id: 2,
-        name: "Sample Community 2",
-        description: "This is another sample community.",
-        admin: {
-            id: 2,
-            firstName: "Another",
-            lastName: "User",
-            email: "another@user"
-        },
-        adminId: 2,
-        created_at: "2024-02-01T00:00:00.000Z",
-        last_updated_at: "2024-02-01T00:00:00.000Z"
-    }
-];
 
 /**
  * POST / - Create a new community
@@ -50,20 +20,12 @@ router.post('/', ensureLoggedIn, async (req, res, next) => {
             const errors = validator.errors.map(e => e.stack);
             throw new BadRequestError(errors);
         }
-        // const community = await Community.create({ ...req.body, adminId: res.locals.user
-        const community = {
-            ...req.body,
-            adminId: req.body.admin_id,
-            id: communities.length + 1,
-            admin: await User.getById(req.body.admin_id),
-            created_at: new Date().toISOString(),
-            last_updated_at: new Date().toISOString()
-        };
-        if (community.adminId !== res.locals.user.id) {
-            throw new ForbiddenError('You do not have permission to create a community for another user.');
-        }
-        communities.push(community);
-        return res.status(201).json({ community: community });
+        const community = await Community.create(req.body);
+
+        const admin = await User.getById(community.adminId);
+        community.admin = admin;
+
+        return res.status(201).json({ community });
     } catch (err) {
         return next(err);
     }
@@ -74,7 +36,13 @@ router.post('/', ensureLoggedIn, async (req, res, next) => {
  */
 router.get('/', ensureLoggedIn, async (req, res, next) => {
     try {
-        // const communities = await Community.findAll();
+        const communities = await Community.findAll();
+
+        await Promise.all(communities.map(async (community) => {
+            const admin = await User.getById(community.adminId);
+            community.admin = admin;
+        }));
+
         return res.status(200).json({ communities });
     } catch (err) {
         return next(err);
@@ -86,11 +54,11 @@ router.get('/', ensureLoggedIn, async (req, res, next) => {
  */
 router.get('/:id', ensureLoggedIn, async (req, res, next) => {
     try {
-        // const community = await Community.findById(req.params.id);
-        const community = communities.find(c => c.id === parseInt(req.params.id));
-        if (!community) throw new NotFoundError(`Community not found: ${req.params.id}`);
-        // if (community.adminId !== res.locals.user.id)
-        //     throw new ForbiddenError('You do not have permission to access this resource.');
+        const community = await Community.findById(req.params.id);
+
+        const admin = await User.getById(community.adminId);
+        community.admin = admin;
+
         return res.status(200).json({ community });
     } catch (err) {
         return next(err);
@@ -102,13 +70,8 @@ router.get('/:id', ensureLoggedIn, async (req, res, next) => {
  */
 router.get('/user/:user_id', ensureLoggedIn, async (req, res, next) => {
     try {
-        // const communities = await Community.findByUserId(req.params.user_id);
-        const userId = parseInt(req.params.user_id);
-        const userCommunities = communities.filter(c => c.adminId === userId);
-        if (userId !== res.locals.user.id)
-            throw new ForbiddenError('You do not have permission to access this resource.');
-
-        return res.status(200).json({ communities: userCommunities });
+        const communities = await Community.findByUserId(req.params.user_id);
+        return res.status(200).json({ communities });
     } catch (err) {
         return next(err);
     }
@@ -124,17 +87,15 @@ router.patch('/:id', ensureLoggedIn, async (req, res, next) => {
             const errors = validator.errors.map(e => e.stack);
             throw new BadRequestError(errors);
         }
-        // const community = await Community.findById(req.params.id);
-        const communityIndex = communities.findIndex(c => c.id === parseInt(req.params.id));
-        if (communityIndex === -1) throw new NotFoundError(`Community not found: ${req.params.id}`);
-        const community = communities[communityIndex];
 
+        const community = await Community.findById(req.params.id);
         if (community.adminId !== res.locals.user.id)
             throw new ForbiddenError('You do not have permission to access this resource.');
 
-        // const updatedCommunity = await Community.update(req.params.id, req.body);
-        const updatedCommunity = { ...community, ...req.body };
-        communities[communityIndex] = updatedCommunity;
+        const updatedCommunity = await Community.update(req.params.id, req.body);
+
+        const admin = await User.getById(updatedCommunity.adminId);
+        updatedCommunity.admin = admin;
 
         return res.status(200).json({ community: updatedCommunity });
     } catch (err) {
@@ -147,14 +108,12 @@ router.patch('/:id', ensureLoggedIn, async (req, res, next) => {
  */
 router.delete('/:id', ensureLoggedIn, async (req, res, next) => {
     try {
-        // const community = await Community.findById(req.params.id);
-        const communityIndex = communities.findIndex(c => c.id === parseInt(req.params.id));
-        if (communityIndex === -1) throw new NotFoundError(`Community not found: ${req.params.id}`);
-        const community = communities[communityIndex];
+        const community = await Community.findById(req.params.id);
         if (community.adminId !== res.locals.user.id)
             throw new ForbiddenError('You do not have permission to access this resource.');
-        // await Community.remove(req.params.id);
-        communities.splice(communityIndex, 1);
+
+        await Community.remove(req.params.id);
+
         return res.status(200).json({ success: true });
     } catch (err) {
         return next(err);
