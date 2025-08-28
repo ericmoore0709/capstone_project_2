@@ -176,3 +176,10 @@ insert into profiles (user_id, bio) values (7, 'Nam dui. Proin leo odio, porttit
 insert into profiles (user_id, bio) values (8, 'Nunc rhoncus dui vel sem. Sed sagittis.');
 insert into profiles (user_id, bio) values (9, 'Aenean fermentum. Donec ut mauris eget massa tempor convallis. Nulla neque libero, convallis eget, eleifend luctus, ultricies eu, nibh.');
 insert into profiles (user_id, bio) values (10, 'Donec dapibus. Duis at velit eu est congue elementum. In hac habitasse platea dictumst.');
+
+-- insert communities
+insert into communities (name, description, admin_id) values ('sem praesent id massa', 'sagittis nam congue risus semper porta volutpat quam pede', 5);
+insert into communities (name, description, admin_id) values ('id luctus nec molestie', 'primis in faucibus orci luctus et ultrices posuere cubilia curae nulla dapibus dolor vel est donec', 1);
+insert into communities (name, description, admin_id) values ('lectus in quam', 'in hac habitasse platea dictumst maecenas', 7);
+insert into communities (name, description, admin_id) values ('ut dolor morbi vel lectus', 'mus vivamus vestibulum sagittis sapien cum sociis', 8);
+insert into communities (name, description, admin_id) values ('vestibulum rutrum rutrum neque', 'pellentesque viverra pede ac diam cras pellentesque volutpat dui maecenas tristique est et tempus semper est', 3);

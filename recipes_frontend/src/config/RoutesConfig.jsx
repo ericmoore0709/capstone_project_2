@@ -8,6 +8,11 @@ import RecipeDetails from '../components/recipes/RecipeDetails';
 import PublicRecipeList from "../components/recipes/public/PublicRecipeList";
 import UserRecipeList from "../components/recipes/user/UserRecipeList";
 import UserShelfList from "../components/shelves/user/UserShelfList";
+import NewCommunityForm from "../components/communities/NewCommunityForm";
+import CommunityDetails from "../components/communities/CommunityDetails";
+import UserCommunityList from "../components/communities/user/UserCommunityList";
+import PublicCommunityList from "../components/communities/public/PublicCommunityList";
+import UpdateCommunityForm from "../components/communities/UpdateCommunityForm";
 
 export default [
     {
@@ -76,4 +81,34 @@ export default [
             <ProtectedRoute element={<Profile />} />
         ),
     },
+    {
+        path: '/communities',
+        element: (
+            <ProtectedRoute element={<PublicCommunityList />} />
+        ),
+    },
+    {
+        path: '/communities/new',
+        element: (
+            <ProtectedRoute element={<NewCommunityForm />} />
+        ),
+    },
+    {
+        path: '/communities/:id',
+        element: (
+            <ProtectedRoute element={<CommunityDetails />} />
+        ),
+    },
+    {
+        path: '/communities/my',
+        element: (
+            <ProtectedRoute element={<UserCommunityList />} />
+        ),
+    },
+    {
+        path: '/communities/:id/edit',
+        element: (
+            <ProtectedRoute element={<UpdateCommunityForm />} />
+        ),
+    }
 ];

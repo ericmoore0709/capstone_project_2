@@ -1,5 +1,5 @@
 -- Drop tables if they already exist to avoid conflicts
-DROP TABLE IF EXISTS profiles, shelf_recipes, shelves, recipe_tags, tags, recipe_visibility, recipes, users;
+DROP TABLE IF EXISTS profiles, communities, shelf_recipes, shelves, recipe_tags, tags, recipe_visibility, recipes, users;
 
 -- Users table
 CREATE TABLE users (
@@ -67,6 +67,16 @@ CREATE TABLE profiles (
     bio VARCHAR(250) DEFAULT NULL
 );
 
+-- communities table
+CREATE TABLE communities (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT DEFAULT NULL,
+    admin_id INTEGER NOT NULL REFERENCES users(id),
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    last_updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
 -- Trigger function to auto-update last_updated_at on update
 CREATE OR REPLACE FUNCTION update_last_updated_column()
 RETURNS TRIGGER AS $$
@@ -77,7 +87,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Trigger to call the function before updating a row in recipes
-CREATE TRIGGER set_last_updated
+CREATE TRIGGER set_recipe_last_updated
 BEFORE UPDATE ON recipes
 FOR EACH ROW
 EXECUTE FUNCTION update_last_updated_column();

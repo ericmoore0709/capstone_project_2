@@ -28,6 +28,11 @@ const SiteNavbar = ({ logoutUser }) => {
                                 { path: '/shelves', label: 'My Shelves' },
                                 { path: '/shelves/new', label: 'Create shelf' }
                             ]} />
+                            <ModelDropdown title="Communities" routes={[
+                                { path: '/communities', label: 'Browse Communities' },
+                                { path: '/communities/new', label: 'Create Community' },
+                                { path: '/communities/my', label: 'My Communities' }
+                            ]} />
                         </> : <>
                             <NavItem>
                                 <NavLink className='nav-link' to={`${import.meta.env.VITE_BACKEND_URI}/auth/google`}>Sign in</NavLink>
