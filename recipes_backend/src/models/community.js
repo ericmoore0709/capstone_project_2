@@ -113,7 +113,7 @@ class Community {
 
         const query = `
             UPDATE communities
-            SET ${setClauses.join(', ')},
+            SET ${setClauses.join(', ')}
             WHERE id = $${idx}
             RETURNING id, name, description, admin_id AS "adminId", created_at, last_updated_at
         `;

@@ -31,11 +31,12 @@ const CommunityCard = ({ community }) => {
                     <CardText className='text-truncate' style={{ maxHeight: '3em', overflow: 'hidden' }}>{community.description}</CardText>
                 </CardBody>
 
+                {console.debug(community.admin)}
                 {community.admin && <>
                     {/* Meta Info*/}
                     <Metadata community={community} />
                     {/* Author controls */}
-                    {(community.admin_id === signedInUser.id) && <AdminControls communityId={community.id} handleOnDelete={handleOnDelete} />}
+                    {(community.adminId === signedInUser?.id) && <AdminControls communityId={community.id} handleOnDelete={handleOnDelete} />}
                 </>}
             </Card>
         </div>

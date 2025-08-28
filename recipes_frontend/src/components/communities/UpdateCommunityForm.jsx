@@ -25,7 +25,7 @@ const UpdateCommunityForm = () => {
         const getCommunity = async (id) => {
             setIsLoading(true);
             const result = await getCommunityById(id);
-            if (result && result?.admin_id === signedInUser.id)
+            if (result && result?.adminId === signedInUser.id)
                 setFormData((prev) => (result));
             setIsLoading(false);
         }

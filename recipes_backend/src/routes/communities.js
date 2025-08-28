@@ -71,6 +71,12 @@ router.get('/:id', ensureLoggedIn, async (req, res, next) => {
 router.get('/user/:user_id', ensureLoggedIn, async (req, res, next) => {
     try {
         const communities = await Community.findByUserId(req.params.user_id);
+
+        await Promise.all(communities.map(async (community) => {
+            const admin = await User.getById(community.adminId);
+            community.admin = admin;
+        }));
+
         return res.status(200).json({ communities });
     } catch (err) {
         return next(err);
@@ -112,7 +118,7 @@ router.delete('/:id', ensureLoggedIn, async (req, res, next) => {
         if (community.adminId !== res.locals.user.id)
             throw new ForbiddenError('You do not have permission to access this resource.');
 
-        await Community.remove(req.params.id);
+        await Community.deleteById(req.params.id);
 
         return res.status(200).json({ success: true });
     } catch (err) {
