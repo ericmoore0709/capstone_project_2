@@ -2,14 +2,17 @@ import { useState } from "react";
 import useCommunities from "../../hooks/useCommunities";
 import { Button, Form, FormGroup, FormText, Input, Label } from 'reactstrap';
 import FormValidationErrorsDisplay from "../util/FormValidationErrorsDisplay";
+import useAuth from "../../hooks/useAuth";
 
 const NewCommunityForm = () => {
+    const { signedInUser } = useAuth();
     const { addCommunity, formErrors: errors } = useCommunities();
 
     const INITIAL_FORM_DATA = {
         name: '',
         description: '',
-        image: ''
+        image: '',
+        admin_id: signedInUser?.id
     };
 
     const [formData, setFormData] = useState(INITIAL_FORM_DATA);

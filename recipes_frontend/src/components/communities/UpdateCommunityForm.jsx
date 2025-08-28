@@ -15,7 +15,8 @@ const UpdateCommunityForm = () => {
         {
             name: '',
             description: '',
-            image: ''
+            image: '',
+            admin_id: signedInUser?.id
         }
     );
     const [isLoading, setIsLoading] = useState(true);
