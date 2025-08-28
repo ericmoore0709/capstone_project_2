@@ -3,9 +3,23 @@ import { Link } from 'react-router-dom';
 import { Card, CardBody, CardImg, CardText, CardTitle } from 'reactstrap';
 import AdminControls from './card/AdminControls';
 import Metadata from './card/Metadata';
+import useAuth from '../../hooks/useAuth';
+import useCommunities from '../../hooks/useCommunities';
 
 const CommunityCard = ({ community }) => {
+    const { signedInUser } = useAuth();
     const defaultImage = "https://www.dummyimage.com/640x4:3/";
+    const { deleteCommunity } = useCommunities();
+
+    const deletionConfirmed = (msg) => {
+        return window.confirm(msg);
+    }
+
+    const handleOnDelete = (id) => {
+        if (deletionConfirmed('Are you sure you want to delete this community?')) {
+            deleteCommunity(id);
+        }
+    }
 
     return (
         <div className='p-2 d-flex'>

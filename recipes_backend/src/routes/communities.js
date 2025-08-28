@@ -6,11 +6,38 @@ const { ensureLoggedIn } = require('../middleware/auth');
 // const User = require('../models/user');
 const newCommunitySchema = require('../schemas/communityNew.json');
 const updateCommunitySchema = require('../schemas/communityUpdate.json');
+const User = require('../models/user');
 const router = express.Router();
 
 const communities = [
-    { id: 1, name: "Sample Community 1", description: "This is a sample community.", adminId: 1 },
-    { id: 2, name: "Sample Community 2", description: "This is another sample community.", adminId: 2 }
+    {
+        id: 1,
+        name: "Sample Community 1",
+        description: "This is a sample community.",
+        admin: {
+            id: 1,
+            firstName: "Sample",
+            lastName: "User",
+            email: "sample@user"
+        },
+        adminId: 1,
+        created_at: "2024-01-01T00:00:00.000Z",
+        last_updated_at: "2024-01-01T00:00:00.000Z"
+    },
+    {
+        id: 2,
+        name: "Sample Community 2",
+        description: "This is another sample community.",
+        admin: {
+            id: 2,
+            firstName: "Another",
+            lastName: "User",
+            email: "another@user"
+        },
+        adminId: 2,
+        created_at: "2024-02-01T00:00:00.000Z",
+        last_updated_at: "2024-02-01T00:00:00.000Z"
+    }
 ];
 
 /**
@@ -27,7 +54,13 @@ router.post('/', ensureLoggedIn, async (req, res, next) => {
         const community = {
             ...req.body,
             adminId: req.body.admin_id,
-            id: communities.length + 1
+            id: communities.length + 1,
+            admin: await User.getById(req.body.admin_id),
+            created_at: new Date().toISOString(),
+            last_updated_at: new Date().toISOString()
+        };
+        if (community.adminId !== res.locals.user.id) {
+            throw new ForbiddenError('You do not have permission to create a community for another user.');
         }
         communities.push(community);
         return res.status(201).json({ community: community });

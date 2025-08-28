@@ -8,11 +8,11 @@ import RecipeDetails from '../components/recipes/RecipeDetails';
 import PublicRecipeList from "../components/recipes/public/PublicRecipeList";
 import UserRecipeList from "../components/recipes/user/UserRecipeList";
 import UserShelfList from "../components/shelves/user/UserShelfList";
-import CommunityList from "../components/communities/CommunityList";
 import NewCommunityForm from "../components/communities/NewCommunityForm";
 import CommunityDetails from "../components/communities/CommunityDetails";
 import UserCommunityList from "../components/communities/user/UserCommunityList";
 import PublicCommunityList from "../components/communities/public/PublicCommunityList";
+import UpdateCommunityForm from "../components/communities/UpdateCommunityForm";
 
 export default [
     {
@@ -103,6 +103,12 @@ export default [
         path: '/communities/my',
         element: (
             <ProtectedRoute element={<UserCommunityList />} />
+        ),
+    },
+    {
+        path: '/communities/:id/edit',
+        element: (
+            <ProtectedRoute element={<UpdateCommunityForm />} />
         ),
     }
 ];

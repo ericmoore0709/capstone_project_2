@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import useCommunities from "../../hooks/useCommunities";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Loading from "../util/Loading";
 import NotFound404 from "../util/NotFound404";
 import { Form, FormGroup, Button, Input, Label } from "reactstrap";
@@ -25,8 +25,8 @@ const UpdateCommunityForm = () => {
         const getCommunity = async (id) => {
             setIsLoading(true);
             const result = await getCommunityById(id);
-            if (result && result?.creator_id === signedInUser.id)
-                setFormData(result);
+            if (result && result?.admin_id === signedInUser.id)
+                setFormData((prev) => (result));
             setIsLoading(false);
         }
         getCommunity(+id);
@@ -39,7 +39,14 @@ const UpdateCommunityForm = () => {
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
-        updateCommunity(formData);
+
+        const relevantData = {
+            id: +formData.id,
+            name: formData.name,
+            description: formData.description,
+            image: formData.image
+        };
+        updateCommunity(relevantData);
     };
 
     if (isLoading) return <Loading />
