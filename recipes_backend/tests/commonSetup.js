@@ -7,7 +7,7 @@ let request;
 const setupTests = async () => {
     // Ensure a clean slate for the database
     await db.query(`
-    TRUNCATE shelf_recipes, shelves, recipes, recipe_tags, tags, users, profiles RESTART IDENTITY CASCADE;
+    TRUNCATE ingredients, communities, shelf_recipes, shelves, recipes, recipe_tags, tags, users, profiles RESTART IDENTITY CASCADE;
   `);
 
     // Initialize the request object for Supertest
