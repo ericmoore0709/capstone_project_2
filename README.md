@@ -31,7 +31,8 @@ This project aims to highlight my ability to create scalable, maintainable solut
 
 ### Required environment variables (.env)
 - backend
-  - DATABASE_URL: the url of the postgres database (ie. `postgresql://myusername:mypassword@127.0.0.1:5432/mydatabase`
+  - DATABASE_URL: the url of the postgres database (ie. `postgresql://myusername:mypassword@127.0.0.1:5432/mydatabase`)
+  - TEST_DATABASE_URL: the url of the testing database (ie. `postgresql://myusername:mypassword@127.0.0.1:5432/mytestdb`)
   - GOOGLE_CLIENT_ID: the Google Client ID provided when creating the workspace [here](https://console.cloud.google.com/) (see "Setting up Google Project" below).
   - GOOGLE_CLIENT_SECRET: the Google Client secret provided when creating the workspace (see above).
   - CLIENT_BASE_URL: the base URL of the client website (in local dev case, this is `http://localhost:5173`).
