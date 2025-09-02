@@ -100,3 +100,5 @@ class Ingredient {
         return result.rows[0];
     }
 }
+
+module.exports = Ingredient;
