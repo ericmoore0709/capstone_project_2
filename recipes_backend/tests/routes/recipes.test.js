@@ -9,10 +9,6 @@ const { ForbiddenError, NotFoundError } = require('../../expressError');
 const db = require('../../db');
 const { teardownTests } = require('../commonSetup');
 
-// Mock dependencies
-jest.mock('../../src/models/recipe');
-jest.mock('../../src/models/user');
-
 let VALID_TOKEN;
 
 beforeAll(() => {
@@ -28,8 +24,15 @@ beforeAll(() => {
     VALID_TOKEN = createToken(user);
 });
 
-afterEach(() => {
-    jest.clearAllMocks();
+beforeEach(async () => {
+    await db.query("BEGIN");
+});
+
+afterEach(async () => {
+    await db.query("ROLLBACK");
+
+    // restore the spy created with spyOn
+    jest.restoreAllMocks();
 });
 
 afterAll(async () => {
@@ -38,11 +41,11 @@ afterAll(async () => {
 
 describe('GET /recipes', () => {
     it('should return a list of public recipes', async () => {
-        const mockRecipes = [{ id: 1, name: 'Recipe1', author_id: 1 }, { id: 2, name: 'Recipe2', author_id: 2 }];
+        const mockRecipes = [{ id: 1, title: 'Recipe1', author_id: 1 }, { id: 2, title: 'Recipe2', author_id: 2 }];
         const mockAuthors = [{ id: 1, username: 'Author1' }, { id: 2, username: 'Author2' }];
 
-        Recipe.findRecipes.mockResolvedValue(mockRecipes);
-        User.getById.mockImplementation(id => mockAuthors.find(author => author.id === id));
+        jest.spyOn(Recipe, 'findRecipes').mockResolvedValue(mockRecipes);
+        jest.spyOn(User, 'getById').mockImplementation(id => mockAuthors.find(author => author.id === id));
 
         const res = await request(app)
             .get('/recipes')
@@ -56,9 +59,9 @@ describe('GET /recipes', () => {
 
 describe('GET /recipes/user/:user_id', () => {
     it('should return a list of user’s recipes', async () => {
-        const mockRecipes = [{ id: 1, name: 'Recipe1', author_id: 1 }];
-        Recipe.findRecipes.mockResolvedValue(mockRecipes);
-        User.getById.mockResolvedValue({ id: 1, username: 'testuser' });
+        const mockRecipes = [{ id: 1, title: 'Recipe1', author_id: 1 }];
+        jest.spyOn(Recipe, 'findRecipes').mockResolvedValue(mockRecipes);
+        jest.spyOn(User, 'getById').mockResolvedValue({ id: 1, username: 'testuser' });
 
         const res = await request(app)
             .get('/recipes/user/1')
@@ -79,12 +82,12 @@ describe('GET /recipes/user/:user_id', () => {
 
 describe('POST /recipes', () => {
     it('should create a new recipe with valid data', async () => {
-        const mockRecipe = { id: 1, name: 'New Recipe', author_id: 1 };
-        const mockBody = { name: 'New Recipe', public: true };
+        const mockRecipe = { id: 1, title: 'New Recipe', author_id: 1 };
+        const mockBody = { title: 'New Recipe', public: true };
 
         jest.spyOn(jsonschema, 'validate').mockReturnValue({ valid: true });
-        Recipe.create.mockResolvedValue(mockRecipe);
-        User.getById.mockResolvedValue({ id: 1, username: 'testuser' });
+        jest.spyOn(Recipe, 'create').mockResolvedValue(mockRecipe);
+        jest.spyOn(User, 'getById').mockResolvedValue({ id: 1, username: 'testuser' });
 
         const res = await request(app)
             .post('/recipes')
@@ -113,13 +116,13 @@ describe('POST /recipes', () => {
 
 describe('PATCH /recipes/:id', () => {
     it('should update a recipe if user is the author', async () => {
-        const mockRecipe = { id: 1, name: 'Updated Recipe', author_id: 1 };
-        const mockBody = { name: 'Updated Recipe' };
+        const mockRecipe = { id: 1, title: 'Updated Recipe', author_id: 1 };
+        const mockBody = { title: 'Updated Recipe' };
 
         jest.spyOn(jsonschema, 'validate').mockReturnValue({ valid: true });
-        Recipe.get.mockResolvedValue({ id: 1, name: 'Old Recipe', author_id: 1 });
-        Recipe.update.mockResolvedValue(mockRecipe);
-        User.getById.mockResolvedValue({ id: 1, username: 'testuser' });
+        jest.spyOn(Recipe, 'get').mockResolvedValue({ id: 1, title: 'Old Recipe', author_id: 1 });
+        jest.spyOn(Recipe, 'update').mockResolvedValue(mockRecipe);
+        jest.spyOn(User, 'getById').mockResolvedValue({ id: 1, username: 'testuser' });
 
         const res = await request(app)
             .patch('/recipes/1')
@@ -132,31 +135,32 @@ describe('PATCH /recipes/:id', () => {
     });
 
     it('should return 403 if user is not the author', async () => {
-        Recipe.get.mockResolvedValue({ id: 1, name: 'Old Recipe', author_id: 2 });
+        jest.spyOn(Recipe, 'get').mockResolvedValue({ id: 1, title: 'Old Recipe', description: 'Old Desc', visibility_id: 1, author_id: 2 });
 
         const res = await request(app)
             .patch('/recipes/1')
-            .send({ name: 'Updated Recipe' })
+            .send({ title: 'Updated Recipe', description: 'Old Desc', visibility_id: 1 })
             .set('authorization', `Bearer ${VALID_TOKEN}`);
+        
         expect(res.statusCode).toBe(403);
     });
 });
 
 describe('DELETE /recipes/:id', () => {
     it('should soft delete a recipe if user is the author', async () => {
-        Recipe.get.mockResolvedValue({ id: 1, name: 'Recipe to Delete', author_id: 1 });
-        Recipe.remove.mockResolvedValue({ id: 1, name: 'Recipe to Delete', author_id: 1 });
-        User.getById.mockResolvedValue({ id: 1, username: 'testuser' });
+        jest.spyOn(Recipe, 'get').mockResolvedValue({ id: 1, title: 'Recipe to Delete', author_id: 1 });
+        jest.spyOn(Recipe, 'remove').mockResolvedValue({ id: 1, title: 'Recipe to Delete', author_id: 1 });
+        jest.spyOn(User, 'getById').mockResolvedValue({ id: 1, username: 'testuser' });
 
         const res = await request(app)
             .delete('/recipes/1')
             .set('authorization', `Bearer ${VALID_TOKEN}`);
         expect(res.statusCode).toBe(200);
-        expect(res.body).toEqual({ recipe: { id: 1, name: 'Recipe to Delete', author_id: 1, author: { id: 1, username: 'testuser' } } });
+        expect(res.body).toEqual({ recipe: { id: 1, title: 'Recipe to Delete', author_id: 1, author: { id: 1, username: 'testuser' } } });
     });
 
     it('should return 403 if user is not the author', async () => {
-        Recipe.get.mockResolvedValue({ id: 1, name: 'Recipe to Delete', author_id: 2 });
+        jest.spyOn(Recipe, 'get').mockResolvedValue({ id: 1, title: 'Recipe to Delete', author_id: 2 });
 
         const res = await request(app)
             .delete('/recipes/1')

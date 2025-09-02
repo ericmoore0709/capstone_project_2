@@ -3,16 +3,31 @@ const express = require('express');
 const Profile = require('../../src/models/profile');
 const app = require('../../app');
 const jsonschema = require('jsonschema');
-const { NotFoundError, ConflictError } = require('../../expressError');
+const { NotFoundError, ConflictError, ForbiddenError } = require('../../expressError');
 const db = require('../../db');
+const { createToken } = require('../../src/helpers/tokens');
+const User = require('../../src/models/user');
+
+const user = {
+    id: 1,
+    firstName: 'Test',
+    lastName: 'User',
+    email: 'testuser@gmail.com',
+    googleId: '1234567890',
+    image: 'https://example-image.com/example/1'
+}
+
+beforeAll(async () => {
+    VALID_TOKEN = createToken(user);
+});
 
 beforeEach(async () => {
+    jest.restoreAllMocks();
     await db.query("BEGIN");
 });
 
 afterEach(async () => {
     await db.query("ROLLBACK");
-    jest.restoreAllMocks();
 });
 
 afterAll(async () => {
@@ -21,13 +36,17 @@ afterAll(async () => {
 
 describe('profiles routes', () => {
     describe('POST /', () => {
-        it('successfull adds profile', async () => {
+        it('successfully adds profile', async () => {
             const user_id = 1;
             const expectedData = { id: 1, userId: user_id, bio: null };
 
-            jest.spyOn(Profile, 'create').mockResolvedValue(expectedData);
+            jest.spyOn(Profile, 'create').mockReturnValue(expectedData);
+            jest.spyOn(User, 'getById').mockReturnValue(user);
 
-            const response = await request(app).post('/profiles/').send({ user_id });
+            const response = await request(app)
+                .post('/profiles/')
+                .send({ user_id })
+                .set('authorization', `Bearer ${VALID_TOKEN}`);
 
             const profile = response.body.profile;
 
@@ -45,7 +64,10 @@ describe('profiles routes', () => {
             jest.spyOn(Profile, 'create').mockRejectedValue(new ConflictError(`Profile already exists at userId ${user_id}.`));
 
             // attempt duplicate post request
-            const response = await request(app).post(`/profiles/`).send({ user_id });
+            const response = await request(app)
+                .post(`/profiles/`)
+                .send({ user_id })
+                .set('authorization', `Bearer ${VALID_TOKEN}`);
 
             // assert Conflict error
             expect(response.statusCode).toBe(409);
@@ -59,10 +81,13 @@ describe('profiles routes', () => {
             const expectedData = { id: 1, userId: user_id, bio: null };
 
             jest.spyOn(Profile, 'findByUserId').mockResolvedValue(expectedData);
+            jest.spyOn(User, 'getById').mockResolvedValue(user);
 
-            const response = await request(app).get(`/profiles/${user_id}`);
+            const response = await request(app)
+                .get(`/profiles/${user_id}`)
+                .set('authorization', `Bearer ${VALID_TOKEN}`);
             const profile = response.body.profile;
-            
+
 
             expect(response.statusCode).toBe(200);
             expect(profile).not.toBeNull();
@@ -77,8 +102,11 @@ describe('profiles routes', () => {
             const expectedData = { id: 1, userId: user_id, bio: 'This is a bio.' };
 
             jest.spyOn(Profile, 'findByUserId').mockResolvedValue(expectedData);
+            jest.spyOn(User, 'getById').mockResolvedValue(user);
 
-            const response = await request(app).get(`/profiles/${user_id}`);
+            const response = await request(app)
+                .get(`/profiles/${user_id}`)
+                .set('authorization', `Bearer ${VALID_TOKEN}`);
             const profile = response.body.profile;
 
             expect(response.statusCode).toBe(200);
@@ -94,7 +122,9 @@ describe('profiles routes', () => {
 
             jest.spyOn(Profile, 'findByUserId').mockRejectedValue(new NotFoundError(`Profile not found at user ID ${user_id}`));
 
-            const response = await request(app).get(`/profiles/${user_id}`);
+            const response = await request(app)
+                .get(`/profiles/${user_id}`)
+                .set('authorization', `Bearer ${VALID_TOKEN}`);
 
             expect(response.statusCode).toBe(404);
             expect(response.body.error).toContain('not found');
@@ -108,8 +138,12 @@ describe('profiles routes', () => {
             const expectedData = { id: 1, userId: user_id, bio };
 
             jest.spyOn(Profile, 'update').mockResolvedValue(expectedData);
+            jest.spyOn(User, 'getById').mockResolvedValue(user);
 
-            const response = await request(app).patch(`/profiles/${user_id}`).send({ bio });
+            const response = await request(app)
+                .patch(`/profiles/${user_id}`)
+                .send({ bio })
+                .set('authorization', `Bearer ${VALID_TOKEN}`);
             const profile = response.body.profile;
 
             expect(response.statusCode).toBe(200);
@@ -120,16 +154,17 @@ describe('profiles routes', () => {
             expect(profile.bio).toContain('bio');
         });
 
-        it('fails to update profile at user ID not found', async () => {
+        it('fails to update profile of other user', async () => {
             const user_id = 999;
             const bio = 'This is a bio.';
 
-            jest.spyOn(Profile, 'update').mockRejectedValue(new NotFoundError(`Profile not found at user ID ${user_id}`));
+            const response = await request(app)
+                .patch(`/profiles/${user_id}`)
+                .send({ bio })
+                .set('authorization', `Bearer ${VALID_TOKEN}`);
 
-            const response = await request(app).patch(`/profiles/${user_id}`).send({ bio });
-
-            expect(response.statusCode).toBe(404);
-            expect(response.body.error).toContain('not found');
+            expect(response.statusCode).toBe(403);
+            expect(response.body.error).toContain('permission');
         });
     });
 
@@ -139,8 +174,11 @@ describe('profiles routes', () => {
             const expectedData = { id: 1, userId: user_id, bio: null };
 
             jest.spyOn(Profile, 'delete').mockResolvedValue(expectedData);
+            jest.spyOn(User, 'getById').mockResolvedValue(user);
 
-            const response = await request(app).delete(`/profiles/${user_id}`);
+            const response = await request(app)
+                .delete(`/profiles/${user_id}`)
+                .set('authorization', `Bearer ${VALID_TOKEN}`);
             const profile = response.body.profile;
 
             expect(response.statusCode).toBe(200);
@@ -157,8 +195,11 @@ describe('profiles routes', () => {
             const expectedData = { id: 1, userId: user_id, bio };
 
             jest.spyOn(Profile, 'delete').mockResolvedValue(expectedData);
+            jest.spyOn(User, 'getById').mockResolvedValue(user);
 
-            const response = await request(app).delete(`/profiles/${user_id}`);
+            const response = await request(app)
+                .delete(`/profiles/${user_id}`)
+                .set('authorization', `Bearer ${VALID_TOKEN}`);
             const profile = response.body.profile;
 
             expect(response.statusCode).toBe(200);
@@ -169,15 +210,15 @@ describe('profiles routes', () => {
             expect(profile.bio).toContain('bio');
         });
 
-        it('fails to delete profile at user ID not found', async () => {
+        it('fails to delete other user profile', async () => {
             const user_id = 999;
 
-            jest.spyOn(Profile, 'delete').mockRejectedValue(new NotFoundError(`Profile not found at user ID ${user_id}`));
+            const response = await request(app)
+                .delete(`/profiles/${user_id}`)
+                .set('authorization', `Bearer ${VALID_TOKEN}`);
 
-            const response = await request(app).delete(`/profiles/${user_id}`);
-
-            expect(response.statusCode).toBe(404);
-            expect(response.body.error).toContain('not found');
+            expect(response.statusCode).toBe(403);
+            expect(response.body.error).toContain('permission');
         });
     });
 });

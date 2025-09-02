@@ -99,7 +99,7 @@ class Shelf {
             `
             SELECT id, user_id AS "userId", label 
             FROM shelves
-            WHERE deleted_at IS NULL
+            WHERE deleted_at IS NOT NULL
             `
         );
 

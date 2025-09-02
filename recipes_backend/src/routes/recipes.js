@@ -176,7 +176,7 @@ router.post('/:id/tags/:tag_id', ensureLoggedIn, async (req, res, next) => {
 
     try {
         const originalRecipe = await Recipe.get(recipeId);
-        if (originalRecipe.author_id !== res.locals.user.id)
+        if (+originalRecipe.author_id !== +res.locals.user.id)
             throw new ForbiddenError('You do not have permission to access this resource.');
 
         await Recipe.addTag(recipeId, tagId);
@@ -194,7 +194,7 @@ router.delete('/:id/tags/:tag_id', ensureLoggedIn, async (req, res, next) => {
 
     try {
         const originalRecipe = await Recipe.get(recipeId);
-        if (originalRecipe.author_id !== res.locals.user.id)
+        if (+originalRecipe.author_id !== +res.locals.user.id)
             throw new ForbiddenError('You do not have permission to access this resource.');
 
         await Recipe.removeTag(recipeId, tagId);

@@ -6,19 +6,20 @@ const jsonschema = require('jsonschema');
 const { NotFoundError, ConflictError, InternalServerError } = require('../../expressError');
 const { createToken } = require('../../src/helpers/tokens');
 const db = require('../../db');
+const User = require('../../src/models/user');
 
 let VALID_TOKEN;
 
-beforeAll(() => {
-    const user = {
-        id: 1,
-        firstName: 'Test',
-        lastName: 'User',
-        email: 'testuser@gmail.com',
-        googleId: '1234567890',
-        image: 'https://example-image.com/example/1'
-    }
+const user = {
+    id: 1,
+    firstName: 'Test',
+    lastName: 'User',
+    email: 'testuser@gmail.com',
+    googleId: '1234567890',
+    image: 'https://example-image.com/example/1'
+}
 
+beforeAll(() => {
     VALID_TOKEN = createToken(user);
 });
 
@@ -120,10 +121,10 @@ describe('shelves routes', () => {
             ];
 
             // mock model method return
-            jest.spyOn(Shelf, 'findAll').mockResolvedValue(shelves);
+            jest.spyOn(Shelf, 'findAll').mockReturnValue(shelves);
 
             // attempt request
-            const response = await request(app).get('/shelves/').set('Authorization', `Bearer ${VALID_TOKEN}`);
+            const response = await request(app).get('/shelves/').set('authorization', `Bearer ${VALID_TOKEN}`);
 
             // assert response data
             expect(response.statusCode).toBe(200);
@@ -227,8 +228,9 @@ describe('shelves routes', () => {
             ];
 
             // mock model method return
-            jest.spyOn(Shelf, 'findByUserId').mockResolvedValue(shelves);
-            jest.spyOn(Shelf, 'getRecipes').mockResolvedValue(recipes);
+            jest.spyOn(Shelf, 'findByUserId').mockReturnValue(shelves);
+            jest.spyOn(Shelf, 'getRecipes').mockReturnValue(recipes);
+            jest.spyOn(User, 'getById').mockReturnValue(user);
 
             // attempt request
             const response = await request(app).get(`/shelves/users/${userId}`).set("authorization", `Bearer ${VALID_TOKEN}`);
@@ -238,8 +240,8 @@ describe('shelves routes', () => {
             expect(response.body.shelves).toEqual(shelves);
         });
 
-        it('fails to retrieve shelves if user not found', async () => {
-            const userId = 999;
+        it('fails to retrieve shelves if wrong user', async () => {
+            const userId = 2;
 
             // mock model method throw
             jest.spyOn(Shelf, 'findByUserId').mockRejectedValue(new NotFoundError(`Shelf not found at user ID = ${userId}`));
@@ -248,8 +250,7 @@ describe('shelves routes', () => {
             const response = await request(app).get(`/shelves/users/${userId}`).set("authorization", `Bearer ${VALID_TOKEN}`);
 
             // assert response data
-            expect(response.statusCode).toBe(404);
-            expect(response.body.error).toContain('not found');
+            expect(response.statusCode).toBe(403);
         });
 
         it('refuses due to not logged in', async () => {
@@ -286,8 +287,8 @@ describe('shelves routes', () => {
             const reqBody = { label: expectedData.label };
 
             // mock model method return
-            jest.spyOn(Shelf, 'update').mockResolvedValue(expectedData);
-            jest.spyOn(Shelf, 'findById').mockResolvedValue({ ...expectedData, label: 'Test' });
+            jest.spyOn(Shelf, 'update').mockReturnValue(expectedData);
+            jest.spyOn(Shelf, 'findById').mockReturnValue({ ...expectedData, label: 'Test' });
 
             // attempt request
             const response = await request(app).patch(`/shelves/${1}`).send(reqBody).set("Authorization", `Bearer ${VALID_TOKEN}`);
@@ -303,8 +304,8 @@ describe('shelves routes', () => {
             const shelfToUpdate = { label: 'TestFail' };
 
             // mock model method throw
-            jest.spyOn(Shelf, 'update').mockRejectedValue(new NotFoundError(`Shelf not found at id = ${shelfId}.`));
-            jest.spyOn(Shelf, 'findById').mockResolvedValue(new NotFoundError(`Shelf not found at id = ${shelfId}.`));
+            jest.spyOn(Shelf, 'update').mockImplementation(() => { throw new NotFoundError(`Shelf not found at id = ${shelfId}.`); });
+            jest.spyOn(Shelf, 'findById').mockImplementation(() => { throw new NotFoundError(`Shelf not found at id = ${shelfId}.`); });
 
             // attempt request
             const response = await request(app).patch(`/shelves/${shelfId}`).send(shelfToUpdate).set("authorization", `Bearer ${VALID_TOKEN}`);
@@ -444,7 +445,8 @@ describe('shelves routes', () => {
             const recipeId = 1;
 
             // mock return value
-            jest.spyOn(Shelf, 'addRecipe').mockRejectedValue(new ConflictError());
+            jest.spyOn(Shelf, 'findById').mockReturnValue({ id: 1, userId: 1, label: 'Shelf' });
+            jest.spyOn(Shelf, 'addRecipe').mockImplementation(() => { throw new ConflictError(); });
 
             // attempt request
             const response = await request(app)
@@ -472,7 +474,7 @@ describe('shelves routes', () => {
 
             // assert response
             expect(response.statusCode).toBe(404);
-            expect(response.body.error).toContain('Not Found');
+            expect(response.body.error).toContain('not found');
         });
 
         it('fails to add recipe not found', async () => {
@@ -490,7 +492,7 @@ describe('shelves routes', () => {
 
             // assert response
             expect(response.statusCode).toBe(404);
-            expect(response.body.error).toContain('Not Found');
+            expect(response.body.error).toContain('not found');
         });
     });
 
@@ -534,7 +536,7 @@ describe('shelves routes', () => {
 
             // assert response
             expect(response.statusCode).toBe(404);
-            expect(response.body.error).toContain('Not Found');
+            expect(response.body.error).toContain('not found');
         });
 
         it('fails to remove recipe from shelf not found', async () => {
@@ -551,7 +553,7 @@ describe('shelves routes', () => {
 
             // assert response
             expect(response.statusCode).toBe(404);
-            expect(response.body.error).toContain('Not Found');
+            expect(response.body.error).toContain('not found');
         });
     });
 

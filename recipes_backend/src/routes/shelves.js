@@ -44,7 +44,6 @@ router.get('/:id', ensureLoggedIn, async (req, res, next) => {
     try {
         const shelf = await Shelf.findById(req.params.id);
         if (!shelf) throw new NotFoundError(`Shelf not found: ${req.params.id}`);
-        console.log(shelf);
 
         if (shelf.userId !== res.locals.user.id)
             throw new ForbiddenError('You do not have permission to access this resource.');
@@ -66,10 +65,10 @@ router.get('/users/:user_id', ensureLoggedIn, async (req, res, next) => {
     const userId = +req.params.user_id;
 
     try {
-        if (userId !== res.locals.user.id)
+        if (+userId !== +res.locals.user.id)
             throw new ForbiddenError('You do not have permission to access this resource.');
 
-        const shelves = await Shelf.findByUserId(userId);
+        const shelves = await Shelf.findByUserId(+userId);
 
         const populatedShelves = await Promise.all(
             shelves.map(async (shelf) => {

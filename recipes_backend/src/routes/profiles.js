@@ -65,10 +65,10 @@ router.patch('/:user_id', ensureLoggedIn, async (req, res, next) => {
     const user_id = +req.params.user_id;
     const { bio } = req.body;
 
-    if (user_id !== res.locals.user.id)
-        throw new ForbiddenError('You do not have permission to access this resource.');
-
     try {
+        if (+user_id !== +res.locals.user.id)
+            throw new ForbiddenError('You do not have permission to access this resource.');
+
         // pass new schema
         const validator = jsonschema.validate({ user_id, bio }, updateProfileSchema);
 
@@ -76,14 +76,11 @@ router.patch('/:user_id', ensureLoggedIn, async (req, res, next) => {
             const errors = validator.errors.map(e => e.message);
             throw new BadRequestError(errors);
         }
-
         // attempt to update
         const result = await Profile.update({ userId: user_id, bio });
-
         // get the user and append
         const profileUser = await User.getById(user_id);
         result.user = profileUser;
-
         // return result
         return res.status(200).json({ profile: result });
     } catch (err) {
@@ -95,12 +92,12 @@ router.patch('/:user_id', ensureLoggedIn, async (req, res, next) => {
 /** DELETE /:user_id - Remove profile from user ID */
 router.delete('/:user_id', ensureLoggedIn, async (req, res, next) => {
     // get the user ID
-    const { user_id } = req.body;
-
-    if (user_id !== res.locals.user.id)
-        throw new ForbiddenError('You do not have permission to access this resource.');
+    const { user_id } = req.params;
 
     try {
+        if (+user_id !== +res.locals.user.id)
+            throw new ForbiddenError('You do not have permission to access this resource.');
+
         // attempt to delete
         const result = await Profile.delete(+user_id);
 
