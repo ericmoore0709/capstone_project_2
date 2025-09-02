@@ -109,6 +109,7 @@ describe('shelf model', () => {
                 { user_id: 1, label: 'Test2' },
                 { user_id: 1, label: 'Test3' }
             ];
+            
             await Shelf.create(userShelves[0]);
             await Shelf.create(userShelves[1]);
             await Shelf.create(userShelves[2]);
