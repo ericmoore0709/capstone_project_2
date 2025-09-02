@@ -31,6 +31,13 @@ CREATE TABLE recipes (
     deleted_at TIMESTAMP DEFAULT NULL
 );
 
+-- ingredients table
+CREATE TABLE ingredients (
+    id SERIAL PRIMARY KEY,
+    content VARCHAR(255) NOT NULL,
+    recipe_id INTEGER NOT NULL REFERENCES recipes(id)
+);
+
 -- Tags table
 CREATE TABLE tags (
     id SERIAL PRIMARY KEY,
