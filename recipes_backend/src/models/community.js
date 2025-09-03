@@ -65,14 +65,31 @@ class Community {
     static async findByUserId(userId) {
         const result = await db.query(
             `
-            SELECT id, name, description, admin_id AS "adminId", created_at, last_updated_at
-            FROM communities
+            SELECT 
+                c.id, c.name, c.description, c.admin_id, c.created_at, c.last_updated_at,
+                u.first_name, u.last_name
+            FROM communities c
+            JOIN users u ON c.admin_id = u.id
             WHERE admin_id = $1
             `,
             [userId]
         );
 
-        return result.rows;
+        const communities = result.rows.map((r) => ({
+            id: r.id,
+            name: r.name,
+            description: r.description,
+            adminId: r.admin_id,
+            created_at: r.created_at,
+            last_updated_at: r.last_updated_at,
+            admin: {
+                id: r.adminId,
+                firstName: r.first_name,
+                lastName: r.last_name
+            }
+        }));
+
+        return communities;
     }
 
     /**
@@ -82,12 +99,29 @@ class Community {
     static async findAll() {
         const result = await db.query(
             `
-            SELECT id, name, description, admin_id AS "adminId", created_at, last_updated_at
-            FROM communities
+            SELECT 
+                c.id, c.name, c.description, c.admin_id, c.created_at, c.last_updated_at,
+                u.first_name, u.last_name
+            FROM communities c
+            JOIN users u ON u.id = c.admin_id
             `
         );
 
-        return result.rows;
+        const communities = result.rows.map((r) => ({
+            id: r.id,
+            name: r.name,
+            description: r.description,
+            adminId: r.admin_id,
+            created_at: r.created_at,
+            last_updated_at: r.last_updated_at,
+            admin: {
+                id: r.adminId,
+                firstName: r.first_name,
+                lastName: r.last_name
+            }
+        }));
+
+        return communities;
     }
 
     static async update(id, data) {

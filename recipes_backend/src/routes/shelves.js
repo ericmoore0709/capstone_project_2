@@ -69,27 +69,14 @@ router.get('/users/:user_id', ensureLoggedIn, async (req, res, next) => {
             throw new ForbiddenError('You do not have permission to access this resource.');
 
         const shelves = await Shelf.findByUserId(+userId);
+        const shelfIds = shelves.map((s) => s.id);
 
-        const populatedShelves = await Promise.all(
-            shelves.map(async (shelf) => {
-                // get recipes for shelf
-                let recipes = [];
-                recipes = await Shelf.getRecipes(shelf.id);
+        const shelfRecipes = await Shelf.getRecipesByShelfIncludeAuthors(shelfIds);
 
-                // for each recipe, get author and add to recipe object
-                recipes = await Promise.all(
-                    recipes.map(async (recipe) => {
-                        const author = await User.getById(recipe.author_id);
-                        recipe.author = author;
-                        return { ...recipe, author };
-                    })
-                );
-
-                // add recipes to shelf
-                shelf.recipes = recipes;
-                return shelf;
-            })
-        );
+        const populatedShelves = shelves.map((s) => ({
+            ...s,
+            recipes: shelfRecipes[s.id] || []
+        }));
 
         return res.status(200).json({ shelves: populatedShelves });
     } catch (err) {

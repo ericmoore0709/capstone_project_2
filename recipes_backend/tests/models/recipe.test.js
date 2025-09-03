@@ -56,6 +56,27 @@ describe("Recipe model", () => {
         });
     });
 
+    describe("findRecipesIncludeAuthor", () => {
+        test("retrieves recipes without filters", async () => {
+            const recipes = await Recipe.findRecipesIncludeAuthor({});
+            expect(Array.isArray(recipes)).toBe(true);
+            expect(recipes[0].author).toBeTruthy();
+        });
+
+        test("retrieves recipes by user ID", async () => {
+            const userId = 1;
+            const recipes = await Recipe.findRecipesIncludeAuthor({ userId });
+            expect(recipes.every(r => r.author_id === userId)).toBe(true);
+            expect(recipes.every(r => r.author.id === userId)).toBe(true);
+        });
+
+        test("retrieves only public recipes", async () => {
+            const recipes = await Recipe.findRecipesIncludeAuthor({ publicOnly: true });
+            expect(recipes.every(r => r.visibility_id === 1)).toBe(true);
+            expect(recipes.every(r => r.author.id)).toBeDefined();
+        });
+    })
+
     describe("get", () => {
         test("successfully retrieves a recipe by ID", async () => {
             const recipe = await Recipe.create({

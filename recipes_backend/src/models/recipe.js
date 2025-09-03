@@ -60,6 +60,62 @@ class Recipe {
         return result.rows;
     }
 
+    /**
+     * Retrieves recipes with data (and includes each recipe author)
+     * @param {*} arg0
+     * Params:
+     * - userId (optional): If provided, retrieves recipes by this user.
+     * - publicOnly (optional): If true, only retrieves public recipes.
+     * - visibilityId (optional): Filters by specific visibility level if provided.
+     * @return [{ id, title, description, image, author_id, visibility_id, uploaded_at, last_updated_at }, ...]
+     */
+    static async findRecipesIncludeAuthor({ userId = null, publicOnly = false, visibilityId = null }) {
+        // Base query and params array
+        let query = `SELECT 
+                        r.id, r.title, r.description, r.image, r.author_id, r.visibility_id, r.uploaded_at, r.last_updated_at,
+                        u.first_name, u.last_name
+                     FROM recipes r
+                     JOIN users u ON u.id = r.author_id
+                     WHERE r.deleted_at IS NULL
+                     `;
+        let queryParams = [];
+
+        // Add filters conditionally based on the passed parameters
+        if (userId) {
+            query += ` AND author_id = $${queryParams.length + 1}`;
+            queryParams.push(userId);
+        }
+
+        if (publicOnly) {
+            query += ` AND visibility_id = 1`;  // Assuming 1 = 'Public'
+        } else if (visibilityId !== null) {
+            query += ` AND visibility_id = $${queryParams.length + 1}`;
+            queryParams.push(visibilityId);
+        }
+
+        query += ` ORDER BY last_updated_at DESC`;
+
+        const result = await db.query(query, queryParams);
+
+        const recipes = result.rows.map((r) => ({
+            id: r.id,
+            title: r.title,
+            description: r.description,
+            image: r.image,
+            author_id: r.author_id,
+            visibility_id: r.visibility_id,
+            uploaded_at: r.uploaded_at,
+            last_updated_at: r.last_updated_at,
+            author: {
+                id: r.author_id,
+                firstName: r.first_name,
+                lastName: r.last_name
+            }
+        }))
+
+        return recipes;
+    }
+
     /** Given a recipe id, return data about recipe.
      *
      * Returns { id, title, description, image, author_id, visibility_id, uploaded_at, last_updated_at }

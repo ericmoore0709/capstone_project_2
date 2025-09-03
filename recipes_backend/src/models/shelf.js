@@ -226,6 +226,52 @@ class Shelf {
         return result.rows;
     }
 
+    /**
+     * Gets all recipes (with author) associated with each shelf in ID array
+     * @param {*} shelfIds the array of shelf IDs
+     * @returns a map of recipes
+     */
+    static async getRecipesByShelfIncludeAuthors(shelfIds) {
+        if (!shelfIds || shelfIds.length === 0) return [];
+
+        const result = await db.query(
+            `
+            SELECT 
+                sr.shelf_id,
+                r.id, r.title, r.description, r.visibility_id, r.uploaded_at, r.last_updated_at, r.image, r.author_id,
+                u.first_name, u.last_name
+            FROM shelf_recipes sr
+            JOIN recipes r ON sr.recipe_id = r.id
+            JOIN users u ON u.id = r.author_id
+            WHERE sr.shelf_id = ANY($1)
+            `,
+            [shelfIds]
+        );
+
+        let recipesByShelf = {};
+
+        result.rows.forEach((r) => {
+            if (!recipesByShelf[r.shelf_id]) recipesByShelf[r.shelf_id] = [];
+            recipesByShelf[r.shelf_id].push({
+                id: r.id,
+                title: r.title,
+                description: r.description,
+                image: r.image,
+                author_id: r.author_id,
+                visibility_id: r.visibility_id,
+                uploaded_at: r.uploaded_at,
+                last_updated_at: r.last_updated_at,
+                author: {
+                    id: r.author_id,
+                    first_name: r.first_name,
+                    last_name: r.last_name
+                }
+            });
+        });
+
+        return recipesByShelf;
+    }
+
 }
 
 module.exports = Shelf;

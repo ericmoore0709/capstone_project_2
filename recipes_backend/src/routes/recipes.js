@@ -14,17 +14,9 @@ const router = express.Router();
 // Retrieves all public recipes
 router.get('/', ensureLoggedIn, async (req, res, next) => {
     try {
-        const recipes = await Recipe.findRecipes({ publicOnly: true });
+        const recipes = await Recipe.findRecipesIncludeAuthor({ publicOnly: true });
 
-        const authoredRecipes = await Promise.all(
-            recipes.map(async (recipe) => {
-                const author = await User.getById(recipe.author_id);
-                recipe.author = author;
-                return { ...recipe, author };
-            })
-        );
-
-        return res.json({ recipes: authoredRecipes });
+        return res.json({ recipes });
     } catch (err) {
         return next(err);
     }
@@ -38,17 +30,9 @@ router.get('/user/:user_id', ensureLoggedIn, async (req, res, next) => {
         if (userId !== res.locals.user.id)
             throw new ForbiddenError('You do not have permission to access this resource.');
 
-        const recipes = await Recipe.findRecipes({ userId });
+        const recipes = await Recipe.findRecipesIncludeAuthor({ userId });
 
-        const authoredRecipes = await Promise.all(
-            recipes.map(async (recipe) => {
-                const author = await User.getById(recipe.author_id);
-                recipe.author = author;
-                return { ...recipe, author };
-            })
-        );
-
-        return res.json({ recipes: authoredRecipes });
+        return res.json({ recipes });
     } catch (err) {
         return next(err);
     }
@@ -59,17 +43,9 @@ router.get('/user/:user_id', ensureLoggedIn, async (req, res, next) => {
 router.get('/user/:user_id/public', ensureLoggedIn, async (req, res, next) => {
     const userId = +req.params.user_id;
     try {
-        const recipes = await Recipe.findRecipes({ userId, publicOnly: true });
+        const recipes = await Recipe.findRecipesIncludeAuthor({ userId, publicOnly: true });
 
-        const authoredRecipes = await Promise.all(
-            recipes.map(async (recipe) => {
-                const author = await User.getById(recipe.author_id);
-                recipe.author = author;
-                return { ...recipe, author };
-            })
-        );
-
-        return res.json({ recipes: authoredRecipes });
+        return res.json({ recipes });
     } catch (err) {
         return next(err);
     }

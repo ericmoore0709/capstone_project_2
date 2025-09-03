@@ -37,12 +37,6 @@ router.post('/', ensureLoggedIn, async (req, res, next) => {
 router.get('/', ensureLoggedIn, async (req, res, next) => {
     try {
         const communities = await Community.findAll();
-
-        await Promise.all(communities.map(async (community) => {
-            const admin = await User.getById(community.adminId);
-            community.admin = admin;
-        }));
-
         return res.status(200).json({ communities });
     } catch (err) {
         return next(err);
@@ -71,12 +65,6 @@ router.get('/:id', ensureLoggedIn, async (req, res, next) => {
 router.get('/user/:user_id', ensureLoggedIn, async (req, res, next) => {
     try {
         const communities = await Community.findByUserId(req.params.user_id);
-
-        await Promise.all(communities.map(async (community) => {
-            const admin = await User.getById(community.adminId);
-            community.admin = admin;
-        }));
-
         return res.status(200).json({ communities });
     } catch (err) {
         return next(err);
